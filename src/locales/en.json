@@ -1,0 +1,187 @@
+{
+  "hero": {
+    "badge": "Invoice fraud prevention for U.S. SMBs",
+    "title": "Fake invoice?",
+    "subtitle": "Stop the scam before payment",
+    "description": {
+      "part1": "ZeroClick analyzes",
+      "part2": "payment requests, vendors, and bank info",
+      "part3": " to",
+      "part4": "block invoice fraud in real time",
+      "part5": " — before the money is gone."
+    },
+    "cta_trial": "I want to test the demo",
+    "cta_demo": "I want to test the demo",
+    "socialproof": "Prevents $133K average loss per incident"
+  },
+  "features": {
+    "title_highlight": "Smart",
+    "title": "protection",
+    "subtitle": "The 7 key checks to block fraud before payment",
+    "cta": "7-day free trial",
+    "link": {
+      "title": "Domain & Email Check",
+      "description": "Detect spoofed emails and fake vendor domains",
+      "age": "Domain age:",
+      "similarity": "Similarity:",
+      "ssl": "SSL:",
+      "owner": "Registrant:",
+      "badge": "Live trust scan"
+    },
+    "quebec": {
+      "title": "Business Entity Check",
+      "description": "Validate vendors in U.S. state databases"
+    },
+    "document": {
+      "title": "Invoice Pattern Learning",
+      "description": "Compare current invoice with past behavior",
+      "scan": "Behavior scan:",
+      "detections": "anomalies",
+      "dangerLabel": "Unusual request - manual review required",
+      "safeLabel": "Normal invoice - safe to pay",
+      "badge": "Machine learning risk model"
+    },
+    "services": {
+      "badge": "Invoice fraud defense",
+      "title": {
+        "part1": "Your vendors",
+        "highlight1": "change",
+        "part2": "We",
+        "highlight2": "verify",
+        "part3": "everything."
+      },
+      "intro": {
+        "part1": "U.S. companies lose billions to fake vendors and bank reroutes. Without protection,",
+        "part2": "you could wire money",
+        "part3": " to a scammer."
+      },
+      "benefits": [
+        "ACH account verification (routing + name match)",
+        "Real-time domain/email reputation scoring",
+        "Vendor change alerts and blocklists"
+      ],
+      "testimonial": {
+        "part1": "\"Within one month, ZeroClick helped",
+        "part2": "a logistics firm in Texas",
+        "part3": " block a $22,000 fraudulent payment.\""
+      },
+      "card": {
+        "title": "Example of blocked scam",
+        "subtitle": "Fake invoice from a spoofed vendor",
+        "amount": "Amount",
+        "due": "Due date",
+        "detections": "Issues flagged",
+        "list": [
+          "Email from domain: globallogix-inc.com (age: 3 days)",
+          "Routing number not matching vendor name",
+          "PDF invoice metadata shows recent template reuse"
+        ],
+        "recommendation": {
+          "title": "Recommended action:",
+          "text": "Flag as high risk. Contact the real vendor using verified info."
+        },
+        "detected": "Detected on July 17, 2025 at 10:14 AM • Finance team: Daniel Morris"
+      }
+    }
+  },
+  "how": {
+    "badge": "Fast deployment",
+    "title": {
+      "part1": "Protect your payables on",
+      "part2": "Mac and Windows"
+    },
+    "steps": [
+      {
+        "title": "Install",
+        "description": "Get started in 30 seconds. Compatible with all major systems. No setup required."
+      },
+      {
+        "title": "Right-click",
+        "description": "Right-click on any invoice, file, or payment detail. We instantly analyze the risk."
+      },
+      {
+        "title": "Get protected",
+        "description": "Stop fake vendors, bank reroutes, and invoice anomalies before funds leave your account."
+      }
+    ],
+    "note": {
+      "highlight": "Works with your AP tools",
+      "rest": "- QuickBooks, SAP, Bill.com, email and browser extensions."
+    }
+  },
+  "cta": {
+    "badge": "Wire fraud protection",
+    "title": {
+      "part1": "Don't lose another payment.",
+      "part2": "Secure your AP process now."
+    },
+    "subtitle": "Try it free for 7 days. Cancel anytime. Your security comes first.",
+    "button": {
+      "freeTrial": "Start free trial",
+      "demo": "See how it works"
+    },
+    "benefits": {
+      "realtime": "Real-time invoice analysis",
+      "refund": "Money-back guarantee",
+      "compatibility": "Mac, Windows, & AP software compatible"
+    }
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact"
+  },
+  "badge": {
+    "protection_activee": "Protection activated!"
+  },
+  "merci": {
+    "titre": "Thank you!",
+    "description": "We are preparing your anti-fraud protection and will contact you within 24h.",
+    "guide_intro": "In the meantime, download our free guide:",
+    "guide_titre": "5 common scams targeting Canadian SMBs",
+    "bouton_pdf": "Download the PDF"
+  },
+  "form": {
+    "badge": "Anti-phishing protection",
+    "etape": "Step",
+    "complet": "% completed",
+    "retour": "\u2190 Back",
+    "suivant": "Next \u2794",
+    "continuer": "Continue \u2794",
+    "envoi": "Sending...",
+    "terminer": "Finish",
+    "secure": "100% secure \u00b7 No spam \u00b7 GDPR compliant"
+  },
+  "etape1": {
+    "titre": "1 click to activate your protection",
+    "description": "Start with your business email"
+  },
+  "etape2": {
+    "titre": "Which sector do you work in?",
+    "description": "To personalize your security"
+  },
+  "etape3": {
+    "titre": "How many people to protect?",
+    "description": "To tailor our solution to your team"
+  },
+  "etape4": {
+    "titre": "Level of urgency?",
+    "description": "We'll prioritize your request accordingly"
+  },
+  "secteurs": {
+    "construction": "Construction",
+    "comptabilite": "Accounting",
+    "transport": "Transportation",
+    "ecommerce": "E-commerce",
+    "sante": "Healthcare",
+    "autre": "Other"
+  },
+  "interet": {
+    "peu": "Not urgent",
+    "tres": "Extremely urgent",
+    "1": "I'm just exploring",
+    "2": "I'm looking for a solution",
+    "3": "URGENT: Immediate need!"
+  }
+}

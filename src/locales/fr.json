@@ -1,0 +1,191 @@
+{
+  "hero": {
+    "badge": "Protection anti-phishing pour PME",
+    "title": "Fraude par courriel ?",
+    "subtitle": "1 clic pour vous protéger définitivement",
+    "description": {
+      "part1": "ZeroClick analyse automatiquement ",
+      "part2": "liens, pièces jointes et faux sites",
+      "part3": " pour ",
+      "part4": "protéger votre entreprise contre les fraudes financières",
+      "part5": " avant qu'elles ne surviennent."
+    },
+    "cta_trial": "Essai gratuit 7 jours",
+    "cta_demo": "Voir la démo express",
+    "socialproof": "Bloque 98% des fraudes aux factures"
+  },
+  "features": {
+    "title_highlight": "Protection",
+    "title": "complète",
+    "subtitle": "Toutes nos fonctionnalités clés en un coup d'œil",
+    "link": {
+      "title": "Analyse de liens",
+      "description": "Détection des URLs frauduleuses",
+      "age": "Âge:",
+      "similarity": "Similarité:",
+      "ssl": "SSL:",
+      "owner": "Propriétaire:",
+      "badge": "Analyse automatique des liens"
+    },
+    "quebec": {
+      "title": "Base Québec",
+      "description": "Institutions locales vérifiées"
+    },
+    "document": {
+      "title": "Scan de documents",
+      "description": "Vérification avec VirusTotal",
+      "scan": "Scan VirusTotal:",
+      "detections": "détections",
+      "dangerLabel": "Document dangereux - Ne pas ouvrir",
+      "safeLabel": "Document sécurisé - OK pour ouverture",
+      "badge": "Analyse automatique via 68 moteurs antivirus"
+    },
+    "services": {
+      "badge": "Protection complète",
+      "title": {
+        "part1": "Vos employés",
+        "highlight1": "cliquent",
+        "part2": "Nous",
+        "highlight2": "protégeons",
+        "part3": "votre entreprise."
+      },
+      "intro": {
+        "part1": "Chaque jour, des centaines de PME sont victimes de fraudes par email. Sans protection,",
+        "part2": "de vos employés",
+        "part3": " pourraient tomber dans le piège."
+      },
+      "benefits": [
+        "Analyse en temps réel des liens et pièces jointes",
+        "Détection des faux fournisseurs",
+        "Alertes immédiates avant toute ouverture"
+      ],
+      "testimonial": {
+        "part1": "\"Notre solution a permis à ",
+        "part2": "de nos clients",
+        "part3": " d'éviter au moins une tentative de fraude dans le premier mois.\""
+      },
+      "card": {
+        "title": "Exemple de menace détectée",
+        "subtitle": "Fausse facture Hydro-Québec",
+        "facture": "Facture",
+        "montant": "Montant",
+        "danger": "Danger",
+        "detectionsTitle": "Détections",
+        "footer": "Détection générée automatiquement par ZeroClick",
+        "amount": "Montant",
+        "due": "Échéance",
+        "detections": "Détections",
+        "list": [
+          "Domaine similaire: hydroquebec-paiement.com",
+          "IBAN non associé à Hydro-Québec",
+          "Fichier PDF avec script caché"
+        ],
+        "recommendation": {
+          "title": "Action recommandée:",
+          "text": "Ne pas effectuer le paiement. Contacter Hydro-Québec via leurs canaux officiels."
+        },
+        "detected": "Détecté le 12 mars 2024 à 14:23 • Employé: Julie Tremblay"
+      }
+    }
+  },
+  "how": {
+    "badge": "Installation facile",
+    "title": {
+      "part1": "Protection en un clic droit sur",
+      "part2": "Mac et Windows"
+    },
+    "steps": [
+      {
+        "title": "Installez",
+        "description": "Téléchargez et installez en 30 secondes. Compatible Mac et Windows. Aucune configuration complexe nécessaire."
+      },
+      {
+        "title": "Cliquez droit",
+        "description": "Faites un clic droit sur n'importe quel texte, fichier ou lien. Notre menu contextuel apparaît instantanément."
+      },
+      {
+        "title": "Protégez-vous",
+        "description": "Obtenez une analyse complète en un clic. Nous vérifions les fraudes, les virus et les risques en temps réel."
+      }
+    ],
+    "note": {
+      "highlight": "Compatible avec tous vos outils",
+      "rest": "- Fonctionne dans votre navigateur, messagerie et explorateur de fichiers sans configuration."
+    }
+  },
+  "cta": {
+    "badge": "Protection garantie",
+    "title": {
+      "part1": "Votre entreprise mérite une protection.",
+      "part2": "Sécurisez-la en un clic."
+    },
+    "subtitle": "Essayez gratuitement pendant 7 jours. Pas convaincu ? Remboursement immédiat.",
+    "button": {
+      "freeTrial": "Essai gratuit 7 jours",
+      "demo": "Voir la démo"
+    },
+    "benefits": {
+      "realtime": "🛡️ Protection en temps réel",
+      "refund": "💰 Garantie satisfait ou remboursé",
+      "compatibility": "💻 Compatible Mac & Windows"
+    }
+  },
+  "footer": {
+    "rights": "Tous droits réservés.",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "contact": "Contact"
+  },
+  "badge": {
+    "protection_activee": "Protection activée !"
+  },
+  "merci": {
+    "titre": "Merci !",
+    "description": "Nous préparons votre protection anti-fraude et vous contacterons dans moins de 24h.",
+    "guide_intro": "En attendant, téléchargez notre guide gratuit :",
+    "guide_titre": "5 arnaques courantes qui ciblent les PME canadiennes",
+    "bouton_pdf": "Télécharger le PDF"
+  },
+  "form": {
+    "badge": "Protection anti-phishing",
+    "etape": "Étape",
+    "complet": "% complété",
+    "retour": "← Retour",
+    "suivant": "Suivant ➔",
+    "continuer": "Continuer ➔",
+    "envoi": "Envoi en cours...",
+    "terminer": "Terminer",
+    "secure": "100% sécurisé · Aucun spam · Conforme RGPD"
+  },
+  "etape1": {
+    "titre": "1 clic pour activer votre protection",
+    "description": "Commencez par votre email professionnel"
+  },
+  "etape2": {
+    "titre": "Dans quel secteur travaillez-vous ?",
+    "description": "Pour personnaliser votre sécurité"
+  },
+  "etape3": {
+    "titre": "Combien de personnes à protéger ?",
+    "description": "Pour adapter notre solution à votre équipe"
+  },
+  "etape4": {
+    "titre": "Niveau d'urgence ?",
+    "description": "Nous prioriserons votre demande en conséquence"
+  },
+  "secteurs": {
+    "construction": "Construction",
+    "comptabilite": "Comptabilité",
+    "transport": "Transport",
+    "ecommerce": "E-commerce",
+    "sante": "Santé",
+    "autre": "Autre"
+  },
+  "interet": {
+    "peu": "Peu urgent",
+    "tres": "Urgence absolue",
+    "1": "Je me renseigne",
+    "2": "Je veux une solution",
+    "3": "URGENT : besoin immédiat !"
+  }
+}
