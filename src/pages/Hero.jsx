@@ -1,13 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  FileText,
+  RefreshCw,
+  Smile,
+  ChevronsRight,
   CheckCircle,
   Send,
-  RefreshCw,
   StopCircle,
   ArrowRight,
-  ChevronsRight,
-  MessageSquare,
 } from "react-feather";
 
 export default function Hero() {
@@ -58,7 +59,7 @@ export default function Hero() {
             className="w-4 h-4 mr-2 text-[#B47AFF]"
             strokeWidth={2.5}
           />
-          Service 100% québécois
+          Made in Québec, pas en Silicon Valley
         </div>
 
         {/* Titre principal raffiné */}
@@ -97,15 +98,19 @@ export default function Hero() {
         </div>
 
         {/* Features avec icônes premium */}
+        {/* Features avec icônes premium */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {[
             {
               icon: (
-                <Send className="w-8 h-8 text-[#8A4FFF]" strokeWidth={1.5} />
+                <FileText
+                  className="w-8 h-8 text-[#8A4FFF]"
+                  strokeWidth={1.5}
+                />
               ),
-              title: "Multi-format",
-              desc: "Envoyez votre facture comme vous voulez : PDF, photo, email ou simple texte.",
-              badge: "Tous formats",
+              title: "Contrats personnalisés",
+              desc: "Créez un contrat clair en 30 secondes avec vos conditions, votre échéance et vos clauses de protection.",
+              badge: "Professionnel",
             },
             {
               icon: (
@@ -114,20 +119,20 @@ export default function Hero() {
                   strokeWidth={1.5}
                 />
               ),
-              title: "Relances intelligentes",
-              desc: "Des messages clairs et professionnels, adaptés au ton de votre entreprise.",
-              badge: "Automatisé",
+              title: "Relances automatiques",
+              desc: "Des messages de relance envoyés pour vous, au bon moment, avec un ton adapté.",
+              badge: "Sans stress",
             },
             {
               icon: (
-                <StopCircle
+                <CheckCircle
                   className="w-8 h-8 text-[#B47AFF]"
                   strokeWidth={1.5}
                 />
               ),
-              title: "Contrôle instantané",
-              desc: "Dès que vous nous dites que c’est payé, on arrête tout. Simple et rapide.",
-              badge: "Flexible",
+              title: "Soyez enfin payé",
+              desc: "Vous récupérez votre argent plus vite, sans relancer vous-même. On s’occupe de tout, jusqu’au paiement.",
+              badge: "Résultat garanti",
             },
           ].map((feature, index) => (
             <div
@@ -156,22 +161,6 @@ export default function Hero() {
         </div>
 
         {/* Témoignage élégant */}
-        <div className="mt-24 p-8 bg-gradient-to-br from-[#1E1B2B]/60 to-[#2A2342]/60 rounded-xl border border-[#3A2E5D]/50 max-w-2xl mx-auto relative backdrop-blur-sm">
-          <MessageSquare className="absolute -top-3 -left-3 w-6 h-6 text-[#8A4FFF]/40" />
-          <p className="text-lg italic text-[#E5D9FF] leading-relaxed mb-4">
-            « Chez ZeroClick, notre mission est simple : vous libérer du fardeau
-            des relances pour que vous puissiez vous concentrer sur votre
-            métier. »
-          </p>
-          <div className="flex items-center">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] mr-3"></div>
-            <div>
-              <p className="font-medium text-white">Naël Gaillet</p>
-              <p className="text-sm text-[#B8A8E6]">Fondateur, ZeroClick</p>
-            </div>
-          </div>
-          <MessageSquare className="absolute -bottom-3 -right-3 w-6 h-6 text-[#8A4FFF]/40 transform rotate-180" />
-        </div>
       </div>
 
       {/* Animations améliorées */}

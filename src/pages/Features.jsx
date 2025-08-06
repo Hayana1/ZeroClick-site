@@ -39,13 +39,13 @@ export default function Features() {
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-4xl font-bold mb-6 text-white">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] animate-gradient">
-              Fonctionnement
+              Relance automatique
             </span>{" "}
             en 3 étapes simples
           </h2>
           <p className="text-1xl text-[#D9C7FF] max-w-3xl mx-auto">
-            Une solution tellement simple que vous vous demanderez pourquoi vous
-            ne l'avez pas adoptée plus tôt
+            Transférez votre facture, on relance à votre place — sans stress,
+            sans outil à installer.
           </p>
         </div>
 

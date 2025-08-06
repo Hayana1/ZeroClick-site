@@ -84,7 +84,7 @@ export default function How() {
         <span className="inline-block px-3 py-1 mb-4 rounded-full bg-[rgb(180,100,255)]/10 border border-[rgb(180,100,255)]/30 text-[rgb(180,100,255)] text-xs font-medium">
           {t("how.badge")}
         </span>
-        <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+        <h2 className="text-3xl md:text-3xl font-bold leading-tight">
           {t("how.title.part1")} <br />
           <span className="text-[rgb(180,100,255)]">
             {t("how.title.part2")}

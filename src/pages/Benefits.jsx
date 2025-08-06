@@ -33,14 +33,14 @@ export default function Benefits() {
         ))}
       </div>
 
-      <div className="relative max-w-6xl mx-auto px-6 text-center z-10">
+      <div className="relative max-w-5xl mx-auto px-6 text-center z-10">
         <div className="inline-block bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] p-0.5 rounded-full mb-8">
           <div className="bg-[#1A1428] rounded-full px-5 py-1.5 text-[#D9C7FF] text-sm font-medium">
             Avantages clés
           </div>
         </div>
 
-        <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+        <h2 className="text-4xl md:text-4xl font-bold mb-6 text-white">
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF]">
             Pourquoi choisir notre solution ?
           </span>
