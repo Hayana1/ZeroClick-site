@@ -5,7 +5,7 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import ContactForm from "./pages/Form";
 import Demo from "./pages/DemoLanding";
-import MatrixHackedPage from "./pages/Demo";
+import ZeroClickShockToCalm from "./pages/Demo";
 
 export default function App() {
   return (
@@ -14,7 +14,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/form" element={<ContactForm />} />
         <Route path="/demo" element={<Demo />} />
-        <Route path="/demo-page" element={<MatrixHackedPage />} />{" "}
+        <Route path="/demo-page" element={<ZeroClickShockToCalm />} />{" "}
         {/* page tampon */}
       </Routes>
     </Router>

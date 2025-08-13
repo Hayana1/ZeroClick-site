@@ -1,12 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  ShieldCheck,
-  PlayCircle,
-  CheckCircle2,
-  ChevronDown,
-  X,
-} from "lucide-react";
+import { ShieldCheck, PlayCircle, CheckCircle2, X } from "lucide-react";
 
 // Hook simple de machine à écrire
 function useTypewriter(fullText, speed = 35, startDelay = 200) {
@@ -37,35 +31,23 @@ function useTypewriter(fullText, speed = 35, startDelay = 200) {
 }
 
 export default function DemoZeroClick({
-  videoSrc = "/videos/zeroclick-demo.mp4",
+  videoSrc = "/pub.mp4",
   poster = "/images/zeroclick-poster.jpg",
   calendlyUrl = "https://calendly.com/hello-zeroclick/30min",
 }) {
-  const [showSticky, setShowSticky] = useState(false);
   const [openCalendly, setOpenCalendly] = useState(false);
-  const slotsLeft = useMemo(() => Math.max(2, 7 - new Date().getDay()), []);
 
-  useEffect(() => {
-    const onScroll = () =>
-      setShowSticky(window.scrollY > window.innerHeight * 0.35);
-    onScroll();
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Texte animé pour le CTA principal
   const ctaFull = "Essayez la démo ZeroClick en 1 clic";
   const { text: typedCTA, done: typedDone } = useTypewriter(ctaFull, 28, 250);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-violet-50 text-slate-900">
-      {/* Trust banner */}
+      {/* Trust banner (texte réduit) */}
       <div className="bg-gradient-to-r from-violet-600 to-indigo-600">
         <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-center gap-3">
           <ShieldCheck className="h-5 w-5 text-white" />
           <p className="text-sm text-white/90">
-            Simulation ZeroClick : aucun risque réel. Objectif : vous montrer
-            comment éviter la prochaine attaque.
+            Simulation ZeroClick — aucun risque réel.
           </p>
         </div>
       </div>
@@ -81,8 +63,8 @@ export default function DemoZeroClick({
               transition={{ duration: 0.4 }}
               className="text-2xl md:text-3xl lg:text-4xl font-semibold leading-snug text-center md:text-left"
             >
-              <span className="block mt-1 text-slate-700">
-                Analysez vos liens avant de cliquer dessus avec{" "}
+              <span className="block mt-1 text-slate-800">
+                Analysez vos liens avec{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600 font-bold">
                   ZeroClick
                 </span>
@@ -90,20 +72,21 @@ export default function DemoZeroClick({
               </span>
             </motion.h1>
 
-            <p className="mt-6 text-md text-slate-700 max-w-xl">
-              Protégez votre entreprise contre les attaques par hameçonnage sans
-              changer les habitudes de vos équipes.
+            {/* Texte raccourci */}
+            <p className="mt-6 text-base text-slate-700 max-w-xl">
+              Stop phishing, sans changer les habitudes.
             </p>
 
-            <ul className="mt-7 space-y-3 text-sm text-slate-600">
+            {/* Points raccourcis */}
+            <ul className="mt-6 space-y-3 text-slate-700">
               {[
-                "Analyse des liens avant le clic (pré-clic)",
-                "Déploiement en 5 minutes — aucune formation nécessaire",
-                "Intégration transparente (email, web et SMS)",
+                "Analyse pré-clic des liens",
+                "Déploiement en 5 minutes",
+                "Email, Web & SMS",
               ].map((t) => (
                 <li key={t} className="flex items-start gap-3">
                   <CheckCircle2 className="h-6 w-6 text-violet-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-lg">{t}</span>
+                  <span className="text-base">{t}</span>
                 </li>
               ))}
             </ul>
@@ -121,37 +104,13 @@ export default function DemoZeroClick({
                     className={`ml-1 inline-block w-[1ch] ${
                       typedDone ? "opacity-0" : "opacity-80"
                     }`}
-                    style={{
-                      animation: "blink 1s steps(1,end) infinite",
-                    }}
+                    style={{ animation: "blink 1s steps(1,end) infinite" }}
                     aria-hidden
                   >
                     |
                   </span>
                 </span>
               </button>
-            </div>
-
-            {/* Coordonnées directes */}
-            <div className="mt-4 text-sm text-slate-600 space-y-1">
-              <p>
-                📞{" "}
-                <a
-                  href="tel:5147738545"
-                  className="text-violet-700 hover:underline"
-                >
-                  514&nbsp;773&nbsp;8545
-                </a>
-              </p>
-              <p>
-                📧{" "}
-                <a
-                  href="mailto:hello@zeroclick.tech"
-                  className="text-violet-700 hover:underline"
-                >
-                  hello@zeroclick.tech
-                </a>
-              </p>
             </div>
           </div>
 
@@ -165,7 +124,7 @@ export default function DemoZeroClick({
             <div className="relative rounded-2xl overflow-hidden aspect-[16/9]">
               <video
                 className="h-full w-full object-cover"
-                src="pub.mp4"
+                src={videoSrc}
                 poster={poster}
                 playsInline
                 autoPlay
@@ -192,6 +151,24 @@ export default function DemoZeroClick({
           </motion.div>
         </div>
       </section>
+
+      {/* Logos petits en bas */}
+      <footer className="mt-10 border-t border-slate-200 bg-white py-7">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex items-center justify-center gap-8 opacity-80">
+            <img
+              src="/HEC.svg.png"
+              alt="Logo 1"
+              className="h-20 w-auto object-contain"
+            />
+            <img
+              src="/millenium.png"
+              alt="Logo 2"
+              className="h-20 w-auto object-contain"
+            />
+          </div>
+        </div>
+      </footer>
 
       {/* Calendly Modal */}
       <AnimatePresence>
@@ -233,7 +210,7 @@ export default function DemoZeroClick({
                 </div>
                 <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-4 text-center text-white text-sm">
                   <ShieldCheck className="inline-block mr-2" />
-                  <span>Créneau sécurisé — Aucun spam ne vous sera envoyé</span>
+                  <span>Créneau sécurisé — aucun spam</span>
                 </div>
               </motion.div>
             </div>
