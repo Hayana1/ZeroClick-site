@@ -83,7 +83,7 @@ export default function Hero() {
         {/* CTA premium */}
         <div className="mb-20">
           <button
-            onClick={() => navigate("/Form")}
+            onClick={() => navigate("/demo-page")}
             className="group relative overflow-hidden px-5 py-3 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-[#8A4FFF]/40"
           >
             <span className="relative z-10 flex items-center justify-center">
