@@ -28,7 +28,7 @@ const MatrixHackedPage = () => {
 
   // --- Timings
   useEffect(() => {
-    const t1 = 3000; // show hacked
+    const t1 = 2000; // show hacked
     const t2 = 2500; // show msg1
     const t3 = 2500; // show msg2
 
