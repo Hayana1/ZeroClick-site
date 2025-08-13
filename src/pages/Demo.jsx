@@ -1,614 +1,211 @@
-import React, { useState, useEffect } from "react";
-import styled, { keyframes, css } from "styled-components";
+import React, { useState, useEffect, useRef } from "react";
 
-// Animations avec css`` pour éviter l'erreur
-const fadeIn = css`
-  ${keyframes`
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  `}
-`;
+const MatrixHackedPage = () => {
+  // step: 0 = hacked+matrix, 1 = white msg1, 2 = white msg2
+  const [step, setStep] = useState(0);
+  const matrixRef = useRef(null);
+  const createdColsRef = useRef([]);
 
-const BackButton = styled.button`
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-  background: none;
-  border: none;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 0.95rem;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 0.5rem;
-  z-index: 10;
-
-  svg {
-    margin-right: 0.5rem;
-  }
-
-  &:hover {
-    text-decoration: underline;
-  }
-`;
-
-const shake = css`
-  ${keyframes`
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
-  `}
-`;
-
-const FadeInDiv = styled.div`
-  animation: ${fadeIn} 0.5s ease-out;
-`;
-// Composants stylisés
-const Container = styled.div`
-  font-family: "Segoe UI", sans-serif;
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  animation: ${fadeIn} 0.5s ease-out;
-`;
-
-const Header = styled.h2`
-  color: #6e3af2;
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
-  &::after {
-    content: "";
-    display: block;
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(90deg, #6e3af2, #a78bfa);
-    margin: 0.5rem auto 0;
-    border-radius: 2px;
-  }
-`;
-
-const StepContainer = styled.div`
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  animation: ${fadeIn} 0.3s ease-out;
-`;
-
-const StepHeader = styled.h3`
-  color: #4a5568;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 28px;
-    height: 28px;
-    background-color: #6e3af2;
-    color: white;
-    border-radius: 50%;
-    margin-right: 0.75rem;
-    font-size: 0.9rem;
-  }
-`;
-
-const Button = styled.button`
-  background: linear-gradient(90deg, #6e3af2, #8b5cf6);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: inline-flex;
-  align-items: center;
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-  svg {
-    margin-left: 0.5rem;
-  }
-`;
-
-const Alert = styled.div`
-  background: ${({ type }) => (type === "danger" ? "#fff5f5" : "#f0fdf4")};
-  color: ${({ type }) => (type === "danger" ? "#dc2626" : "#16a34a")};
-  padding: 1rem;
-  border-radius: 8px;
-  margin-top: 1rem;
-  display: flex;
-  align-items: flex-start;
-  animation: ${fadeIn} 0.3s ease-out;
-  border-left: 4px solid
-    ${({ type }) => (type === "danger" ? "#dc2626" : "#16a34a")};
-`;
-
-const ProgressBar = styled.div`
-  height: 8px;
-  background: #e2e8f0;
-  border-radius: 4px;
-  margin-top: 1rem;
-  overflow: hidden;
-  div {
-    height: 100%;
-    background: linear-gradient(90deg, #6e3af2, #8b5cf6);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-  }
-`;
-
-const ActivityItem = styled.li`
-  padding: 0.75rem 0;
-  border-bottom: 1px solid #edf2f7;
-  display: flex;
-  align-items: center;
-  &:last-child {
-    border-bottom: none;
-  }
-`;
-
-const Navigation = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1.5rem;
-`;
-const Badge = styled.span`
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  margin-left: 0.5rem;
-  background: ${({ type }) => (type === "danger" ? "#fee2e2" : "#dcfce7")};
-  color: ${({ type }) => (type === "danger" ? "#b91c1c" : "#166534")};
-`;
-
-const EmailPreview = styled.div`
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-`;
-const EmailHeader = styled.div`
-  background: #f7fafc;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid #e2e8f0;
-  display: flex;
-  justify-content: space-between;
-`;
-const EmailBody = styled.div`
-  padding: 1rem;
-`;
-
-// Icônes SVG
-const icons = {
-  warning: (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M12 9V11M12 15H12.01M5.07183 19H18.9282C20.4678 19 21.4301 17.3333 20.6603 16L13.7321 4C12.9623 2.66667 11.0378 2.66667 10.268 4L3.33978 16C2.56998 17.3333 3.53223 19 5.07183 19Z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  check: (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18457 2.99721 7.13633 4.39828 5.49707C5.79935 3.85782 7.69279 2.71538 9.79619 2.24015C11.8996 1.76491 14.1003 1.98234 16.07 2.86"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M22 4L12 14.01L9 11.01"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  arrowRight: (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M5 12H19"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12 5L19 12L12 19"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  arrowLeft: (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M19 12H5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M12 19L5 12L12 5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-  file: (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M14 2H6C5.46957 2 4.96086 2.21071 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C20.7893 21.0391 20 20.5304 20 20V8L14 2Z"
-        stroke="#4a5568"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M14 2V8H20"
-        stroke="#4a5568"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M16 13H8"
-        stroke="#4a5568"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M16 17H8"
-        stroke="#4a5568"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M10 9H9H8"
-        stroke="#4a5568"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  ),
-};
-
-export default function DemoZeroClick() {
-  const [demoStep, setDemoStep] = useState(1);
-  const [showAlert, setShowAlert] = useState(false);
-  const [fileStatus, setFileStatus] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [dashboardStats, setDashboardStats] = useState({
-    blockedEmails: 1,
-    safeLinks: 12,
-    scannedFiles: 3,
-    suspiciousFiles: 1,
-  });
-
-  const simulateFileAnalysis = () => {
-    setFileStatus("");
-    setProgress(0);
-
-    const interval = setInterval(() => {
-      setProgress((prev) =>
-        prev >= 100 ? (clearInterval(interval), 100) : prev + 10
-      );
-    }, 200);
-
-    setTimeout(() => {
-      setFileStatus("⚠️ Fichier suspect détecté");
-      clearInterval(interval);
-    }, 2200);
-  };
-
+  // --- Inject CSS once
   useEffect(() => {
-    setProgress(0);
-    setFileStatus("");
-  }, [demoStep]);
+    const style = document.createElement("style");
+    style.id = "matrix-hacked-styles";
+    style.textContent = `
+      @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+      .matrix-char {
+        position: absolute;
+        color: #16a34a;            /* green-600 plus doux */
+        font-size: 18px;
+        opacity: 0.6;
+        text-shadow: 0 0 3px rgba(22,163,74,0.6);
+      }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      style.remove();
+    };
+  }, []);
+
+  // --- Timings
+  useEffect(() => {
+    const t1 = 3000; // show hacked
+    const t2 = 2500; // show msg1
+    const t3 = 2500; // show msg2
+
+    const timers = [];
+    timers.push(setTimeout(() => setStep(1), t1));
+    timers.push(setTimeout(() => setStep(2), t1 + t2));
+    timers.push(
+      setTimeout(() => {
+        window.location.href = "/demo";
+      }, t1 + t2 + t3)
+    );
+
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  // --- Matrix effect (only in step 0)
+  useEffect(() => {
+    if (step !== 0) {
+      createdColsRef.current.forEach((el) => el?.remove());
+      createdColsRef.current = [];
+      return;
+    }
+    if (!matrixRef.current) return;
+
+    // Moins dense : colonnes plus espacées + skip aléatoire
+    const fontSize = 22; // plus grand -> moins de lignes
+    const spacing = fontSize * 1.6; // espace horizontal
+    const columns = Math.floor(window.innerWidth / spacing);
+
+    for (let i = 0; i < columns; i++) {
+      if (Math.random() < 0.45) continue; // ~55% des colonnes seulement
+      const x = i * spacing + Math.random() * 8; // léger jitter
+      const yPos = Math.random() * -60;
+      const col = createColumn(x, yPos);
+      matrixRef.current.appendChild(col);
+      createdColsRef.current.push(col);
+    }
+
+    function createColumn(x, y) {
+      const col = document.createElement("div");
+      col.style.position = "absolute";
+      col.style.left = x + "px";
+      col.style.top = y + "px";
+
+      // Moins de caractères par colonne
+      const charCount = 6 + Math.floor(Math.random() * 8); // 6–13
+      const lineHeight = 24;
+
+      for (let i = 0; i < charCount; i++) {
+        const ch = document.createElement("span");
+        ch.className = "matrix-char";
+        ch.style.top = i * lineHeight + "px";
+        ch.textContent = RANDOM_CHAR();
+        ch.style.opacity = (0.3 + Math.random() * 0.4).toString();
+        // Animation plus discrète : légère apparition
+        ch.style.animation = `fadeIn ${
+          0.8 + Math.random() * 1.2
+        }s infinite alternate`;
+        col.appendChild(ch);
+      }
+      return col;
+    }
+
+    function RANDOM_CHAR() {
+      const chars =
+        "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const A = chars.split("");
+      return A[Math.floor(Math.random() * A.length)];
+    }
+
+    return () => {
+      createdColsRef.current.forEach((el) => el?.remove());
+      createdColsRef.current = [];
+    };
+  }, [step]);
 
   return (
-    <Container>
-      <BackButton onClick={() => (window.location.href = "/")}>
-        {icons.arrowLeft} Retour
-      </BackButton>
-
-      <Header>Protection ZeroClick</Header>
-
-      {demoStep === 1 && (
-        <StepContainer>
-          <StepHeader>
-            <span>1</span>Protection Email
-          </StepHeader>
-          <EmailPreview>
-            <EmailHeader>
-              <div>
-                <strong>De :</strong> facturation@hydroquebec-paiement.com
-                <Badge type="danger">Nouveau domaine</Badge>
-              </div>
-              <div style={{ color: "#6e3af2", fontWeight: 600 }}>10:24 AM</div>
-            </EmailHeader>
-            <EmailBody>
-              <p style={{ marginBottom: "0.5rem" }}>
-                <strong>Sujet :</strong> Votre facture impayée - Action requise
-              </p>
-              <p style={{ color: "#4a5568", marginBottom: "1rem" }}>
-                Cher client, votre facture de 245,67$ est en retard. Veuillez
-                payer immédiatement.
-              </p>
-              <Button
-                onClick={() => setShowAlert(true)}
-                style={{ width: "100%", justifyContent: "center" }}
-              >
-                Analyser cet email
-              </Button>
-            </EmailBody>
-          </EmailPreview>
-
-          {showAlert && (
-            <Alert type="danger">
-              <span>🔴</span>
-              <div>
-                <strong>Email frauduleux détecté !</strong>
-                <p style={{ marginTop: "0.25rem", marginBottom: 0 }}>
-                  Ce domaine imite Hydro-Québec mais a été créé il y a 3 jours.
-                </p>
-              </div>
-            </Alert>
-          )}
-
-          <div
-            style={{
-              marginTop: "1rem",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Button onClick={() => setDemoStep(2)}>
-              Suivant {icons.arrowRight}
-            </Button>
-          </div>
-        </StepContainer>
+    <div style={styles.root}>
+      {/* STEP 0: Matrix + message rouge doux */}
+      {step === 0 && (
+        <>
+          <div ref={matrixRef} style={styles.matrixEffect} />
+          <div style={styles.hackedMessage}>You Have Been Hacked</div>
+        </>
       )}
 
-      {demoStep === 2 && (
-        <StepContainer>
-          <StepHeader>
-            <span>2</span>Analyse de Fichiers
-          </StepHeader>
-
-          <div
-            style={{
-              border: "2px dashed #cbd5e0",
-              padding: "2rem",
-              textAlign: "center",
-              borderRadius: "8px",
-              marginBottom: "1.5rem",
-              backgroundColor: "white",
-            }}
-          >
-            {fileStatus ? (
-              <div style={{ textAlign: "center" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {icons.file}
-                  <strong>facture_hydro.pdf</strong>
-                </div>
-
-                {progress < 100 ? (
-                  <div>
-                    <p>Analyse en cours...</p>
-                    <ProgressBar>
-                      <div style={{ width: `${progress}%` }} />
-                    </ProgressBar>
-                  </div>
-                ) : (
-                  <FadeInDiv>
-                    <p
-                      style={{
-                        fontWeight: "600",
-                        color: fileStatus.includes("⚠️")
-                          ? "#dc2626"
-                          : "#16a34a",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      {fileStatus.includes("⚠️") ? icons.warning : icons.check}
-                      {fileStatus}
-                    </p>
-                  </FadeInDiv>
-                )}
-              </div>
-            ) : (
+      {/* STEP 1 & 2: White screen with gradient texts */}
+      {step > 0 && (
+        <div style={styles.whiteScreen}>
+          <div style={styles.textBlock}>
+            {step === 1 && (
+              <p style={styles.msgPrimary}>
+                Pas d’inquiétude — il s’agissait d’un{" "}
+                <span style={styles.gradientText}>ZeroClick</span> test.
+              </p>
+            )}
+            {step === 2 && (
               <>
-                <p style={{ fontWeight: "600", marginBottom: "1rem" }}>
-                  Analyse de fichier PDF simulée
+                <p style={styles.msgPrimary}>
+                  Mais demain, un hacker pourrait ne pas prévenir…
                 </p>
-                <Button onClick={simulateFileAnalysis}>
-                  Simuler l'analyse d'un fichier
-                </Button>
+                <p style={styles.msgSecondary}>
+                  Protégez vos équipes avec{" "}
+                  <span style={styles.gradientText}>ZeroClick</span> avant le
+                  clic. (Redirection en cours…)
+                </p>
               </>
             )}
           </div>
-
-          <Navigation>
-            <Button onClick={() => setDemoStep(1)}>
-              {icons.arrowLeft} Précédent
-            </Button>
-            <Button onClick={() => setDemoStep(3)} disabled={!fileStatus}>
-              Suivant {icons.arrowRight}
-            </Button>
-          </Navigation>
-        </StepContainer>
+        </div>
       )}
-
-      {demoStep === 3 && (
-        <StepContainer>
-          <StepHeader>
-            <span>3</span>Tableau de Bord
-          </StepHeader>
-          <div style={{ marginBottom: "1.5rem" }}>
-            <h4 style={{ color: "#4a5568", marginBottom: "1rem" }}>
-              Résumé de sécurité
-            </h4>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "1rem",
-              }}
-            >
-              <div
-                style={{
-                  backgroundColor: "#f0fdf4",
-                  padding: "1rem",
-                  borderRadius: "8px",
-                }}
-              >
-                <strong style={{ color: "#166534" }}>Protection active</strong>
-                <p style={{ fontSize: "0.9rem", color: "#4a5568", margin: 0 }}>
-                  ZeroClick protège vos appareils
-                </p>
-              </div>
-              <div
-                style={{
-                  backgroundColor: "#fff5f5",
-                  padding: "1rem",
-                  borderRadius: "8px",
-                }}
-              >
-                <strong style={{ color: "#b91c1c" }}>
-                  {dashboardStats.blockedEmails} menace(s)
-                </strong>
-                <p style={{ fontSize: "0.9rem", color: "#4a5568", margin: 0 }}>
-                  bloquées aujourd'hui
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h4 style={{ color: "#4a5568", marginBottom: "1rem" }}>
-              Activité récente
-            </h4>
-            <ul
-              style={{ listStyle: "none", padding: 0, marginBottom: "1.5rem" }}
-            >
-              <ActivityItem>
-                <span>🔴</span>
-                <div style={{ flex: 1 }}>
-                  Email frauduleux bloqué
-                  <div style={{ fontSize: "0.8rem", color: "#718096" }}>
-                    facturation@hydroquebec-paiement.com
-                  </div>
-                </div>
-                <span style={{ fontSize: "0.8rem", color: "#718096" }}>
-                  10:24 AM
-                </span>
-              </ActivityItem>
-              <ActivityItem>
-                <span>🟢</span>
-                <div style={{ flex: 1 }}>
-                  {dashboardStats.safeLinks} liens sécurisés analysés
-                </div>
-              </ActivityItem>
-              <ActivityItem>
-                <span>⚠️</span>
-                <div style={{ flex: 1 }}>
-                  {dashboardStats.scannedFiles} fichiers analysés
-                </div>
-              </ActivityItem>
-            </ul>
-          </div>
-
-          <Navigation>
-            <Button onClick={() => setDemoStep(2)}>
-              {icons.arrowLeft} Précédent
-            </Button>
-            <Button
-              onClick={() => {
-                setDemoStep(1);
-                setShowAlert(false);
-                setDashboardStats({
-                  ...dashboardStats,
-                  blockedEmails: dashboardStats.blockedEmails + 1,
-                  safeLinks: dashboardStats.safeLinks + 3,
-                  scannedFiles: dashboardStats.scannedFiles + 1,
-                });
-              }}
-            >
-              Nouvelle démo
-            </Button>
-          </Navigation>
-        </StepContainer>
-      )}
-    </Container>
+    </div>
   );
-}
+};
+
+// --- Inline styles
+const styles = {
+  root: {
+    position: "relative",
+    height: "100vh",
+    width: "100vw",
+    overflow: "hidden",
+    backgroundColor: "#000",
+    fontFamily:
+      "'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'",
+  },
+  matrixEffect: {
+    position: "absolute",
+    inset: 0,
+    zIndex: 50,
+  },
+  hackedMessage: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    fontSize: "4rem", // un peu plus petit
+    fontWeight: 800,
+    color: "#dc2626", // red-600 (moins flashy)
+    textShadow: "0 0 6px rgba(220,38,38,0.6)", // glow réduit
+    zIndex: 100,
+    textAlign: "center",
+    animation: "fadeIn 0.9s ease-out forwards", // plus simple, pas de pulse
+    letterSpacing: "0.5px",
+    whiteSpace: "nowrap",
+  },
+  whiteScreen: {
+    position: "absolute",
+    inset: 0,
+    backgroundColor: "#fff",
+    color: "#111",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 120,
+    animation: "fadeIn 0.35s ease-out forwards",
+  },
+  textBlock: {
+    textAlign: "center",
+    maxWidth: 900,
+    padding: "0 24px",
+  },
+  msgPrimary: {
+    fontSize: "2rem",
+    fontWeight: 700,
+    marginBottom: 8,
+  },
+  msgSecondary: {
+    fontSize: "1.125rem",
+    opacity: 0.75,
+  },
+  gradientText: {
+    background: "linear-gradient(to right, #7c3aed, #4f46e5)", // violet-600 → indigo-600
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
+    fontWeight: "bold",
+  },
+};
+
+export default MatrixHackedPage;

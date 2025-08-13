@@ -40,7 +40,7 @@ export default function Benefits() {
           </div>
         </div>
 
-        <h2 className="text-4xl md:text-4xl font-bold mb-6 text-white">
+        <h2 className="text-4cxl md:text-4xl font-bold mb-6 text-white">
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF]">
             Pourquoi choisir notre solution ?
           </span>
