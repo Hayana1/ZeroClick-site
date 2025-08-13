@@ -241,41 +241,6 @@ export default function DemoZeroClick({
         )}
       </AnimatePresence>
 
-      {/* Sticky CTA bottom bar */}
-      <AnimatePresence>
-        {showSticky && (
-          <motion.div
-            initial={{ y: 80, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 80, opacity: 0 }}
-            className="fixed inset-x-0 bottom-6 z-40 px-4"
-          >
-            <div className="mx-auto max-w-3xl rounded-2xl border border-violet-200 bg-white shadow-xl backdrop-blur-lg px-6 py-4 flex items-center gap-4">
-              <div className="bg-violet-100 p-2 rounded-full">
-                <ShieldCheck className="h-6 w-6 text-violet-600" />
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-slate-900">
-                  Votre démonstration personnalisée de 15 minutes
-                </p>
-                <p className="text-xs text-slate-600">
-                  <span className="font-semibold text-violet-700">
-                    {slotsLeft} créneaux
-                  </span>{" "}
-                  disponibles cette semaine
-                </p>
-              </div>
-              <button
-                onClick={() => setOpenCalendly(true)}
-                className="rounded-xl px-5 py-3 text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:opacity-90 transition-opacity shadow-md"
-              >
-                Réserver maintenant
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Petite animation CSS pour le curseur */}
       <style>{`
         @keyframes blink { 

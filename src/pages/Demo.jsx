@@ -165,15 +165,17 @@ const styles = {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    fontSize: "4rem", // un peu plus petit
+    fontSize: "clamp(1.5rem, 6vw, 3rem)", // min 1.5rem, max 3rem, s’adapte à la largeur
     fontWeight: 800,
-    color: "#dc2626", // red-600 (moins flashy)
+    color: "#dc2626", // rouge moins flashy
     textShadow: "0 0 6px rgba(220,38,38,0.6)", // glow réduit
     zIndex: 100,
     textAlign: "center",
-    animation: "fadeIn 0.9s ease-out forwards", // plus simple, pas de pulse
+    animation: "fadeIn 0.9s ease-out forwards",
     letterSpacing: "0.5px",
-    whiteSpace: "nowrap",
+    whiteSpace: "normal", // autorise le retour à la ligne
+    padding: "0 10px", // un peu d'espace sur mobile
+    lineHeight: 1.2,
   },
   whiteScreen: {
     position: "absolute",
