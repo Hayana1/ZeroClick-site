@@ -1,213 +1,201 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AlertOctagon, ShieldCheck } from "lucide-react";
 
-const MatrixHackedPage = () => {
-  // step: 0 = hacked+matrix, 1 = white msg1, 2 = white msg2
+export default function ZeroClickShockToCalm({
+  redirectPath = "/demo",
+  shockMs = 2500,
+  breatheMs = 3000,
+  preventMs = 3500,
+}) {
   const [step, setStep] = useState(0);
-  const matrixRef = useRef(null);
-  const createdColsRef = useRef([]);
+  const mountedRef = useRef(true);
 
-  // --- Inject CSS once
+  const total = useMemo(
+    () => shockMs + breatheMs + preventMs,
+    [shockMs, breatheMs, preventMs]
+  );
+
   useEffect(() => {
-    const style = document.createElement("style");
-    style.id = "matrix-hacked-styles";
-    style.textContent = `
-      @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
-      .matrix-char {
-        position: absolute;
-        color: #16a34a;            /* green-600 plus doux */
-        font-size: 18px;
-        opacity: 0.6;
-        text-shadow: 0 0 3px rgba(22,163,74,0.6);
-      }
-    `;
-    document.head.appendChild(style);
-    return () => {
-      style.remove();
-    };
-  }, []);
+    mountedRef.current = true;
 
-  // --- Timings
-  useEffect(() => {
-    const t1 = 2000; // show hacked
-    const t2 = 2500; // show msg1
-    const t3 = 2500; // show msg2
-
-    const timers = [];
-    timers.push(setTimeout(() => setStep(1), t1));
-    timers.push(setTimeout(() => setStep(2), t1 + t2));
-    timers.push(
-      setTimeout(() => {
-        window.location.href = "/demo";
-      }, t1 + t2 + t3)
+    const t1 = setTimeout(() => mountedRef.current && setStep(1), shockMs);
+    const t2 = setTimeout(
+      () => mountedRef.current && setStep(2),
+      shockMs + breatheMs
     );
-
-    return () => timers.forEach(clearTimeout);
-  }, []);
-
-  // --- Matrix effect (only in step 0)
-  useEffect(() => {
-    if (step !== 0) {
-      createdColsRef.current.forEach((el) => el?.remove());
-      createdColsRef.current = [];
-      return;
-    }
-    if (!matrixRef.current) return;
-
-    // Moins dense : colonnes plus espacées + skip aléatoire
-    const fontSize = 22; // plus grand -> moins de lignes
-    const spacing = fontSize * 1.6; // espace horizontal
-    const columns = Math.floor(window.innerWidth / spacing);
-
-    for (let i = 0; i < columns; i++) {
-      if (Math.random() < 0.45) continue; // ~55% des colonnes seulement
-      const x = i * spacing + Math.random() * 8; // léger jitter
-      const yPos = Math.random() * -60;
-      const col = createColumn(x, yPos);
-      matrixRef.current.appendChild(col);
-      createdColsRef.current.push(col);
-    }
-
-    function createColumn(x, y) {
-      const col = document.createElement("div");
-      col.style.position = "absolute";
-      col.style.left = x + "px";
-      col.style.top = y + "px";
-
-      // Moins de caractères par colonne
-      const charCount = 6 + Math.floor(Math.random() * 8); // 6–13
-      const lineHeight = 24;
-
-      for (let i = 0; i < charCount; i++) {
-        const ch = document.createElement("span");
-        ch.className = "matrix-char";
-        ch.style.top = i * lineHeight + "px";
-        ch.textContent = RANDOM_CHAR();
-        ch.style.opacity = (0.3 + Math.random() * 0.4).toString();
-        // Animation plus discrète : légère apparition
-        ch.style.animation = `fadeIn ${
-          0.8 + Math.random() * 1.2
-        }s infinite alternate`;
-        col.appendChild(ch);
-      }
-      return col;
-    }
-
-    function RANDOM_CHAR() {
-      const chars =
-        "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      const A = chars.split("");
-      return A[Math.floor(Math.random() * A.length)];
-    }
+    const t3 = setTimeout(() => {
+      if (!mountedRef.current) return;
+      window.location.replace(redirectPath);
+    }, total);
 
     return () => {
-      createdColsRef.current.forEach((el) => el?.remove());
-      createdColsRef.current = [];
+      mountedRef.current = false;
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
     };
-  }, [step]);
+  }, [redirectPath, shockMs, breatheMs, preventMs, total]);
 
   return (
-    <div style={styles.root}>
-      {/* STEP 0: Matrix + message rouge doux */}
-      {step === 0 && (
-        <>
-          <div ref={matrixRef} style={styles.matrixEffect} />
-          <div style={styles.hackedMessage}>You Have Been Hacked</div>
-        </>
-      )}
+    <main className="min-h-screen w-full font-sans overflow-hidden">
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes breatheCycle { 
+          0% { transform: scale(0.95); opacity: 0.9; } 
+          50% { transform: scale(1.05); opacity: 1; } 
+          100% { transform: scale(0.95); opacity: 0.9; } 
+        }
+        @keyframes progressBar { 0% { width: 0%; } 100% { width: 100%; } }
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.22, 0.61, 0.36, 1); }
+        .breathe { animation: breatheCycle 3.5s ease-in-out infinite; }
+        .progress-bar { animation: progressBar ${preventMs}ms linear forwards; }
+      `}</style>
 
-      {/* STEP 1 & 2: White screen with gradient texts */}
-      {step > 0 && (
-        <div style={styles.whiteScreen}>
-          <div style={styles.textBlock}>
-            {step === 1 && (
-              <p style={styles.msgPrimary}>
-                Pas d’inquiétude — il s’agissait d’un{" "}
-                <span style={styles.gradientText}>ZeroClick</span> test.
+      {step === 0 && <ShockScreen />}
+      {step === 1 && <BreatheScreen />}
+      {step === 2 && <PreventScreen />}
+    </main>
+  );
+}
+
+function ShockScreen() {
+  return (
+    <section className="relative flex h-screen w-full items-center justify-center bg-gradient-to-br from-gray-900 to-black text-red-400">
+      {/* Effet de bruit numérique */}
+      <div
+        className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyIiBmaWxsPSIjMzAwIiBvcGFjaXR5PSIwLjEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGRvbWluYW50LWJhc2VsaW5lPSJtaWRkbGUiPiUjMDE2MDs8L3RleHQ+PC9zdmc+')] opacity-20"
+        aria-hidden
+      />
+
+      <div className="mx-auto w-full max-w-3xl rounded-2xl border border-red-800/60 bg-gradient-to-br from-gray-900 to-black p-8 backdrop-blur-sm">
+        <div className="mb-6 flex items-center gap-4">
+          <div className="rounded-xl bg-red-900/40 p-3 text-red-500">
+            <AlertOctagon className="h-8 w-8" strokeWidth={1.5} />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-red-400">
+            VOS FICHIERS ONT ÉTÉ <span className="text-red-300">CHIFFRÉS</span>
+          </h1>
+        </div>
+
+        <p className="mb-8 text-lg text-red-300/80">
+          Un accès non autorisé a chiffré vos données. Pour restaurer vos
+          fichiers,
+          <span className="block mt-1 font-medium">
+            suivez les instructions ci-dessous.
+          </span>
+        </p>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {[
+            { label: "État", value: "Bloqué", color: "text-red-400" },
+            { label: "Fichiers", value: "1 284", color: "text-red-300" },
+            { label: "Délai", value: "00:00:10", color: "text-red-500" },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="rounded-xl border border-red-800/50 bg-red-950/20 p-4 transition-all hover:bg-red-950/40"
+            >
+              <p className="text-sm text-red-500">{item.label}</p>
+              <p className={`mt-1 text-lg font-medium ${item.color}`}>
+                {item.value}
               </p>
-            )}
-            {step === 2 && (
-              <>
-                <p style={styles.msgPrimary}>
-                  Mais demain, un hacker pourrait ne pas prévenir…
-                </p>
-                <p style={styles.msgSecondary}>
-                  Protégez vos équipes avec{" "}
-                  <span style={styles.gradientText}>ZeroClick</span> avant le
-                  clic. (Redirection en cours…)
-                </p>
-              </>
-            )}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 h-1 w-full overflow-hidden rounded-full bg-red-900/30">
+          <div className="h-full bg-red-500/80" style={{ width: "35%" }} />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BreatheScreen() {
+  return (
+    <section className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-100">
+      <div className="mx-auto w-full max-w-2xl rounded-3xl border border-white/80 bg-white/90 p-10 shadow-xl backdrop-blur-sm">
+        <div className="mb-10 text-center">
+          <h2 className="text-5xl font-bold text-cyan-800">Respirez.</h2>
+          <p className="mt-4 text-xl text-cyan-600">
+            Ce n'était qu'un{" "}
+            <span className="font-semibold text-cyan-700">
+              exercice de sensibilisation
+            </span>
+          </p>
+        </div>
+
+        <div className="flex flex-col items-center justify-center gap-8">
+          <div className="relative">
+            <div className="breathe h-56 w-56 rounded-full bg-gradient-to-br from-cyan-400 to-teal-400 shadow-lg" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="h-40 w-40 rounded-full bg-white/30 backdrop-blur-sm" />
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="text-xl font-medium text-gray-700">
+              Inspirez{" "}
+              <span className="font-bold text-cyan-600">4 secondes</span>
+            </p>
+            <div className="my-2 h-1 w-48 rounded-full bg-cyan-100">
+              <div className="h-full w-2/3 bg-cyan-400 rounded-full" />
+            </div>
+            <p className="text-lg text-gray-600">
+              Expirez{" "}
+              <span className="font-medium text-cyan-600">4 secondes</span>
+            </p>
+          </div>
+
+          <p className="text-sm text-cyan-700/70">
+            Aucune donnée n'a été collectée. Votre poste est sécurisé.
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PreventScreen() {
+  return (
+    <section className="flex h-screen w-full items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100">
+      <div className="mx-auto w-full max-w-2xl rounded-3xl border border-white/80 bg-white/90 p-10 shadow-xl backdrop-blur-sm">
+        <div className="mb-6 flex items-start gap-4">
+          <div className="rounded-xl bg-teal-100 p-3 text-teal-700">
+            <ShieldCheck className="h-8 w-8" strokeWidth={1.5} />
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-gray-800">
+              Aujourd'hui un test.{" "}
+              <span className="text-teal-600">Demain, peut-être pas.</span>
+            </h3>
+            <p className="mt-2 text-gray-600">
+              Vous allez être redirigé vers une démonstration de protection
+            </p>
           </div>
         </div>
-      )}
-    </div>
+
+        <div className="my-8 space-y-4">
+          {[
+            "Identifier les domaines à risque en un coup d'œil",
+            "Bloquer les téléchargements suspects automatiquement",
+            "Former vos équipes sans friction",
+          ].map((item, index) => (
+            <div key={index} className="flex items-start">
+              <div className="mr-3 mt-1 h-2 w-2 rounded-full bg-teal-500" />
+              <p className="text-gray-700">{item}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 rounded-full bg-gray-200">
+          <div className="progress-bar h-2 rounded-full bg-teal-500" />
+        </div>
+
+        <p className="mt-4 text-center text-sm text-gray-500">
+          Redirection en cours...
+        </p>
+      </div>
+    </section>
   );
-};
-
-// --- Inline styles
-const styles = {
-  root: {
-    position: "relative",
-    height: "100vh",
-    width: "100vw",
-    overflow: "hidden",
-    backgroundColor: "#000",
-    fontFamily:
-      "'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'",
-  },
-  matrixEffect: {
-    position: "absolute",
-    inset: 0,
-    zIndex: 50,
-  },
-  hackedMessage: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    fontSize: "clamp(1.5rem, 6vw, 3rem)", // min 1.5rem, max 3rem, s’adapte à la largeur
-    fontWeight: 800,
-    color: "#dc2626", // rouge moins flashy
-    textShadow: "0 0 6px rgba(220,38,38,0.6)", // glow réduit
-    zIndex: 100,
-    textAlign: "center",
-    animation: "fadeIn 0.9s ease-out forwards",
-    letterSpacing: "0.5px",
-    whiteSpace: "normal", // autorise le retour à la ligne
-    padding: "0 10px", // un peu d'espace sur mobile
-    lineHeight: 1.2,
-  },
-  whiteScreen: {
-    position: "absolute",
-    inset: 0,
-    backgroundColor: "#fff",
-    color: "#111",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 120,
-    animation: "fadeIn 0.35s ease-out forwards",
-  },
-  textBlock: {
-    textAlign: "center",
-    maxWidth: 900,
-    padding: "0 24px",
-  },
-  msgPrimary: {
-    fontSize: "2rem",
-    fontWeight: 700,
-    marginBottom: 8,
-  },
-  msgSecondary: {
-    fontSize: "1.125rem",
-    opacity: 0.75,
-  },
-  gradientText: {
-    background: "linear-gradient(to right, #7c3aed, #4f46e5)", // violet-600 → indigo-600
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-    fontWeight: "bold",
-  },
-};
-
-export default MatrixHackedPage;
+}
