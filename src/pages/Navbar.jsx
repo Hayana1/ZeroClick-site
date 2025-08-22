@@ -130,7 +130,7 @@ export default function Navbar() {
 
           {/* Navigation */}
           <NavLinks>
-            <NavButton onClick={() => navigate("/Form")}>Inscription</NavButton>
+            <NavButton onClick={() => navigate("/Form")}>Sign Up</NavButton>
           </NavLinks>
         </NavContent>
       </NavContainer>

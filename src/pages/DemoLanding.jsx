@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldCheck, PlayCircle, CheckCircle2, X } from "lucide-react";
 
-// Hook simple de machine à écrire
+// Simple typewriter hook
 function useTypewriter(fullText, speed = 35, startDelay = 200) {
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
@@ -37,17 +37,17 @@ export default function DemoZeroClick({
 }) {
   const [openCalendly, setOpenCalendly] = useState(false);
 
-  const ctaFull = "Essayez la démo ZeroClick en 1 clic";
+  const ctaFull = "Try the ZeroClick demo in one click";
   const { text: typedCTA, done: typedDone } = useTypewriter(ctaFull, 28, 250);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-violet-50 text-slate-900">
-      {/* Trust banner (texte réduit) */}
+      {/* Trust banner (short text) */}
       <div className="bg-gradient-to-r from-violet-600 to-indigo-600">
         <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-center gap-3">
           <ShieldCheck className="h-5 w-5 text-white" />
           <p className="text-sm text-white/90">
-            Simulation ZeroClick — aucun risque réel.
+            ZeroClick simulation — no real risk.
           </p>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function DemoZeroClick({
               className="text-2xl md:text-3xl lg:text-4xl font-semibold leading-snug text-center md:text-left"
             >
               <span className="block mt-1 text-slate-800">
-                Analysez vos liens avec{" "}
+                Check links safely with{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-indigo-600 font-bold">
                   ZeroClick
                 </span>
@@ -72,16 +72,16 @@ export default function DemoZeroClick({
               </span>
             </motion.h1>
 
-            {/* Texte raccourci */}
+            {/* Short copy */}
             <p className="mt-6 text-base text-slate-700 max-w-xl">
-              Stop phishing, sans changer les habitudes.
+              Stop fraud without changing habits.
             </p>
 
-            {/* Points raccourcis */}
+            {/* Short bullets */}
             <ul className="mt-6 space-y-3 text-slate-700">
               {[
-                "Analyse pré-clic des liens",
-                "Déploiement en 5 minutes",
+                "Pre-click link analysis",
+                "Set up in 5 minutes",
                 "Email, Web & SMS",
               ].map((t) => (
                 <li key={t} className="flex items-start gap-3">
@@ -91,7 +91,7 @@ export default function DemoZeroClick({
               ))}
             </ul>
 
-            {/* CTA avec machine à écrire */}
+            {/* Typewriter CTA */}
             <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setOpenCalendly(true)}
@@ -137,33 +137,31 @@ export default function DemoZeroClick({
             <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-white to-violet-50">
               <div className="flex items-center gap-3 text-slate-700">
                 <PlayCircle className="h-6 w-6 text-violet-600" />
-                <span className="text-base font-medium">
-                  Démonstration (0:35)
-                </span>
+                <span className="text-base font-medium">Demo (0:35)</span>
               </div>
               <button
                 onClick={() => setOpenCalendly(true)}
                 className="text-base font-semibold text-violet-700 hover:text-violet-800 underline decoration-2 underline-offset-4"
               >
-                Réserver une démo
+                Book a demo
               </button>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Logos petits en bas */}
+      {/* Small logos at bottom */}
       <footer className="mt-10 border-t border-slate-200 bg-white py-7">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex items-center justify-center gap-8 opacity-80">
             <img
               src="/HEC.svg.png"
-              alt="Logo 1"
+              alt="Partner logo 1"
               className="h-20 w-auto object-contain"
             />
             <img
               src="/millenium.png"
-              alt="Logo 2"
+              alt="Partner logo 2"
               className="h-20 w-auto object-contain"
             />
           </div>
@@ -193,7 +191,7 @@ export default function DemoZeroClick({
                   <button
                     onClick={() => setOpenCalendly(false)}
                     className="p-2 rounded-full bg-white text-slate-700 hover:bg-violet-50 transition-colors"
-                    aria-label="Fermer le module de réservation"
+                    aria-label="Close scheduling modal"
                   >
                     <X className="h-6 w-6" />
                   </button>
@@ -210,7 +208,7 @@ export default function DemoZeroClick({
                 </div>
                 <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-4 text-center text-white text-sm">
                   <ShieldCheck className="inline-block mr-2" />
-                  <span>Créneau sécurisé — aucun spam</span>
+                  <span>Secure booking — no spam</span>
                 </div>
               </motion.div>
             </div>
@@ -218,7 +216,7 @@ export default function DemoZeroClick({
         )}
       </AnimatePresence>
 
-      {/* Petite animation CSS pour le curseur */}
+      {/* Tiny CSS for cursor blink */}
       <style>{`
         @keyframes blink { 
           0%, 50% { opacity: 1; } 

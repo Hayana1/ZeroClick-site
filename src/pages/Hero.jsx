@@ -16,7 +16,7 @@ export default function Hero() {
 
   return (
     <section className="relative overflow-hidden px-6 py-24 md:py-36 text-center bg-gradient-to-b from-[#0F0F19] via-[#151221] to-[#1A1428]">
-      {/* Arrière-plan cosmique amélioré */}
+      {/* Enhanced cosmic background */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
         {[...Array(30)].map((_, i) => (
           <div
@@ -35,7 +35,7 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* Forme organique vectorielle améliorée */}
+      {/* Soft organic vector */}
       <div className="absolute -top-[40%] -left-[30%] w-[160%] h-[160%] opacity-5">
         <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
           <defs>
@@ -53,52 +53,51 @@ export default function Hero() {
       </div>
 
       <div className="relative max-w-5xl mx-auto">
-        {/* Badge Québec amélioré */}
+        {/* Quebec badge */}
         <div className="inline-flex items-center px-4 py-2 mb-8 rounded-full bg-[#8A4FFF]/10 border border-[#8A4FFF]/20 text-[#D9C7FF] text-sm font-medium backdrop-blur-md transition-all hover:bg-[#8A4FFF]/15 hover:border-[#8A4FFF]/40">
           <CheckCircle
             className="w-4 h-4 mr-2 text-[#B47AFF]"
             strokeWidth={2.5}
           />
-          Made in Québec, pas en Silicon Valley
+          Made in Québec, not Silicon Valley
         </div>
-
-        {/* Titre principal raffiné */}
         <h1 className="text-5xl md:text-5xl font-bold mb-8 leading-tight tracking-tight">
-          <span className="text-white font-extrabold">Factures Impayées ?</span>
+          <span className="text-white font-extrabold">
+            One click can cost everything.
+          </span>
           <br />
           <span className="bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] bg-clip-text text-transparent">
-            Libérez Votre Temps
+            Train your team to spot fraud early.
           </span>
         </h1>
 
-        {/* Sous-titre élégant */}
+        {/* Subheadline */}
         <p className="text-1xl md:text-1xl text-[#D9C7FF] mb-12 max-w-3xl mx-auto leading-relaxed tracking-normal">
-          Transférez vos factures en retard à{" "}
+          Realistic inbox scenarios that feel natural.{" "}
           <span className="font-mono bg-[#1E1B2B] px-3 py-1.5 rounded-md text-[#B47AFF] border border-[#3A2E5D]">
-            Hello@ZeroClick.tech
+            Your team learns without pressure
           </span>{" "}
-          et concentrez-vous sur votre métier.
+          — building calm, confident reflexes day by day.
         </p>
 
-        {/* CTA premium */}
+        {/* CTA */}
         <div className="mb-20">
           <button
             onClick={() => navigate("/demo-page")}
             className="group relative overflow-hidden px-5 py-3 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-[#8A4FFF]/40"
           >
             <span className="relative z-10 flex items-center justify-center">
-              🐣 Early Bird ?
+              🐣 Try a free simulation
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </span>
             <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
           </button>
           <p className="mt-3 text-sm text-[#A794D4]">
-            3 premières factures offertes • Sans engagement
+            Better a fake trap today than a real loss tomorrow • No commitment
           </p>
         </div>
 
-        {/* Features avec icônes premium */}
-        {/* Features avec icônes premium */}
+        {/* Feature cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {[
             {
@@ -108,9 +107,9 @@ export default function Hero() {
                   strokeWidth={1.5}
                 />
               ),
-              title: "Contrats personnalisés",
-              desc: "Créez un contrat clair en 30 secondes avec vos conditions, votre échéance et vos clauses de protection.",
-              badge: "Professionnel",
+              title: "Automatic reflexes",
+              desc: "Short, gentle exercises that build instinct. Fewer risky clicks, more confidence.",
+              badge: "Calm",
             },
             {
               icon: (
@@ -119,9 +118,9 @@ export default function Hero() {
                   strokeWidth={1.5}
                 />
               ),
-              title: "Relances automatiques",
-              desc: "Des messages de relance envoyés pour vous, au bon moment, avec un ton adapté.",
-              badge: "Sans stress",
+              title: "Invisible learning",
+              desc: "Lessons that don’t feel like lessons. Every slip becomes a kind reminder.",
+              badge: "Gentle",
             },
             {
               icon: (
@@ -130,9 +129,9 @@ export default function Hero() {
                   strokeWidth={1.5}
                 />
               ),
-              title: "Soyez enfin payé",
-              desc: "Vous récupérez votre argent plus vite, sans relancer vous-même. On s’occupe de tout, jusqu’au paiement.",
-              badge: "Résultat garanti",
+              title: "Peace of mind",
+              desc: "Your team feels safe and ready. You finally breathe easier.",
+              badge: "Trust",
             },
           ].map((feature, index) => (
             <div
@@ -159,11 +158,9 @@ export default function Hero() {
             </div>
           ))}
         </div>
-
-        {/* Témoignage élégant */}
       </div>
 
-      {/* Animations améliorées */}
+      {/* Float animation */}
       <style jsx>{`
         @keyframes float {
           0% {

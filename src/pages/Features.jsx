@@ -15,7 +15,7 @@ export default function Features() {
   const navigate = useNavigate();
   return (
     <div className="relative py-24 bg-gradient-to-b from-[#0F0F19] to-[#1A1428] overflow-hidden">
-      {/* Éléments décoratifs animés */}
+      {/* Animated decorative dots */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
         {[...Array(30)].map((_, i) => (
           <div
@@ -35,82 +35,75 @@ export default function Features() {
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6">
-        {/* Titre avec animation */}
+        {/* Title */}
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-4xl font-bold mb-6 text-white">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] animate-gradient">
-              Relance automatique
+              Inbox training
             </span>{" "}
-            en 3 étapes simples
+            in 3 simple steps
           </h2>
           <p className="text-1xl text-[#D9C7FF] max-w-3xl mx-auto">
-            Transférez votre facture, on relance à votre place — sans stress,
-            sans outil à installer.
+            Real emails. Real habits. No stress, no jargon — just calm,
+            confident clicks.
           </p>
         </div>
 
-        {/* Timeline verticale */}
+        {/* Vertical timeline */}
         <div className="relative">
-          {/* Ligne de timeline */}
+          {/* Center line (desktop) */}
           <div className="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-[#8A4FFF] via-[#B47AFF] to-[#8A4FFF] opacity-20 hidden md:block"></div>
 
-          {/* Étape 1 - Transférez */}
+          {/* Step 1 */}
           <div className="flex flex-col md:flex-row items-stretch gap-8 mb-24 group">
-            {/* Carte principale */}
+            {/* Card */}
             <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
               <div className="flex items-center gap-4 mb-6">
                 <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
                   1
                 </div>
                 <h3 className="text-2xl font-semibold text-white">
-                  Transférez votre facture
+                  A message arrives
                 </h3>
               </div>
 
               <div className="space-y-5 pl-2">
                 <div className="flex items-start gap-4">
                   <div className="bg-[#8A4FFF]/10 p-1.5 rounded-full mt-0.5">
-                    <Send
+                    <Mail
                       className="w-4 h-4 text-[#8A4FFF]"
                       strokeWidth={2.5}
                     />
                   </div>
                   <div>
                     <p className="text-[#D9C7FF]">
-                      Envoyez à{" "}
-                      <span className="font-mono bg-[#1E1B2B] px-3 py-1 rounded-lg text-[#B47AFF] border border-[#3A2E5D] flex items-center gap-2 w-fit">
-                        hello@zeroclick.tech
-                        <button className="text-[#8A4FFF] hover:text-[#B47AFF] transition-colors">
-                          <Copy className="w-4 h-4" />
-                        </button>
-                      </span>
+                      A realistic email lands in the inbox — urgent tone, a
+                      link, and small changes that feel off.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
                   <div className="bg-[#9D5AFF]/10 p-1.5 rounded-full mt-0.5">
-                    <Mail
+                    <Send
                       className="w-4 h-4 text-[#9D5AFF]"
                       strokeWidth={2.5}
                     />
                   </div>
                   <div>
                     <p className="text-[#D9C7FF]">
-                      <span className="font-medium text-white">
-                        Facture en PDF/photo
-                      </span>{" "}
-                      <span className="text-[#8A4FFF]">ou</span> texte simple
+                      Your team sees it like any normal day — and learns to spot
+                      fraud early.
                     </p>
                     <div className="mt-1 text-sm text-[#A794D4]">
-                      Nous analysons automatiquement le contenu
+                      No new tools to learn.
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Exemple visuel */}
+            {/* Visual example */}
             <div className="w-full md:w-1/2 relative">
               <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
                 <div className="font-mono text-sm text-[#D9C7FF] space-y-3">
@@ -119,46 +112,46 @@ export default function Features() {
                     <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
                     <div className="w-3 h-3 rounded-full bg-[#27C93F]"></div>
                   </div>
-                  <div className="text-[#8A4FFF]">// Exemple d'email</div>
+                  <div className="text-[#8A4FFF]">// Sample email</div>
                   <div className="mt-3">
-                    <span className="text-[#8A4FFF]">Sujet:</span> Facture à
-                    relancer #123
+                    <span className="text-[#8A4FFF]">From:</span> “Billing – ABC
+                    Inc.” &lt;billing@abc-inc-payments.com&gt;
                   </div>
                   <div>
-                    <span className="text-[#8A4FFF]">Client:</span> Jean
-                    Tremblay
+                    <span className="text-[#8A4FFF]">Subject:</span> URGENT:
+                    Payment issue
                   </div>
-                  <div>
-                    <span className="text-[#8A4FFF]">Montant:</span> 250$
+                  <div className="break-words">
+                    <span className="text-[#8A4FFF]">Link:</span>{" "}
+                    http://abc-inc.payments-update-secure.co/verify
                   </div>
-                  <div>
-                    <span className="text-[#8A4FFF]">Échéance:</span> 15 juillet
+                  <div className="text-[#A794D4]">
+                    Red flags: new domain, rushed deadline, new bank details.
                   </div>
-                  <div className="text-[#8A4FFF]">// PDF joint</div>
                 </div>
                 <div className="absolute bottom-4 right-4 flex items-center gap-1 text-xs text-[#8A4FFF]">
                   <ChevronRight className="w-4 h-4" />
-                  <span>Exemple réel</span>
+                  <span>Realistic example</span>
                 </div>
               </div>
 
-              {/* Point de timeline */}
+              {/* Timeline dot */}
               <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
               </div>
             </div>
           </div>
 
-          {/* Étape 2 - Relances */}
+          {/* Step 2 */}
           <div className="flex flex-col md:flex-row-reverse items-stretch gap-8 mb-24 group">
-            {/* Carte principale */}
+            {/* Card */}
             <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
               <div className="flex items-center gap-4 mb-6">
                 <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
                   2
                 </div>
                 <h3 className="text-2xl font-semibold text-white">
-                  On s'occupe de tout
+                  Pause and check
                 </h3>
               </div>
 
@@ -172,13 +165,11 @@ export default function Features() {
                   </div>
                   <div>
                     <p className="text-[#D9C7FF]">
-                      <span className="font-medium text-white">
-                        Relances automatiques
-                      </span>{" "}
-                      <span className="text-[#8A4FFF]">tous les 3 jours</span>
+                      Hover links, read the address, compare payment details.
+                      Slow beats sorry.
                     </p>
                     <div className="mt-1 text-sm text-[#A794D4]">
-                      Adaptées à chaque client
+                      Habits built in seconds.
                     </div>
                   </div>
                 </div>
@@ -201,86 +192,55 @@ export default function Features() {
                   </div>
                   <div>
                     <p className="text-[#D9C7FF]">
-                      Vous êtes en{" "}
-                      <span className="text-[#8A4FFF]">copie invisible</span>{" "}
-                      (BCC)
+                      You stay in control — we only coach the reflex.
                     </p>
                     <div className="mt-1 text-sm text-[#A794D4]">
-                      Pour votre information seulement
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-[#B47AFF]/10 p-1.5 rounded-full mt-0.5">
-                    <svg
-                      className="w-4 h-4 text-[#B47AFF]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      ></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-[#D9C7FF]">
-                      Signature{" "}
-                      <span className="text-[#8A4FFF]">en votre nom</span>
-                    </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
-                      Comme si vous l'aviez envoyé vous-même
+                      No blame, just better clicks.
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Exemple visuel */}
+            {/* Visual example */}
             <div className="w-full md:w-1/2 relative">
               <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
                 <div className="text-[#D9C7FF] text-sm space-y-4">
                   <div className="text-[#8A4FFF] font-medium">
-                    Email envoyé à votre client :
+                    Quick check list:
                   </div>
-                  <div className="italic">"Bonjour Jean,</div>
-                  <div className="italic">
-                    Petit rappel concernant votre facture #123 d'un montant de{" "}
-                    <span className="text-white">250$</span> qui était due le{" "}
-                    <span className="text-white">15 juillet</span>...
-                  </div>
-                  <div className="text-[#8A4FFF]">— [Votre entreprise]</div>
+                  <ul className="list-disc list-inside text-[#D9C7FF] space-y-1">
+                    <li>Sender address matches the company?</li>
+                    <li>Link preview shows the right domain?</li>
+                    <li>Any sudden “new bank details”?</li>
+                  </ul>
                   <div className="pt-4 border-t border-[#3A2E5D]/50 text-xs text-[#8A4FFF]/70">
-                    Relance envoyée automatiquement • Jour 3
+                    10 seconds to avoid a costly mistake
                   </div>
                 </div>
                 <div className="absolute bottom-4 right-4 flex items-center gap-1 text-xs text-[#8A4FFF]">
                   <ChevronRight className="w-4 h-4" />
-                  <span>Modèle réel</span>
+                  <span>Practical tips</span>
                 </div>
               </div>
 
-              {/* Point de timeline */}
+              {/* Timeline dot */}
               <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
               </div>
             </div>
           </div>
 
-          {/* Étape 3 - Confirmation */}
+          {/* Step 3 */}
           <div className="flex flex-col md:flex-row items-stretch gap-8 group">
-            {/* Carte principale */}
+            {/* Card */}
             <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
               <div className="flex items-center gap-4 mb-6">
                 <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
                   3
                 </div>
                 <h3 className="text-2xl font-semibold text-white">
-                  Dites-nous quand c'est payé
+                  Gentle feedback
                 </h3>
               </div>
 
@@ -294,11 +254,8 @@ export default function Features() {
                   </div>
                   <div>
                     <p className="text-[#D9C7FF]">
-                      Répondez{" "}
-                      <span className="font-mono bg-[#1E1B2B] px-3 py-1 rounded-lg text-[#B47AFF] border border-[#3A2E5D]">
-                        "Payé"
-                      </span>{" "}
-                      à notre email
+                      If someone clicks, a short lesson explains each red flag —
+                      no shame, just clarity.
                     </p>
                   </div>
                 </div>
@@ -321,70 +278,47 @@ export default function Features() {
                   </div>
                   <div>
                     <p className="text-[#D9C7FF]">
-                      Ou cliquez sur{" "}
-                      <span className="text-[#8A4FFF]">lien spécial</span> dans
-                      l'email
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-[#B47AFF]/10 p-1.5 rounded-full mt-0.5">
-                    <svg
-                      className="w-4 h-4 text-[#B47AFF]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      ></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-[#D9C7FF]">
-                      Arrêt <span className="text-[#8A4FFF]">immédiat</span> des
-                      relances
+                      Habits improve every week — calm, confident, natural.
                     </p>
                     <div className="mt-1 text-sm text-[#A794D4]">
-                      Plus de relances indésirables
+                      Peace of mind for everyone.
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Exemple visuel */}
+            {/* Visual example */}
             <div className="w-full md:w-1/2 relative">
               <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
                 <div className="text-[#D9C7FF] text-sm space-y-4">
                   <div className="text-[#8A4FFF] font-medium">
-                    Exemple de confirmation :
+                    Example feedback:
                   </div>
                   <div className="font-mono bg-[#1E1B2B] px-3 py-2 rounded-lg border border-[#3A2E5D] inline-block">
-                    Payé #123
+                    “The sender domain doesn’t match. The link points elsewhere.
+                    Payment details changed.”
                   </div>
                   <div className="flex items-center gap-2 mt-4 text-[#27C93F]">
                     <Check className="w-5 h-5" />
-                    <span className="font-medium">Relances stoppées !</span>
+                    <span className="font-medium">
+                      Next time: pause, hover, verify.
+                    </span>
                   </div>
                   <div className="text-xs text-[#8A4FFF]/70">
-                    Confirmation envoyée en 2 secondes
+                    Tiny lessons, big protection
                   </div>
                   <div className="pt-4 border-t border-[#3A2E5D]/50 text-xs text-[#A794D4]">
-                    Vous recevrez un rapport final sous 24h
+                    Weekly summary shows progress (no blame).
                   </div>
                 </div>
                 <div className="absolute bottom-4 right-4 flex items-center gap-1 text-xs text-[#8A4FFF]">
                   <ChevronRight className="w-4 h-4" />
-                  <span>Instantanné</span>
+                  <span>On-the-spot coaching</span>
                 </div>
               </div>
 
-              {/* Point de timeline */}
+              {/* Timeline dot */}
               <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
               </div>
@@ -392,28 +326,28 @@ export default function Features() {
           </div>
         </div>
 
-        {/* CTA final */}
+        {/* Final CTA */}
         <div className="mt-24 text-center">
           <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
-            Prêt à{" "}
-            <span className="text-[#8A4FFF]">récupérer votre argent</span> ?
+            Ready to <span className="text-[#8A4FFF]">stop fraud early</span>?
           </h3>
           <button
-            onClick={() => navigate("/Form")}
+            onClick={() => navigate("/demo-page")}
             className="group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-[#8A4FFF]/40"
           >
             <span className="relative z-10 flex items-center justify-center">
-              🚀 Relancez vos impayés
+              🎯 Try a free simulation
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </span>
             <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
           </button>
           <p className="mt-4 text-sm text-[#A794D4]">
-            Aucune carte requise • 3 premières factures offertes
+            No commitment • Friendly coaching • Results you can feel
           </p>
         </div>
       </div>
 
-      {/* Animations CSS */}
+      {/* CSS animations */}
       <style jsx>{`
         @keyframes float {
           0% {

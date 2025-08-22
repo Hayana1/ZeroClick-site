@@ -104,13 +104,13 @@ export default function ReadyToTry() {
             {/* Badge animé */}
             <div className="inline-flex items-center px-4 py-2 mb-6 rounded-full bg-gradient-to-r from-[#8A4FFF]/10 to-[#B47AFF]/10 border border-[#8A4FFF]/30 text-[#D9C7FF] text-sm font-medium animate-bounce">
               <Gift className="w-4 h-4 mr-2 text-[#B47AFF]" strokeWidth={2} />
-              ESSAI GRATUIT - 3 FACTURES OFFERTES
+              FREE TRIAL – 1 month included
             </div>
 
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
-              Prêt à{" "}
+              Ready to{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] animate-gradient">
-                transformer votre trésorerie
+                Protect your team from fraud
               </span>{" "}
               ?
             </h2>
@@ -119,10 +119,10 @@ export default function ReadyToTry() {
             <div className="mb-8">
               <div className="flex justify-between mb-2">
                 <span className="text-xs font-medium text-[#D1C4E9]">
-                  Étape {currentStep} sur 3
+                  Step {currentStep} of 3
                 </span>
                 <span className="text-xs font-medium text-[#8A4FFF]">
-                  {Math.round((currentStep / 3) * 100)}% complété
+                  {Math.round((currentStep / 3) * 100)}% complete
                 </span>
               </div>
               <div className="w-full bg-[#1E1B2B] rounded-full h-2 overflow-hidden">
@@ -151,10 +151,10 @@ export default function ReadyToTry() {
                       className="w-4 h-4 text-[#8A4FFF]"
                       strokeWidth={2.5}
                     />
-                    Votre email professionnel *
+                    Your work email *
                   </label>
                   <span className="text-xs text-[#8A4FFF] bg-[#8A4FFF]/10 px-2 py-1 rounded-full">
-                    Étape 1/3
+                    Step 1/3
                   </span>
                 </div>
                 <input
@@ -162,7 +162,7 @@ export default function ReadyToTry() {
                   type="email"
                   name="email"
                   className="w-full bg-[#1E1B2B] border border-[#3A2E5D] rounded-xl px-5 py-3.5 text-white placeholder-[#6B5B8C] focus:border-[#8A4FFF] focus:ring-2 focus:ring-[#8A4FFF]/50 transition-all shadow-inner"
-                  placeholder="votre@entreprise.com"
+                  placeholder="your@company.com"
                   required
                   onFocus={() => setCurrentStep(1)}
                 />
@@ -176,7 +176,7 @@ export default function ReadyToTry() {
                   onClick={() => setCurrentStep(2)}
                   className="w-full group bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-medium py-3.5 px-6 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg hover:shadow-[#8A4FFF]/40 flex items-center justify-center mt-2"
                 >
-                  <span>Continuer</span>
+                  <span>Continue</span>
                   <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -195,10 +195,10 @@ export default function ReadyToTry() {
                       className="w-4 h-4 text-[#8A4FFF]"
                       strokeWidth={2.5}
                     />
-                    Nombre de factures impayées par mois *
+                    Number of suspicious emails per month *
                   </label>
                   <span className="text-xs text-[#8A4FFF] bg-[#8A4FFF]/10 px-2 py-1 rounded-full">
-                    Étape 2/3
+                    Step 2/3
                   </span>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -233,14 +233,14 @@ export default function ReadyToTry() {
                     className="w-1/2 group bg-[#1E1B2B] border border-[#3A2E5D] text-[#D9C7FF] font-medium py-3.5 px-6 rounded-xl transition-all hover:border-[#8A4FFF] flex items-center justify-center"
                   >
                     <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-0.5 transition-transform" />
-                    Retour
+                    Back
                   </button>
                   <button
                     type="button"
                     onClick={() => setCurrentStep(3)}
                     className="w-1/2 group bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-medium py-3.5 px-6 rounded-xl transition-all transform hover:scale-[1.02] shadow-lg hover:shadow-[#8A4FFF]/40 flex items-center justify-center"
                   >
-                    <span>Continuer</span>
+                    <span>Continue</span>
                     <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -260,19 +260,19 @@ export default function ReadyToTry() {
                       className="w-4 h-4 text-[#8A4FFF]"
                       strokeWidth={2.5}
                     />
-                    À quel point ce problème vous stresse-t-il ? *
+                    How stressful is this problem for you? *
                   </label>
                   <span className="text-xs text-[#8A4FFF] bg-[#8A4FFF]/10 px-2 py-1 rounded-full">
-                    Étape 3/3
+                    Step 3/3
                   </span>
                 </div>
                 <div className="flex justify-between text-xs text-[#D1C4E9] mb-1">
                   <span className="flex items-center gap-1">
                     <div className="w-2 h-2 rounded-full bg-[#27C93F]"></div>
-                    Peu stressant
+                    Not stressful
                   </span>
                   <span className="flex items-center gap-1">
-                    Très stressant
+                    Very stressful
                     <div className="w-2 h-2 rounded-full bg-[#FF5F56]"></div>
                   </span>
                 </div>
@@ -306,7 +306,7 @@ export default function ReadyToTry() {
                       className="w-4 h-4 text-[#8A4FFF]"
                       strokeWidth={2.5}
                     />
-                    Dites-nous en plus (optionnel)
+                    Tell us more (optional)
                   </label>
                   <textarea
                     id="message"
@@ -329,7 +329,7 @@ export default function ReadyToTry() {
                     className="w-1/2 group bg-[#1E1B2B] border border-[#3A2E5D] text-[#D9C7FF] font-medium py-3.5 px-6 rounded-xl transition-all hover:border-[#8A4FFF] flex items-center justify-center"
                   >
                     <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-0.5 transition-transform" />
-                    Retour
+                    Return
                   </button>
                   <button
                     type="submit"
@@ -362,12 +362,12 @@ export default function ReadyToTry() {
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
-                        Envoi en cours...
+                        Sending...
                       </>
                     ) : (
                       <>
                         <Send className="w-5 h-5 mr-2 group-hover:translate-y-[-2px] transition-transform" />
-                        Envoyer la demande
+                        Submit request
                       </>
                     )}
                   </button>
@@ -382,21 +382,21 @@ export default function ReadyToTry() {
                     className="w-4 h-4 text-[#8A4FFF] mr-2"
                     strokeWidth={2}
                   />
-                  <span>Données 100% sécurisées</span>
+                  <span>100% data secured</span>
                 </div>
                 <div className="flex items-center bg-[#1E1B2B]/50 px-3 py-1.5 rounded-full">
                   <Gift
                     className="w-4 h-4 text-[#B47AFF] mr-2"
                     strokeWidth={2}
                   />
-                  <span>3 premières factures offertes</span>
+                  <span>3 free simulations included</span>
                 </div>
                 <div className="flex items-center bg-[#1E1B2B]/50 px-3 py-1.5 rounded-full">
                   <Clock
                     className="w-4 h-4 text-[#8A4FFF] mr-2"
                     strokeWidth={2}
                   />
-                  <span>Sans engagement</span>
+                  <span>No commitment</span>
                 </div>
               </div>
             </div>

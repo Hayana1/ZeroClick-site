@@ -70,7 +70,7 @@ export default function ContactForm() {
         {renderParticles()}
         {renderOrganicShape()}
 
-        {/* Bouton "Visiter notre site" */}
+        {/* "Visit our site" button */}
         <div className="absolute top-4 right-4 z-20">
           <a
             href="https://zeroclick.tech"
@@ -78,7 +78,7 @@ export default function ContactForm() {
             rel="noopener noreferrer"
             className="group flex items-center gap-2 px-4 py-2 bg-[#1E1B2B] border border-[#3A2E5D] text-[#D9C7FF] rounded-lg hover:bg-[#2A2342] hover:border-[#8A4FFF] transition-all duration-300"
           >
-            <span>Visiter notre site</span>
+            <span>Visit our site</span>
             <svg
               className="w-4 h-4 text-[#8A4FFF] group-hover:text-[#B47AFF] group-hover:translate-x-0.5 transition-transform"
               fill="none"
@@ -102,13 +102,13 @@ export default function ContactForm() {
 
           <h2 className="text-3xl md:text-4xl font-extrabold mb-6 text-white">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] animate-gradient">
-              Votre demande est envoyée !
+              Your request has been sent!
             </span>
           </h2>
 
           <p className="text-xl text-[#D9C7FF] mb-8 leading-relaxed">
-            Notre équipe va vous contacter dans les prochaines heures pour
-            finaliser votre essai gratuit.
+            Our team will contact you within the next few hours to finalize your
+            free trial.
           </p>
 
           <div className="bg-gradient-to-br from-[#1E1B2B]/80 to-[#2A2342]/80 p-6 rounded-2xl border border-[#8A4FFF]/30 mb-8 backdrop-blur-sm">
@@ -119,17 +119,17 @@ export default function ContactForm() {
               />
               <div>
                 <p className="text-lg font-medium text-white mb-2">
-                  Accélérez le processus
+                  Speed things up
                 </p>
                 <p className="text-[#D9C7FF]">
-                  Envoyez dès maintenant votre première facture à{" "}
+                  Forward a suspicious email now to{" "}
                   <span className="font-mono bg-[#1E1B2B] px-3 py-1.5 rounded-lg text-[#B47AFF] border border-[#3A2E5D] inline-flex items-center gap-2">
                     hello@zeroclick.tech
                     <button className="text-[#8A4FFF] hover:text-[#B47AFF] transition-colors">
                       <Send className="w-4 h-4" />
                     </button>
                   </span>{" "}
-                  pour un traitement prioritaire !
+                  and we’ll process it first!
                 </p>
               </div>
             </div>
@@ -137,8 +137,8 @@ export default function ContactForm() {
 
           <div className="inline-flex items-center text-sm text-[#8A4FFF] bg-[#1E1B2B]/50 px-4 py-2 rounded-full border border-[#8A4FFF]/20">
             <Clock className="w-4 h-4 mr-2" strokeWidth={2} />
-            Temps moyen de réponse:{" "}
-            <span className="font-semibold ml-1">moins de 2 heures</span>
+            Avg. response time:{" "}
+            <span className="font-semibold ml-1">under 2 hours</span>
           </div>
         </div>
       </div>
@@ -150,7 +150,7 @@ export default function ContactForm() {
       {renderParticles()}
       {renderOrganicShape()}
 
-      {/* Bouton "Visiter notre site" */}
+      {/* "Visit our site" button */}
       <div className="absolute top-4 right-4 z-20">
         <a
           href="https://zeroclick.tech"
@@ -158,7 +158,7 @@ export default function ContactForm() {
           rel="noopener noreferrer"
           className="group flex items-center gap-2 px-4 py-2 bg-[#1E1B2B] border border-[#3A2E5D] text-[#D9C7FF] rounded-lg hover:bg-[#2A2342] hover:border-[#8A4FFF] transition-all duration-300"
         >
-          <span>Visiter notre site</span>
+          <span>Visit our site</span>
           <svg
             className="w-4 h-4 text-[#8A4FFF] group-hover:text-[#B47AFF] group-hover:translate-x-0.5 transition-transform"
             fill="none"
@@ -176,22 +176,22 @@ export default function ContactForm() {
       </div>
 
       <div className="relative max-w-md w-full mx-auto px-4 z-10">
-        {/* Badge animé */}
+        {/* Animated badge */}
         <div className="inline-flex items-center px-4 py-2 mb-6 rounded-full bg-gradient-to-r from-[#8A4FFF]/10 to-[#B47AFF]/10 border border-[#8A4FFF]/30 text-[#D9C7FF] text-sm font-medium animate-bounce">
           <Gift className="w-4 h-4 mr-2 text-[#B47AFF]" strokeWidth={2} />
-          ESSAI GRATUIT - 3 FACTURES OFFERTES
+          FREE TRIAL – 3 simulations included
         </div>
 
         <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#8A4FFF]/20 shadow-2xl backdrop-blur-sm">
-          {/* Barre de progression */}
+          {/* Progress bar */}
           <div className="mb-8">
             <div className="flex justify-between text-xs text-[#D1C4E9] mb-2">
               <span className="flex items-center">
                 <span className="w-2 h-2 rounded-full bg-[#8A4FFF] mr-2"></span>
-                Étape {step} sur 4
+                Step {step} of 4
               </span>
               <span className="text-[#8A4FFF] font-medium">
-                {Math.round((step / 4) * 100)}% complété
+                {Math.round((step / 4) * 100)}% complete
               </span>
             </div>
             <div className="w-full bg-[#1E1B2B] rounded-full h-2 overflow-hidden">
@@ -203,19 +203,17 @@ export default function ContactForm() {
           </div>
 
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
-            {step === 1 && "Commencez votre essai gratuit"}
-            {step === 2 && "Dans quel secteur travaillez-vous ?"}
-            {step === 3 && "Taille de votre entreprise"}
-            {step === 4 && "Votre niveau d'intérêt"}
+            {step === 1 && "Start your free trial"}
+            {step === 2 && "Which sector do you work in?"}
+            {step === 3 && "Company size"}
+            {step === 4 && "Your level of interest"}
           </h2>
 
           <p className="text-[#D9C7FF] mb-8">
-            {step === 1 && "Entrez votre email professionnel pour démarrer"}
-            {step === 2 && "Sélectionnez votre secteur d'activité principal"}
-            {step === 3 &&
-              "Combien de personnes travaillent dans votre entreprise ?"}
-            {step === 4 &&
-              "À quel point êtes-vous intéressé par notre solution ?"}
+            {step === 1 && "Enter your work email to begin"}
+            {step === 2 && "Select your main industry"}
+            {step === 3 && "How many people work at your company?"}
+            {step === 4 && "How interested are you in this solution?"}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -229,7 +227,7 @@ export default function ContactForm() {
                     type="email"
                     name="email"
                     required
-                    placeholder="votre@entreprise.com"
+                    placeholder="your@company.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-12 pr-5 py-3.5 rounded-xl bg-[#1E1B2B] text-white border border-[#3A2E5D] focus:outline-none focus:ring-2 focus:ring-[#8A4FFF]/50 transition-all shadow-inner"
@@ -241,7 +239,7 @@ export default function ContactForm() {
                   disabled={!email}
                   className="w-full mt-4 group bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-medium py-3.5 px-6 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] hover:shadow-[#8A4FFF]/40 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
-                  <span>Continuer</span>
+                  <span>Continue</span>
                   <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
@@ -256,7 +254,7 @@ export default function ContactForm() {
                       icon: <Briefcase className="w-5 h-5" />,
                     },
                     {
-                      label: "Comptabilité",
+                      label: "Accounting",
                       icon: <BarChart2 className="w-5 h-5" />,
                     },
                     { label: "Transport", icon: <Send className="w-5 h-5" /> },
@@ -264,8 +262,11 @@ export default function ContactForm() {
                       label: "E-commerce",
                       icon: <Heart className="w-5 h-5" />,
                     },
-                    { label: "Santé", icon: <Heart className="w-5 h-5" /> },
-                    { label: "Autre", icon: <Briefcase className="w-5 h-5" /> },
+                    {
+                      label: "Healthcare",
+                      icon: <Heart className="w-5 h-5" />,
+                    },
+                    { label: "Other", icon: <Briefcase className="w-5 h-5" /> },
                   ].map((opt) => (
                     <button
                       key={opt.label}
@@ -292,7 +293,7 @@ export default function ContactForm() {
                     className="flex-1 py-3 bg-[#1E1B2B] hover:bg-[#2A2342] text-[#D9C7FF] rounded-xl transition border border-[#3A2E5D] flex items-center justify-center"
                   >
                     <ArrowLeft className="w-5 h-5 mr-2" />
-                    Retour
+                    Back
                   </button>
                 </div>
               </div>
@@ -303,9 +304,9 @@ export default function ContactForm() {
                 <div className="grid grid-cols-3 gap-3">
                   {[
                     { size: "1-5", emoji: "👨‍💼", label: "Micro" },
-                    { size: "6-10", emoji: "👨‍💼👩‍💼", label: "Petite" },
-                    { size: "11-20", emoji: "👨‍💼👩‍💼👨‍💼", label: "Moyenne" },
-                    { size: "21-50", emoji: "🏢", label: "Grande" },
+                    { size: "6-10", emoji: "👨‍💼👩‍💼", label: "Small" },
+                    { size: "11-20", emoji: "👨‍💼👩‍💼👨‍💼", label: "Medium" },
+                    { size: "21-50", emoji: "🏢", label: "Large" },
                     { size: "50+", emoji: "🏭", label: "Corporate" },
                   ].map((opt) => (
                     <button
@@ -337,7 +338,7 @@ export default function ContactForm() {
                     className="flex-1 py-3 bg-[#1E1B2B] hover:bg-[#2A2342] text-[#D9C7FF] rounded-xl transition border border-[#3A2E5D] flex items-center justify-center"
                   >
                     <ArrowLeft className="w-5 h-5 mr-2" />
-                    Retour
+                    Back
                   </button>
                   <button
                     type="button"
@@ -345,7 +346,7 @@ export default function ContactForm() {
                     disabled={!employees}
                     className="flex-1 py-3 group bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white rounded-xl transition disabled:opacity-50 flex items-center justify-center"
                   >
-                    <span>Continuer</span>
+                    <span>Continue</span>
                     <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
@@ -358,10 +359,10 @@ export default function ContactForm() {
                   <div className="flex justify-between text-sm text-[#D9C7FF] mb-3">
                     <span className="flex items-center">
                       <div className="w-2 h-2 rounded-full bg-[#27C93F] mr-2"></div>
-                      Peu intéressé
+                      Not interested
                     </span>
                     <span className="flex items-center">
-                      Très intéressé
+                      Very interested
                       <div className="w-2 h-2 rounded-full bg-[#FF5F56] ml-2"></div>
                     </span>
                   </div>
@@ -374,9 +375,9 @@ export default function ContactForm() {
                     className="w-full h-2 bg-[#3A2E5D] rounded-full appearance-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-[#8A4FFF] [&::-webkit-slider-thumb]:to-[#B47AFF]"
                   />
                   <div className="text-center mt-4 text-[#B47AFF] font-medium text-lg">
-                    {interest < 4 && "Je découvre simplement"}
-                    {interest >= 4 && interest < 7 && "Je suis intéressé"}
-                    {interest >= 7 && "Je veux commencer dès maintenant !"}
+                    {interest < 4 && "Just exploring"}
+                    {interest >= 4 && interest < 7 && "Interested"}
+                    {interest >= 7 && "I want to start now!"}
                   </div>
                 </div>
 
@@ -392,7 +393,7 @@ export default function ContactForm() {
                     className="flex-1 py-3 bg-[#1E1B2B] hover:bg-[#2A2342] text-[#D9C7FF] rounded-xl transition border border-[#3A2E5D] flex items-center justify-center"
                   >
                     <ArrowLeft className="w-5 h-5 mr-2" />
-                    Retour
+                    Back
                   </button>
                   <button
                     type="submit"
@@ -421,12 +422,12 @@ export default function ContactForm() {
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
-                        Envoi en cours...
+                        Sending...
                       </>
                     ) : (
                       <>
                         <Send className="w-5 h-5 group-hover:translate-y-[-2px] transition-transform" />
-                        Envoyer la demande
+                        Submit request
                       </>
                     )}
                   </button>
@@ -439,11 +440,11 @@ export default function ContactForm() {
         <div className="mt-8 flex flex-wrap justify-center gap-4 text-[#D9C7FF] text-sm">
           <div className="flex items-center bg-[#1E1B2B]/50 px-3 py-1.5 rounded-full">
             <Lock className="w-4 h-4 text-[#8A4FFF] mr-2" strokeWidth={2} />
-            <span>Données 100% sécurisées</span>
+            <span>100% data secured</span>
           </div>
           <div className="flex items-center bg-[#1E1B2B]/50 px-3 py-1.5 rounded-full">
             <Gift className="w-4 h-4 text-[#B47AFF] mr-2" strokeWidth={2} />
-            <span>3 factures offertes</span>
+            <span>3 free simulations</span>
           </div>
         </div>
       </div>

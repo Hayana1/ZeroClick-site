@@ -14,7 +14,7 @@ export default function Benefits() {
   const navigate = useNavigate();
   return (
     <div className="relative py-28 bg-gradient-to-b from-[#1A1428] to-[#0F0F19] overflow-hidden">
-      {/* Éléments décoratifs */}
+      {/* Decorative dots */}
       <div className="absolute inset-0 overflow-hidden opacity-10">
         {[...Array(25)].map((_, i) => (
           <div
@@ -36,19 +36,19 @@ export default function Benefits() {
       <div className="relative max-w-5xl mx-auto px-6 text-center z-10">
         <div className="inline-block bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] p-0.5 rounded-full mb-8">
           <div className="bg-[#1A1428] rounded-full px-5 py-1.5 text-[#D9C7FF] text-sm font-medium">
-            Avantages clés
+            Key benefits
           </div>
         </div>
 
         <h2 className="text-4cxl md:text-4xl font-bold mb-6 text-white">
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF]">
-            Pourquoi choisir notre solution ?
+            Why choose our training?
           </span>
         </h2>
 
         <p className="text-xl md:text-2xl text-[#D9C7FF] mb-16 max-w-3xl mx-auto leading-relaxed">
-          "Une révolution dans la gestion des impayés : transférez vos factures,
-          nous nous occupons du reste. Votre trésorerie respire enfin."
+          Real inbox practice that builds calm, confident habits. No stress, no
+          jargon — just fewer risky clicks.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -57,9 +57,9 @@ export default function Benefits() {
               icon: (
                 <Clock className="w-10 h-10 text-[#8A4FFF]" strokeWidth={1.2} />
               ),
-              title: "Gagnez 10h/mois",
-              desc: "Fini les relances manuelles chronophages",
-              highlight: "Libérez votre temps",
+              title: "Save 10+ hours/month",
+              desc: "Less incident handling and back-and-forth. More focus on real work.",
+              highlight: "Time back",
             },
             {
               icon: (
@@ -68,9 +68,9 @@ export default function Benefits() {
                   strokeWidth={1.2}
                 />
               ),
-              title: "Récupérez 97% des impayés",
-              desc: "Relances courtoises mais persistantes qui fonctionnent",
-              highlight: "Trésorerie optimisée",
+              title: "Prevent costly losses",
+              desc: "Fewer risky clicks, fewer wire changes, fewer panic moments.",
+              highlight: "Protect cash",
             },
 
             {
@@ -80,9 +80,9 @@ export default function Benefits() {
                   strokeWidth={1.2}
                 />
               ),
-              title: "Zéro outil à installer",
-              desc: "Tout se passe par email, comme vous avez l'habitude",
-              highlight: "Simplicité absolue",
+              title: "Nothing to install",
+              desc: "Training happens by email, exactly where mistakes occur.",
+              highlight: "Simple by design",
             },
           ].map((benefit, index) => (
             <div
@@ -106,14 +106,14 @@ export default function Benefits() {
           ))}
         </div>
 
-        {/* CTA final */}
+        {/* Final CTA */}
         <div className="mt-20">
           <button
             onClick={() => navigate("/Form")}
             className="group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-[0_15px_30px_rgba(138,79,255,0.4)]"
           >
             <span className="relative z-10 flex items-center justify-center">
-              🧘 Libérer ma charge mentale
+              🎯 Try a free simulation
             </span>
             <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
           </button>
@@ -121,21 +121,21 @@ export default function Benefits() {
           <div className="mt-6 flex flex-wrap justify-center gap-6 text-[#D9C7FF] text-sm">
             <div className="flex items-center">
               <div className="w-2 h-2 rounded-full bg-[#27C93F] mr-2 animate-pulse"></div>
-              <span>Aucune carte bancaire requise</span>
+              <span>No credit card required</span>
             </div>
             <div className="flex items-center">
               <div className="w-2 h-2 rounded-full bg-[#27C93F] mr-2 animate-pulse"></div>
-              <span>3 premières factures offertes</span>
+              <span>First 3 simulations free</span>
             </div>
             <div className="flex items-center">
               <div className="w-2 h-2 rounded-full bg-[#27C93F] mr-2 animate-pulse"></div>
-              <span>Installation immédiate</span>
+              <span>Instant setup</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Animation CSS */}
+      {/* CSS Animation */}
       <style jsx>{`
         @keyframes float {
           0% {

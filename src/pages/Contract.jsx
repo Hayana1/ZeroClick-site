@@ -20,27 +20,29 @@ export default function Contrat() {
   const [isTyping, setIsTyping] = useState(true);
   const [showContract, setShowContract] = useState(false);
 
-  // Texte pour l'animation de frappe
+  // Typing animation text — phishing-like client email (obvious red flags)
   const contractText = [
-    "CONTRAT DE SERVICE",
+    'From: "Jean Dupont – ABC Inc." <billing@abc-inc-payments.com>',
+    "To: Sophie Tremblay <sophie.tremblay@designstudio.com>",
+    "Subject: URGENT: Unpaid invoice – action needed",
+    "Date: Thu, Aug 7, 2025 09:14 AM",
     "",
-    "Fait à Montréal, le 7 août 2025",
+    "Hi Sophie,",
     "",
-    "Prestataire : Sophie Tremblay, designer graphique",
-    "Client : ABC Inc., représentée par Jean Dupont",
+    "We detected an issue with your last payment and your account could be paused today.",
+    "Please confirm the details within 2 hours to avoid extra fees.",
     "",
-    "Objet : Conception d’un site web de 5 pages (design + développement).",
-    "Montant : 2 500 $ CAD – 50% à la signature, 50% à la livraison.",
-    "Livraison prévue : 15 octobre 2025.",
+    "View the updated document here:",
+    "👉  http://abc-inc.payments-update-secure.co/account/verify?case=812734  ",
     "",
-    "Le transfert des droits se fait après paiement complet.",
-    "Retard de paiement >30 jours : pénalité de 2%/mois.",
-    "Résiliation possible avec 15 jours de préavis.",
-    "Ce contrat est régi par les lois du Québec.",
+    "Notes:",
+    "- We recently changed our bank account (see link for new details).",
+    "- This is handled by a new external provider.",
     "",
-    "Signatures :",
-    "____________________      ____________________",
-    "Sophie Tremblay          Jean Dupont",
+    "Best,",
+    "Jean Dupont",
+    "Finance Department, ABC Inc.",
+    "billing@abc-inc-payments.com",
   ].join("\n");
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export default function Contrat() {
 
   return (
     <section className="relative overflow-hidden px-6 py-16 md:py-24 bg-gradient-to-b from-[#0F0F19] via-[#151221] to-[#1A1428]">
-      {/* Arrière-plan cosmique */}
+      {/* Background */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
         {[...Array(20)].map((_, i) => (
           <div
@@ -80,38 +82,38 @@ export default function Contrat() {
       </div>
 
       <div className="relative max-w-6xl mx-auto">
-        {/* En-tête */}
+        {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center px-4 py-2 mb-6 rounded-full bg-[#8A4FFF]/10 border border-[#8A4FFF]/20 text-[#D9C7FF] text-sm font-medium backdrop-blur-md">
             <CheckCircle className="w-4 h-4 mr-2 text-[#B47AFF]" />
-            Conforme aux exigences juridiques du Québec
+            Training simulation — obvious fraud example
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold mb-4 text-white">
-            Contrats professionnels
+            Client email with a link
             <br />
             <span className="bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] bg-clip-text text-transparent">
-              en 30 secondes chrono
+              learn to spot the red flags in seconds
             </span>
           </h1>
 
           <p className="text-lg text-[#D9C7FF] max-w-2xl mx-auto">
-            Imposez vos conditions de paiement et protégez-vous juridiquement.
-            Sans jargon compliqué.
+            A realistic message lands in the inbox. Your team practices pausing,
+            checking, and staying safe — without stress or jargon.
           </p>
         </div>
 
-        {/* Contenu principal */}
+        {/* Main content */}
         <div className="flex flex-col lg:flex-row gap-10 items-stretch">
-          {/* Animation de contrat - Design amélioré */}
+          {/* Email animation panel */}
           <div className="w-full lg:w-7/12 flex flex-col">
             <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2D2442] rounded-2xl border border-[#3A2E5D] shadow-2xl overflow-hidden flex-1 flex flex-col">
-              {/* Barre de titre du document */}
+              {/* Document title bar */}
               <div className="bg-[#2D2442] px-6 py-3 border-b border-[#3A2E5D] flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                   <FileText className="w-5 h-5 text-[#B47AFF]" />
                   <span className="font-medium text-[#D9C7FF]">
-                    Contrat_ABC-Inc_Sophie-Tremblay.pdf
+                    Client_Email_ABC-Inc_Payment-Issue.eml
                   </span>
                 </div>
                 <div className="flex space-x-2">
@@ -121,18 +123,18 @@ export default function Contrat() {
                 </div>
               </div>
 
-              {/* Contenu du document - Design professionnel */}
+              {/* Document content */}
               <div className="p-4 font-sans text-[#D9C7FF] overflow-y-auto flex-1">
                 <div className="max-w-xl mx-auto">
                   <div className="mb-4 text-center">
                     <h2 className="text-lg font-semibold text-white mb-1 tracking-wide">
-                      CONTRAT DE SERVICES
+                      INBOX — SUSPICIOUS CLIENT MESSAGE
                     </h2>
                     <div className="w-12 h-0.5 bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] mx-auto rounded-full"></div>
                   </div>
 
                   <div className="space-y-4">
-                    {/* Contenu animé */}
+                    {/* Animated content */}
                     <div className="font-mono text-xs leading-snug whitespace-pre-wrap">
                       {typedText}
                       {isTyping && (
@@ -147,11 +149,12 @@ export default function Contrat() {
                     <div className="flex items-start">
                       <CheckCircle className="flex-shrink-0 mt-1 mr-2 w-5 h-5 text-[#B47AFF]" />
                       <div>
-                        <p className="font-semibold text-white text-sm">
-                          Contrat prêt à être signé
+                        <p className="font-semibold text.white text-sm">
+                          Red flags spotted
                         </p>
                         <p className="text-xs text-[#D9C7FF] mt-0.5">
-                          Signature électronique disponible immédiatement
+                          Mismatched sender domain, rushed deadline, new bank
+                          details, and a suspicious link.
                         </p>
                       </div>
                     </div>
@@ -162,36 +165,36 @@ export default function Contrat() {
 
             <div className="mt-4 text-sm text-[#A794D4] flex items-center justify-center">
               <div className="w-3 h-3 rounded-full bg-[#8A4FFF] mr-2 animate-pulse"></div>
-              Simulation de rédaction automatique
+              Automatic typing simulation
             </div>
           </div>
 
-          {/* Processus et CTA */}
+          {/* Process & CTA panel (text-only changes) */}
           <div className="w-full lg:w-5/12 flex flex-col">
             <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2D2442] p-8 rounded-2xl border border-[#3A2E5D] shadow-lg flex-1 flex flex-col">
               <h2 className="text-2xl font-bold text-white mb-8 flex items-center">
                 <Zap className="w-6 h-6 mr-3 text-[#8A4FFF]" />
-                Créez votre contrat en 3 étapes
+                How this simulation works (3 steps)
               </h2>
 
               <div className="space-y-8 mb-8">
                 {[
                   {
                     step: "1",
-                    title: "Décrivez votre mandat",
-                    desc: "Quel service, pour qui, et pour quel montant?",
-                    icon: <File className="w-5 h-5 text-[#8A4FFF]" />,
+                    title: "A message arrives",
+                    desc: "A realistic email lands in the inbox — urgent tone, link, small details that feel off.",
+                    icon: <Mail className="w-5 h-5 text-[#8A4FFF]" />,
                   },
                   {
                     step: "2",
-                    title: "Définissez vos conditions",
-                    desc: "Paiement à la signature, à la livraison ou échelonné. Pénalités après 30 jours de retard.",
+                    title: "Pause and check",
+                    desc: "Users practice slowing down: hover the link, read the address, look for changes in payment info.",
                     icon: <Shield className="w-5 h-5 text-[#9D5AFF]" />,
                   },
                   {
                     step: "3",
-                    title: "Envoyez et signez",
-                    desc: "Votre PDF professionnel est généré instantanément, prêt pour signature électronique.",
+                    title: "Instant feedback",
+                    desc: "If they click, a gentle lesson explains each red flag — building calm, confident reflexes.",
                     icon: <Send className="w-5 h-5 text-[#B47AFF]" />,
                   },
                 ].map((item, index) => (
