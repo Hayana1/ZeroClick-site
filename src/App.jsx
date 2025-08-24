@@ -6,7 +6,7 @@ import LandingPage from "./pages/LandingPage";
 import ContactForm from "./pages/Form";
 import Demo from "./pages/DemoLanding";
 import ZeroClickShockToCalm from "./pages/Demo";
-import PhishingPage from "./pages/Oups";
+import DemoZeroClick from "./pages/Oups";
 import BatchManagementPage from "./pages/Management";
 
 export default function App() {
@@ -17,7 +17,7 @@ export default function App() {
         <Route path="/form" element={<ContactForm />} />
         <Route path="/demo" element={<Demo />} />
         <Route path="/demo-page" element={<ZeroClickShockToCalm />} />{" "}
-        <Route path="/Oups" element={<PhishingPage />} /> {/* page tampon */}
+        <Route path="/Oups" element={<DemoZeroClick />} /> {/* page tampon */}
         <Route path="/Manage" element={<BatchManagementPage />} />
       </Routes>
     </Router>

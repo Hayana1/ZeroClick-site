@@ -14,6 +14,7 @@ app.use(express.json());
 app.use("/api/employees", require("./routes/employees"));
 app.use("/api/batches", require("./routes/batches"));
 app.use("/api/clicks", require("./routes/clicks"));
+app.use("/api/leaderboard", require("./routes/leaderboard")); // app.js
 
 // Connexion à MongoDB
 mongoose
@@ -30,6 +31,20 @@ mongoose
 // Route de test
 app.get("/api/health", (req, res) => {
   res.json({ message: "Server is running!" });
+});
+
+app.get("/api/debug/discord", async (req, res) => {
+  const { notifyDiscord } = require("./utils/discord");
+  await notifyDiscord({
+    embeds: [
+      {
+        title: "🔔 Test Discord",
+        description: "Si tu vois ceci dans ton salon, le webhook marche ✅",
+        color: 0x5da8ff,
+      },
+    ],
+  });
+  res.json({ ok: true });
 });
 
 // Démarrer le serveur
