@@ -168,12 +168,12 @@ router.get("/:token", async (req, res) => {
       // 🔔 Alerte Discord avec nom + heure
       const emp = t.employeeId || {};
       await notifyDiscord({
-        content: `✅ **Premier clic** — ${
+        content: `✅ ZeroClick — ${
           emp.name || emp.email || "Employé"
         } à ${timeStr}`,
         embeds: [
           {
-            title: "Premier clic détecté",
+            title: "Clic détecté",
             color: 0x2ecc71,
             fields: [
               { name: "Campagne", value: batch?.name || "-", inline: true },
@@ -182,7 +182,7 @@ router.get("/:token", async (req, res) => {
                 value: `${emp.name || "-"} (${emp.email || "-"})`,
                 inline: true,
               },
-              { name: "Heure (Toronto)", value: timeStr, inline: true },
+              { name: "Heure (Montreal)", value: timeStr, inline: true },
               { name: "IP", value: req.ip || "—", inline: true },
               {
                 name: "User-Agent",
