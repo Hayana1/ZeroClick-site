@@ -12,7 +12,7 @@ import Contrat from "./Contract";
 
 export default function LandingPage() {
   return (
-    <div className="bg-[rgb(33,33,33)] text-white min-h-screen font-sans">
+    <div className="bg-[rgb(33,33,33)] text-white min-h-screen font-Anton">
       <Navbar />
       <Hero />
       <Contrat />

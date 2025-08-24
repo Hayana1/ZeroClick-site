@@ -332,7 +332,7 @@ export default function Features() {
             Ready to <span className="text-[#8A4FFF]">stop fraud early</span>?
           </h3>
           <button
-            onClick={() => navigate("/demo-page")}
+            onClick={() => navigate("/Form")}
             className="group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-[#8A4FFF]/40"
           >
             <span className="relative z-10 flex items-center justify-center">
