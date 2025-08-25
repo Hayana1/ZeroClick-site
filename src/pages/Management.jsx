@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./EmailCampaignPlatform.css";
 
 // URL de base de l'API - à modifier selon votre configuration
-const API_BASE_URL = "http://localhost:7300/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:7300/api";
 
 const EmailCampaignPlatform = () => {
   // États pour la gestion des données
