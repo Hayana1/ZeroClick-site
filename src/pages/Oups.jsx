@@ -1,4 +1,4 @@
-// Oups.js
+// Oups.js (version améliorée)
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -11,6 +11,9 @@ import {
   MousePointerClick,
   Percent,
   CalendarClock,
+  TrendingUp,
+  TrendingDown,
+  Minus,
 } from "lucide-react";
 
 const API_BASE_URL =
@@ -63,7 +66,7 @@ function classNames(...a) {
 
 export default function Oups() {
   /** Hero CTA */
-  const ctaFull = "Félicitations pour votre vigilance !";
+  const ctaFull = "Test de cybersécurité!";
   const { text: typedCTA, done: typedDone } = useTypewriter(ctaFull, 28, 250);
 
   /** UI state */
@@ -229,12 +232,12 @@ export default function Oups() {
   /* ====================================================================== */
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-violet-50 text-slate-900">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
       {/* Trust banner */}
-      <div className="bg-gradient-to-r from-violet-600 to-indigo-600">
+      <div className="bg-gradient-to-r from-purple-900 to-indigo-900 border-b border-gray-700">
         <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-center gap-3">
-          <ShieldCheck className="h-5 w-5 text-white" />
-          <p className="text-sm text-white/90">
+          <ShieldCheck className="h-5 w-5 text-purple-300" />
+          <p className="text-sm text-purple-200">
             Formation à la lutte contre la fraude par courriel — Test de
             sécurité
           </p>
@@ -243,24 +246,22 @@ export default function Oups() {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 opacity-80 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(139,92,246,0.1),transparent)]" />
+        <div className="absolute inset-0 -z-10 opacity-20 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(139,92,246,0.3),transparent)]" />
         <div className="mx-auto max-w-7xl px-6 py-14 md:py-20 flex flex-col items-center text-center">
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="text-3xl md:text-4xl lg:text-5xl font-bold leading-snug"
+            className="text-3xl md:text-4xl lg:text-5xl font-bold leading-snug bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-indigo-300"
           >
-            <span className="block mt-1 text-slate-800">
-              Oups ! Vous avez cliqué...
-            </span>
+            <span className="block mt-1">Oups ! Vous avez cliqué...</span>
           </motion.h1>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-8 rounded-3xl overflow-hidden shadow-xl"
+            className="mt-8 rounded-3xl overflow-hidden shadow-2xl"
           >
             <img
               src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif"
@@ -271,7 +272,7 @@ export default function Oups() {
 
           <div className="mt-8 max-w-2xl">
             <div className="mt-8 flex flex-col items-center">
-              <span className="inline-flex items-center text-xl font-semibold text-violet-700">
+              <span className="inline-flex items-center text-xl font-semibold text-purple-300">
                 {typedCTA || ctaFull}
                 <span
                   className={classNames(
@@ -286,7 +287,7 @@ export default function Oups() {
               </span>
             </div>
 
-            <p className="mt-6 text-lg text-slate-700">
+            <p className="mt-6 text-lg text-gray-300">
               Ne vous inquiétez pas, il s'agit d'une simulation de formation
               pour la lutte contre la fraude par courriel.
             </p>
@@ -297,32 +298,46 @@ export default function Oups() {
       {/* KPIs */}
       <section className="mx-auto max-w-7xl px-6 -mt-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-3">
-            <Activity className="h-6 w-6 text-violet-600" />
+          <div className="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-purple-900/30">
+              <Activity className="h-5 w-5 text-purple-400" />
+            </div>
             <div>
-              <div className="text-slate-500 text-xs">Campagnes</div>
-              <div className="text-xl font-semibold">{kpis.totalCampaigns}</div>
+              <div className="text-gray-400 text-xs">Campagnes</div>
+              <div className="text-xl font-semibold text-white">
+                {kpis.totalCampaigns}
+              </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-3">
-            <Users className="h-6 w-6 text-violet-600" />
+          <div className="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-purple-900/30">
+              <Users className="h-5 w-5 text-purple-400" />
+            </div>
             <div>
-              <div className="text-slate-500 text-xs">Employés</div>
-              <div className="text-xl font-semibold">{kpis.totalEmployees}</div>
+              <div className="text-gray-400 text-xs">Employés</div>
+              <div className="text-xl font-semibold text-white">
+                {kpis.totalEmployees}
+              </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-3">
-            <MousePointerClick className="h-6 w-6 text-violet-600" />
+          <div className="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-purple-900/30">
+              <MousePointerClick className="h-5 w-5 text-purple-400" />
+            </div>
             <div>
-              <div className="text-slate-500 text-xs">Clics totaux</div>
-              <div className="text-xl font-semibold">{kpis.totalClicks}</div>
+              <div className="text-gray-400 text-xs">Clics totaux</div>
+              <div className="text-xl font-semibold text-white">
+                {kpis.totalClicks}
+              </div>
             </div>
           </div>
-          <div className="bg-white rounded-xl p-5 shadow-sm border border-slate-100 flex items-center gap-3">
-            <Percent className="h-6 w-6 text-violet-600" />
+          <div className="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-purple-900/30">
+              <Percent className="h-5 w-5 text-purple-400" />
+            </div>
             <div>
-              <div className="text-slate-500 text-xs">CTR global</div>
-              <div className="text-xl font-semibold">
+              <div className="text-gray-400 text-xs">CTR global</div>
+              <div className="text-xl font-semibold text-white">
                 {kpis.globalCTR.toFixed(1)}%
               </div>
             </div>
@@ -332,30 +347,32 @@ export default function Oups() {
 
       {/* Classement */}
       <section className="mx-auto max-w-7xl px-6 py-10">
-        <div className="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-          <div className="flex items-center justify-between gap-3 mb-6">
+        <div className="bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-gray-700">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-3">
-              <Trophy className="h-8 w-8 text-amber-500" />
-              <h2 className="text-2xl md:text-3xl font-bold text-slate-800">
+              <div className="p-2 rounded-lg bg-amber-500/10">
+                <Trophy className="h-6 w-6 text-amber-400" />
+              </div>
+              <h2 className="text-2xl md:text-3xl font-bold text-white">
                 Classement des Vigilants
               </h2>
             </div>
 
             {/* Mode switch */}
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
               <div
                 className={classNames(
-                  "inline-flex rounded-lg border border-slate-200 p-1 bg-slate-50",
+                  "inline-flex rounded-lg border border-gray-700 p-1 bg-gray-700",
                   "shadow-sm"
                 )}
               >
                 <button
                   onClick={() => setMode("total")}
                   className={classNames(
-                    "px-3 py-1.5 text-sm rounded-md",
+                    "px-3 py-1.5 text-sm rounded-md transition-colors",
                     mode === "total"
-                      ? "bg-white text-slate-900 shadow"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "bg-purple-700 text-white shadow"
+                      : "text-gray-300"
                   )}
                 >
                   Total
@@ -363,10 +380,10 @@ export default function Oups() {
                 <button
                   onClick={() => setMode("month")}
                   className={classNames(
-                    "px-3 py-1.5 text-sm rounded-md flex items-center gap-1",
+                    "px-3 py-1.5 text-sm rounded-md flex items-center gap-1 transition-colors",
                     mode === "month"
-                      ? "bg-white text-slate-900 shadow"
-                      : "text-slate-600 hover:text-slate-900"
+                      ? "bg-purple-700 text-white shadow"
+                      : "text-gray-300 "
                   )}
                 >
                   <CalendarClock className="h-4 w-4" /> Mois
@@ -375,58 +392,65 @@ export default function Oups() {
 
               {/* Sélecteur mois */}
               {mode === "month" && (
-                <input
-                  type="month"
-                  value={monthKey}
-                  onChange={(e) => setMonthKey(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm shadow-sm"
-                />
+                <div className="relative">
+                  <CalendarClock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <input
+                    type="month"
+                    value={monthKey}
+                    onChange={(e) => setMonthKey(e.target.value)}
+                    className="bg-gray-700 border border-gray-600 rounded-lg pl-9 pr-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
+                  />
+                </div>
               )}
             </div>
           </div>
 
-          <p className="text-center text-slate-600 mb-8">
+          <p className="text-center text-gray-400 mb-8">
             {mode === "total"
-              ? "Classement global basé sur l’ensemble des campagnes."
+              ? "Classement global basé sur l'ensemble des campagnes."
               : `Classement du mois — ${monthKey}`}
           </p>
 
           {/* Loading / error */}
           {err && (
-            <div className="mb-6 text-center text-red-600 text-sm">{err}</div>
+            <div className="mb-6 text-center text-red-400 text-sm">{err}</div>
           )}
           {loading && (
-            <div className="mb-6 text-center text-slate-500 text-sm">
-              Chargement…
+            <div className="mb-6 flex justify-center">
+              <div className="animate-pulse flex space-x-2">
+                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                <div className="w-3 h-3 bg-purple-500 rounded-full animation-delay-200"></div>
+                <div className="w-3 h-3 bg-purple-500 rounded-full animation-delay-400"></div>
+              </div>
             </div>
           )}
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto rounded-lg border border-gray-700">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-violet-100">
-                  <th className="p-3 text-left font-semibold text-violet-800">
+                <tr className="bg-black">
+                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
                     Position
                   </th>
-                  <th className="p-3 text-left font-semibold text-violet-800">
+                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
                     Employé
                   </th>
-                  <th className="p-3 text-left font-semibold text-violet-800">
+                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
                     Département
                   </th>
-                  <th className="p-3 text-left font-semibold text-violet-800">
+                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
                     {mode === "total" ? "Clics (Total)" : "Clics (Mois)"}
                   </th>
-                  <th className="p-3 text-left font-semibold text-violet-800">
+                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
                     Score
                   </th>
-                  <th className="p-3 text-left font-semibold text-violet-800">
+                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
                     Progression
                   </th>
-                  <th className="p-3 text-left font-semibold text-violet-800">
+                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
                     Dernier clic
                   </th>
-                  <th className="p-3 text-left font-semibold text-violet-800">
+                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
                     Badge
                   </th>
                 </tr>
@@ -435,18 +459,18 @@ export default function Oups() {
                 {ranking.map((employee, index) => (
                   <tr
                     key={employee.email + index}
-                    className="border-b border-slate-100 hover:bg-violet-50 transition-colors"
+                    className="border-b border-gray-700  transition-colors"
                   >
-                    <td className="p-3 font-medium">
+                    <td className="p-3 font-medium text-white">
                       <div className="flex items-center">
                         {index === 0 && (
-                          <Trophy className="h-5 w-5 text-amber-500 mr-2" />
+                          <Trophy className="h-5 w-5 text-amber-400 mr-2" />
                         )}
                         {index === 1 && (
-                          <Award className="h-5 w-5 text-gray-400 mr-2" />
+                          <Award className="h-5 w-5 text-gray-300 mr-2" />
                         )}
                         {index === 2 && (
-                          <Award className="h-5 w-5 text-amber-700 mr-2" />
+                          <Award className="h-5 w-5 text-amber-600 mr-2" />
                         )}
                         {index > 2 && <span className="ml-2">{index + 1}</span>}
                       </div>
@@ -454,74 +478,90 @@ export default function Oups() {
 
                     <td className="p-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">🧑‍💼</span>
+                        <div className="w-8 h-8 rounded-full bg-purple-900/30 flex items-center justify-center">
+                          <span className="text-sm">🧑‍💼</span>
+                        </div>
                         <div>
-                          <div className="font-medium">{employee.name}</div>
+                          <div className="font-medium text-gray-100">
+                            {employee.name}
+                          </div>
+                          <div className="text-xs text-gray-400">
+                            {employee.email}
+                          </div>
                         </div>
                       </div>
                     </td>
 
-                    <td className="p-3">{employee.department}</td>
+                    <td className="p-3 text-gray-300">{employee.department}</td>
 
                     <td className="p-3">
-                      <span className="font-semibold">{employee.clicks}</span>
+                      <span className="font-semibold text-gray-100">
+                        {employee.clicks}
+                      </span>
+                      <span className="text-xs text-gray-700 ml-1">
+                        / {employee.parts}
+                      </span>
                     </td>
 
                     <td className="p-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-24 bg-slate-200 rounded-full h-2.5">
+                        <div className="w-20 bg-gray-700 rounded-full h-2">
                           <div
-                            className="bg-violet-600 h-2.5 rounded-full"
+                            className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full transition-all duration-500 ease-out"
                             style={{ width: `${employee.score}%` }}
                           />
                         </div>
-                        <span className="font-semibold">{employee.score}%</span>
+                        <span className="font-semibold text-gray-100 text-sm w-10">
+                          {employee.score}%
+                        </span>
                       </div>
                     </td>
 
                     <td className="p-3">
                       {employee.trend === "up" && (
-                        <span className="text-green-600 font-medium">
-                          ↑ En progression
+                        <span className="inline-flex items-center gap-1 text-green-400 font-medium text-sm">
+                          <TrendingUp className="h-4 w-4" /> Progression
                         </span>
                       )}
                       {employee.trend === "down" && (
-                        <span className="text-red-600 font-medium">
-                          ↓ À améliorer
+                        <span className="inline-flex items-center gap-1 text-red-400 font-medium text-sm">
+                          <TrendingDown className="h-4 w-4" /> À améliorer
                         </span>
                       )}
                       {employee.trend === "steady" && (
-                        <span className="text-blue-600 font-medium">
-                          → Stable
+                        <span className="inline-flex items-center gap-1 text-blue-400 font-medium text-sm">
+                          <Minus className="h-4 w-4" /> Stable
                         </span>
                       )}
                     </td>
 
-                    <td className="p-3">{torontoDateTime(employee.last)}</td>
+                    <td className="p-3 text-sm text-gray-400">
+                      {torontoDateTime(employee.last)}
+                    </td>
 
                     <td className="p-3">
                       {index === 0 && (
-                        <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-800 px-2 py-1 rounded-full text-sm">
-                          <Star className="h-4 w-4" /> Champion anti-fraude
+                        <span className="inline-flex items-center gap-1 bg-amber-400/10 text-amber-300 px-2.5 py-1 rounded-full text-xs border border-amber-400/20">
+                          <Star className="h-3.5 w-3.5" /> Champion
                         </span>
                       )}
                       {index === 1 && (
-                        <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-sm">
-                          <Star className="h-4 w-4" /> Expert vigilance
+                        <span className="inline-flex items-center gap-1 bg-gray-400/10 text-gray-300 px-2.5 py-1 rounded-full text-xs border border-gray-400/20">
+                          <Star className="h-3.5 w-3.5" /> Expert
                         </span>
                       )}
                       {index === 2 && (
-                        <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-1 rounded-full text-sm">
-                          <Star className="h-4 w-4" /> Apprenti sage
+                        <span className="inline-flex items-center gap-1 bg-amber-600/10 text-amber-400 px-2.5 py-1 rounded-full text-xs border border-amber-600/20">
+                          <Star className="h-3.5 w-3.5" /> Apprenti
                         </span>
                       )}
                       {index > 2 && employee.score >= 80 && (
-                        <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">
+                        <span className="inline-flex items-center gap-1 bg-green-400/10 text-green-300 px-2.5 py-1 rounded-full text-xs border border-green-400/20">
                           Bon élève
                         </span>
                       )}
                       {index > 2 && employee.score < 80 && (
-                        <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">
+                        <span className="inline-flex items-center gap-1 bg-blue-400/10 text-blue-300 px-2.5 py-1 rounded-full text-xs border border-blue-400/20">
                           En formation
                         </span>
                       )}
@@ -531,8 +571,8 @@ export default function Oups() {
 
                 {!loading && !err && ranking.length === 0 && (
                   <tr>
-                    <td colSpan={8} className="p-6 text-center text-slate-500">
-                      Aucun résultat à afficher pour l’instant.
+                    <td colSpan={8} className="p-6 text-center text-gray-500">
+                      Aucun résultat à afficher pour l'instant.
                     </td>
                   </tr>
                 )}
@@ -543,12 +583,12 @@ export default function Oups() {
       </section>
 
       {/* Footer */}
-      <footer className="mt-10 border-t border-slate-200 bg-white py-7">
+      <footer className="mt-10 border-t border-gray-800 bg-gray-900 py-7">
         <div className="mx-auto max-w-7xl px-6 text-center">
-          <p className="text-slate-600">
+          <p className="text-gray-400">
             Programme de formation à la sécurité — {new Date().getFullYear()}
           </p>
-          <p className="text-sm text-slate-500 mt-2">
+          <p className="text-sm text-gray-500 mt-2">
             Cette simulation fait partie de notre programme continu de
             sensibilisation à la sécurité informatique.
           </p>
@@ -560,6 +600,19 @@ export default function Oups() {
         @keyframes blink { 
           0%, 50% { opacity: 1; } 
           50.01%, 100% { opacity: 0; } 
+        }
+        body {
+          font-family: "Titillium Web", sans-serif;
+        }
+        
+        .animation-delay-200 {
+          animation-delay: 0.2s;
+        }
+        .animation-delay-400 {
+          animation-delay: 0.4s;
+        }
+        .bg-gray-750 {
+          background-color: #2d3748;
         }
       `}</style>
     </div>
