@@ -13,7 +13,8 @@ import {
   CalendarClock,
 } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:7300/api";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:7300/api";
 
 /* ------------------------ Typewriter (inchangé) ------------------------ */
 function useTypewriter(fullText, speed = 35, startDelay = 200) {
