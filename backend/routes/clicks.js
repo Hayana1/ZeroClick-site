@@ -6,6 +6,8 @@ const Batch = require("../models/Batch");
 const Employee = require("../models/Employee");
 const Target = require("../models/Target");
 const { notifyDiscord } = require("../utils/discord");
+const DEFAULT_TRAINING_URL =
+  process.env.TRAINING_URL_DEFAULT || "http://localhost:5173/oups";
 
 // Tracker un clic "pixel"
 router.get("/track", async (req, res) => {
@@ -197,11 +199,11 @@ router.get("/:token", async (req, res) => {
     }
 
     // Redirection vers la page de formation
-    const trainingUrl = "http://localhost:5173/oups";
+    const trainingUrl = batch?.trainingUrl || DEFAULT_TRAINING_URL;
     return res.redirect(302, trainingUrl);
   } catch (err) {
     console.error("Token click error:", err);
-    return res.redirect(302, "/training");
+    return res.redirect(302, DEFAULT_TRAINING_URL);
   }
 });
 
