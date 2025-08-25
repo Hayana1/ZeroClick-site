@@ -9,7 +9,13 @@ const Target = require("../models/Target");
 // (optionnel si tu veux aussi purger les logs de clic détaillés à la suppression)
 // const Click = require("../models/Click");
 
-const baseUrlFromReq = (req) => `${req.protocol}://${req.get("host")}`;
+// Base publique pour fabriquer les trackingUrl (privilégie la variable d'env)
+const publicBaseUrl = (req) => {
+  if (process.env.PUBLIC_API_URL) return process.env.PUBLIC_API_URL; // ex: https://zeroclick-site.onrender.com
+  const proto = req.get("x-forwarded-proto") || "https"; // fallback HTTPS
+  return `${proto}://${req.get("host")}`;
+};
+
 const newToken = () => crypto.randomBytes(16).toString("base64url");
 
 /**
@@ -19,6 +25,7 @@ const newToken = () => crypto.randomBytes(16).toString("base64url");
 router.get("/", async (req, res) => {
   try {
     const batches = await Batch.find().sort({ dateCreated: -1 });
+
     const withStats = await Promise.all(
       batches.map(async (b) => {
         const totalTargets = await Target.countDocuments({ batchId: b._id });
@@ -34,6 +41,7 @@ router.get("/", async (req, res) => {
         };
       })
     );
+
     res.json(withStats);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -67,7 +75,7 @@ router.post("/", async (req, res) => {
       scheduledDate,
       employees: employeeIds,
       totalEmployees: employees.length,
-      ...(trainingUrl ? { trainingUrl } : {}), // si tu as ajouté le champ dans le modèle
+      ...(trainingUrl ? { trainingUrl } : {}), // si le champ existe dans ton modèle
     });
 
     // Générer un target par employé (+ token)
@@ -81,10 +89,11 @@ router.post("/", async (req, res) => {
       )
     );
 
+    const base = publicBaseUrl(req);
     const links = targets.map((t) => ({
       employeeId: t.employeeId,
       token: t.token,
-      trackingUrl: `${baseUrlFromReq(req)}/api/clicks/${t.token}`,
+      trackingUrl: `${base}/api/clicks/${t.token}`,
     }));
 
     res.status(201).json({
@@ -116,10 +125,11 @@ router.get("/:id", async (req, res) => {
       "name email department"
     );
 
+    const base = publicBaseUrl(req);
     const links = targets.map((t) => ({
       employee: t.employeeId,
       token: t.token,
-      trackingUrl: `${baseUrlFromReq(req)}/api/clicks/${t.token}`,
+      trackingUrl: `${base}/api/clicks/${t.token}`,
       clickedAt: t.clickedAt,
       clickCount: t.clickCount,
     }));

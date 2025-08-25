@@ -24,6 +24,8 @@ app.use(
 );
 app.use(express.json());
 
+app.set("trust proxy", 1);
+
 /* --------- DB CONNECT AVANT LES ROUTES --------- */
 async function start() {
   try {
