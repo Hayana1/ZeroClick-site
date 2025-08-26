@@ -264,7 +264,7 @@ export default function Oups() {
             className="mt-8 rounded-3xl overflow-hidden shadow-2xl"
           >
             <img
-              src="https://tenor.com/fr-CA/view/king-boo-super-mario-luigi's-mansion-crestamorph-hades-gif-5598433893705970277"
+              src="https://c.tenor.com/TbGh9uzZ8mUAAAAd/tenor.gif"
               alt="GIF humoristique sur la cybersécurité"
               className="w-full max-w-md mx-auto rounded-2xl"
             />
