@@ -292,6 +292,26 @@ export default function Oups() {
               pour la lutte contre la fraude par courriel.
             </p>
           </div>
+          {/* Indicateur de scroll */}
+          <div className="flex justify-center mt-6 animate-bounce">
+            <span className="text-gray-400 text-sm flex items-center gap-2">
+              Faites défiler pour voir le classement
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-purple-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </span>
+          </div>
         </div>
       </section>
 
