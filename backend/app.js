@@ -1,6 +1,5 @@
-// app.js
+// app.js (CommonJS)
 require("dotenv").config();
-
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -15,60 +14,48 @@ const MONGODB_URI =
 const MONGODB_DB = process.env.MONGODB_DB || "email-campaigns";
 
 /* --------- MIDDLEWARE --------- */
-// Autorise ton front (local ou déployé)
 app.use(
   cors({
     origin: [FRONTEND_URL],
-    methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // ← add PUT
   })
 );
 app.use(express.json());
-
 app.set("trust proxy", 1);
 
-/* --------- DB CONNECT AVANT LES ROUTES --------- */
+/* --------- DB + ROUTES --------- */
 async function start() {
   try {
-    await mongoose.connect(MONGODB_URI, {
-      dbName: MONGODB_DB, // ✅ force la db si non précisée dans l'URI
-      // (Mongoose 6+ n'a plus besoin de useNewUrlParser/useUnifiedTopology)
-    });
+    await mongoose.connect(MONGODB_URI, { dbName: MONGODB_DB });
     console.log(
       `✅ MongoDB Connected: ${mongoose.connection.host}/${mongoose.connection.name}`
     );
 
-    /* --------- ROUTES --------- */
+    // --- ROUTES ---
+    // Tenants CRUD
+    app.use("/api/tenants", require("./routes/tenants"));
+
+    // Tenants-scopées (employés et campagnes)
+    app.use("/api/tenants", require("./routes/tenants.employees"));
+    app.use("/api/tenants", require("./routes/tenants.batches"));
+
+    // Global (non-scopées)
     app.use("/api/employees", require("./routes/employees"));
     app.use("/api/batches", require("./routes/batches"));
     app.use("/api/clicks", require("./routes/clicks"));
-    app.use("/api/leaderboard", require("./routes/leaderboard"));
 
-    // Health check
-    app.get("/api/health", (req, res) => {
-      res.json({ message: "Server is running!" });
-    });
+    // ✅ Tracking misc (mark-copied, etc.)
+    app.use("/api/tracking", require("./routes/tracking.misc"));
 
-    // Ping Discord pour debug
-    app.get("/api/debug/discord", async (req, res) => {
-      const { notifyDiscord } = require("./utils/discord");
-      await notifyDiscord({
-        embeds: [
-          {
-            title: "🔔 Test Discord",
-            description: "Si tu vois ceci dans ton salon, le webhook marche ✅",
-            color: 0x5da8ff,
-          },
-        ],
-      });
-      res.json({ ok: true });
-    });
+    // ❌ REMOVE this wrong mount (it caused your 404):
+    // app.use("/api/tracking", require("./routes/tenants.employees"));
 
-    // Page racine (utile pour Render)
-    app.get("/", (req, res) => res.send("ZeroClick API live"));
+    // Health
+    app.get("/api/health", (_req, res) => res.json({ ok: true }));
+    app.get("/", (_req, res) => res.send("ZeroClick API live"));
 
-    /* --------- START SERVER --------- */
-    app.listen(PORT, () => {
-      console.log(`🚀 Server is running on port ${PORT}`);
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   } catch (err) {
     console.error("❌ Could not connect to MongoDB", err.message);

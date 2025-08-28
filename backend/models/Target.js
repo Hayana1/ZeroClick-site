@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const targetSchema = new mongoose.Schema(
+const TargetSchema = new mongoose.Schema(
   {
     batchId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,24 +14,24 @@ const targetSchema = new mongoose.Schema(
       index: true,
       required: true,
     },
+    token: { type: String, unique: true, index: true, required: true },
 
-    token: { type: String, required: true, unique: true }, // lien public
+    // suivi envoi manuel
+    markedSent: { type: Boolean, default: false },
+    sentAt: { type: Date },
 
-    // “une seule fois”
-    clickedAt: { type: Date, default: null },
+    // tracking clics
     clickCount: { type: Number, default: 0 },
+    lastClickedAt: { type: Date },
+    lastSuspiciousAt: { type: Date },
+    lastUserAgent: { type: String },
+    lastIp: { type: String },
+    copiedAt: Date,
 
-    // audit léger
-    firstClickIp: String,
-    firstClickUA: String,
-
-    // (optionnel) expiration
-    expiresAt: Date,
+    linkCopiedAt: { type: Date, default: null },
+    linkCopiedCount: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
 
-// Un seul target par employé dans un batch
-targetSchema.index({ batchId: 1, employeeId: 1 }, { unique: true });
-
-module.exports = mongoose.model("Target", targetSchema);
+module.exports = mongoose.model("Target", TargetSchema);

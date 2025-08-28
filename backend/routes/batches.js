@@ -1,42 +1,44 @@
-// routes/batches.js
 const express = require("express");
+const crypto = require("crypto");
 const router = express.Router();
 
-const crypto = require("crypto");
 const Batch = require("../models/Batch");
 const Employee = require("../models/Employee");
 const Target = require("../models/Target");
-// (optionnel si tu veux aussi purger les logs de clic détaillés à la suppression)
-// const Click = require("../models/Click");
 
-// Base publique pour fabriquer les trackingUrl (privilégie la variable d'env)
+const newToken = () => crypto.randomBytes(16).toString("base64url");
 const publicBaseUrl = (req) => {
-  if (process.env.PUBLIC_API_URL) return process.env.PUBLIC_API_URL; // ex: https://zeroclick-site.onrender.com
-  const proto = req.get("x-forwarded-proto") || "https"; // fallback HTTPS
+  if (process.env.PUBLIC_API_URL) return process.env.PUBLIC_API_URL;
+  const proto = req.get("x-forwarded-proto") || req.protocol || "http";
   return `${proto}://${req.get("host")}`;
 };
 
-const newToken = () => crypto.randomBytes(16).toString("base64url");
-
-/**
- * GET /api/batches
- * Liste des batches avec stats live (totalEmployees, sentCount, clickCount)
- */
+// GET /api/batches?tid=TENANT_ID
 router.get("/", async (req, res) => {
   try {
-    const batches = await Batch.find().sort({ dateCreated: -1 });
+    const { tid } = req.query;
+    if (!tid)
+      return res.status(400).json({ message: "Missing tid (tenant id)" });
+
+    const batches = await Batch.find({ tenantId: tid }).sort({
+      dateCreated: -1,
+    });
 
     const withStats = await Promise.all(
       batches.map(async (b) => {
-        const totalTargets = await Target.countDocuments({ batchId: b._id });
+        const totalTargets = await Target.countDocuments({
+          tenantId: tid,
+          batchId: b._id,
+        });
         const clicked = await Target.countDocuments({
+          tenantId: tid,
           batchId: b._id,
           clickedAt: { $ne: null },
         });
         return {
           ...b.toObject(),
           totalEmployees: totalTargets,
-          sentCount: totalTargets, // “créé = prêt à envoyer”
+          sentCount: totalTargets,
           clickCount: clicked,
         };
       })
@@ -48,40 +50,43 @@ router.get("/", async (req, res) => {
   }
 });
 
-/**
- * POST /api/batches
- * Crée un batch + génère les tokens (1 Target par employé)
- * body: { name, description?, scheduledDate?, employeeIds: [], trainingUrl? }
- */
+// POST /api/batches  { tenantId, name, employeeIds[], windowStart?, windowEnd?, trainingUrl? }
 router.post("/", async (req, res) => {
-  const {
-    name,
-    description,
-    scheduledDate,
-    employeeIds = [],
-    trainingUrl,
-  } = req.body;
-
-  if (!name || !employeeIds.length) {
-    return res.status(400).json({ message: "name et employeeIds sont requis" });
-  }
-
   try {
-    const employees = await Employee.find({ _id: { $in: employeeIds } });
+    const {
+      tenantId,
+      name,
+      employeeIds = [],
+      windowStart,
+      windowEnd,
+      trainingUrl,
+      description,
+    } = req.body || {};
+    if (!tenantId || !name || !employeeIds.length) {
+      return res
+        .status(400)
+        .json({ message: "tenantId, name et employeeIds requis" });
+    }
 
+    const employees = await Employee.find({
+      tenantId,
+      _id: { $in: employeeIds },
+    });
     const batch = await Batch.create({
+      tenantId,
       name,
       description,
-      scheduledDate,
-      employees: employeeIds,
-      totalEmployees: employees.length,
-      ...(trainingUrl ? { trainingUrl } : {}), // si le champ existe dans ton modèle
+      windowStart,
+      windowEnd,
+      trainingUrl,
+      employees: employees.map((e) => e._id),
     });
 
-    // Générer un target par employé (+ token)
-    const targets = await Promise.all(
+    // Génère un target par employé
+    await Promise.all(
       employees.map((e) =>
         Target.create({
+          tenantId,
           batchId: batch._id,
           employeeId: e._id,
           token: newToken(),
@@ -89,11 +94,18 @@ router.post("/", async (req, res) => {
       )
     );
 
+    // Stats + liens
     const base = publicBaseUrl(req);
+    const targets = await Target.find({
+      tenantId,
+      batchId: batch._id,
+    }).populate("employeeId", "name email department");
     const links = targets.map((t) => ({
-      employeeId: t.employeeId,
+      employee: t.employeeId,
       token: t.token,
       trackingUrl: `${base}/api/clicks/${t.token}`,
+      clickedAt: t.clickedAt,
+      clickCount: t.clickCount,
     }));
 
     res.status(201).json({
@@ -108,24 +120,21 @@ router.post("/", async (req, res) => {
   }
 });
 
-/**
- * GET /api/batches/:id
- * Détails d’un batch, avec liens par employé et stats exactes
- */
+// GET /api/batches/:id  (détail + liens)
 router.get("/:id", async (req, res) => {
   try {
-    const batch = await Batch.findById(req.params.id).populate(
+    const b = await Batch.findById(req.params.id).populate(
       "employees",
       "name email department"
     );
-    if (!batch) return res.status(404).json({ message: "Batch not found" });
+    if (!b) return res.status(404).json({ message: "Batch not found" });
 
-    const targets = await Target.find({ batchId: batch._id }).populate(
+    const targets = await Target.find({ batchId: b._id }).populate(
       "employeeId",
       "name email department"
     );
-
     const base = publicBaseUrl(req);
+
     const links = targets.map((t) => ({
       employee: t.employeeId,
       token: t.token,
@@ -137,7 +146,7 @@ router.get("/:id", async (req, res) => {
     const clickCount = targets.filter((t) => !!t.clickedAt).length;
 
     res.json({
-      ...batch.toObject(),
+      ...b.toObject(),
       totalEmployees: targets.length,
       sentCount: targets.length,
       clickCount,
@@ -148,105 +157,13 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-/**
- * PATCH /api/batches/:id
- * Met à jour le batch (name/description/status/scheduledDate/trainingUrl/employeeIds)
- * Si employeeIds change: upsert les nouveaux Targets (avec token), supprime ceux retirés
- */
-router.patch("/:id", async (req, res) => {
-  try {
-    const batch = await Batch.findById(req.params.id);
-    if (!batch) return res.status(404).json({ message: "Batch not found" });
-
-    const {
-      name,
-      description,
-      status,
-      scheduledDate,
-      trainingUrl,
-      employeeIds, // optionnel
-    } = req.body;
-
-    if (name != null) batch.name = name;
-    if (description != null) batch.description = description;
-    if (status != null) batch.status = status;
-    if (scheduledDate != null) batch.scheduledDate = scheduledDate;
-    if (trainingUrl != null) batch.trainingUrl = trainingUrl;
-
-    // Gestion des employés (et des Targets) si la liste a été fournie
-    if (Array.isArray(employeeIds)) {
-      const currentIds = new Set(
-        (batch.employees || []).map((id) => id.toString())
-      );
-      const nextIds = new Set(employeeIds.map((id) => id.toString()));
-
-      // à ajouter = présents dans next mais pas dans current
-      const toAdd = [...nextIds].filter((id) => !currentIds.has(id));
-      // à retirer = présents dans current mais pas dans next
-      const toRemove = [...currentIds].filter((id) => !nextIds.has(id));
-
-      // Upsert targets pour les nouveaux employés
-      if (toAdd.length) {
-        const addEmployees = await Employee.find({ _id: { $in: toAdd } });
-        await Promise.all(
-          addEmployees.map((e) =>
-            Target.updateOne(
-              { batchId: batch._id, employeeId: e._id },
-              { $setOnInsert: { token: newToken() } },
-              { upsert: true }
-            )
-          )
-        );
-      }
-
-      // Supprimer les targets des employés retirés
-      if (toRemove.length) {
-        await Target.deleteMany({
-          batchId: batch._id,
-          employeeId: { $in: toRemove },
-        });
-        // (optionnel) supprimer aussi les Clicks associés si tu conserves ce modèle
-        // await Click.deleteMany({ batchId: batch._id, employeeId: { $in: toRemove } });
-      }
-
-      batch.employees = employeeIds;
-      batch.totalEmployees = await Target.countDocuments({
-        batchId: batch._id,
-      });
-    }
-
-    const updated = await batch.save();
-
-    // Recalcul rapide des stats
-    const clicked = await Target.countDocuments({
-      batchId: batch._id,
-      clickedAt: { $ne: null },
-    });
-
-    res.json({
-      ...updated.toObject(),
-      sentCount: batch.totalEmployees,
-      clickCount: clicked,
-    });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-/**
- * DELETE /api/batches/:id
- * Supprime le batch + ses Targets (+ éventuellement ses Clicks)
- */
+// DELETE /api/batches/:id
 router.delete("/:id", async (req, res) => {
   try {
-    const batch = await Batch.findById(req.params.id);
-    if (!batch) return res.status(404).json({ message: "Batch not found" });
-
-    await Target.deleteMany({ batchId: batch._id });
-    // (optionnel)
-    // await Click.deleteMany({ batchId: batch._id });
-
-    await Batch.deleteOne({ _id: batch._id });
+    const b = await Batch.findById(req.params.id);
+    if (!b) return res.status(404).json({ message: "Batch not found" });
+    await Target.deleteMany({ batchId: b._id });
+    await Batch.deleteOne({ _id: b._id });
     res.json({ message: "Batch deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });

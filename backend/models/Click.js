@@ -1,37 +1,53 @@
+// backend/models/Click.js
 const mongoose = require("mongoose");
 
-const clickSchema = new mongoose.Schema({
-  batchId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Batch",
-    required: true,
-  },
-  employeeId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Employee",
-    required: true,
-  },
-  clickTime: {
-    type: Date,
-    default: Date.now,
-  },
-  ipAddress: {
-    type: String,
-  },
-  userAgent: {
-    type: String,
-  },
-  linkUrl: {
-    type: String,
-    required: true,
-  },
-  uniqueClick: {
-    type: Boolean,
-    default: true,
-  },
-});
+const ClickSchema = new mongoose.Schema(
+  {
+    tenantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tenant",
+      index: true,
+      required: true,
+    },
+    batchId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Batch",
+      index: true,
+      required: true,
+    },
+    employeeId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Employee",
+      index: true,
+      required: true,
+    },
+    targetId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Target",
+      index: true,
+      required: true,
+    },
+    token: { type: String, index: true, required: true },
 
-// Index pour éviter les doublons (un employé ne peut cliquer qu'une fois sur le même lien)
-clickSchema.index({ batchId: 1, employeeId: 1, linkUrl: 1 }, { unique: true });
+    // event
+    ts: { type: Date, default: Date.now, index: true },
+    ipHash: { type: String, index: true },
+    httpMethod: String,
+    ua: String,
+    referer: String,
 
-module.exports = mongoose.model("Click", clickSchema);
+    // anti-bot
+    botScore: { type: Number, default: 0 },
+    isBot: { type: Boolean, default: false },
+
+    // headers utiles (optionnel)
+    meta: mongoose.Schema.Types.Mixed,
+  },
+  { minimize: true }
+);
+
+ClickSchema.index({ batchId: 1, employeeId: 1, ts: -1 });
+ClickSchema.index({ ipHash: 1, ts: -1 });
+ClickSchema.index({ token: 1, ts: -1 });
+
+module.exports = mongoose.model("Click", ClickSchema);

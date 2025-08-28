@@ -2,77 +2,55 @@ const express = require("express");
 const router = express.Router();
 const Employee = require("../models/Employee");
 
-// Récupérer tous les employés
+// GET /api/employees?tid=TENANT_ID  (filtre OBLIGATOIRE)
 router.get("/", async (req, res) => {
   try {
-    const employees = await Employee.find().sort({ name: 1 });
+    const { tid } = req.query;
+    if (!tid)
+      return res.status(400).json({ message: "Missing tid (tenant id)" });
+
+    const employees = await Employee.find({ tenantId: tid }).sort({
+      department: 1,
+      name: 1,
+    }); // ✅ tri stable
+
     res.json(employees);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Créer un nouvel employé
+// POST /api/employees  { tenantId, name, email, department? }
 router.post("/", async (req, res) => {
-  const { name, email, department } = req.body;
-
   try {
-    // Vérifier si l'employé existe déjà
-    const existingEmployee = await Employee.findOne({ email });
-    if (existingEmployee) {
-      return res.status(400).json({ message: "Employee already exists" });
+    const { tenantId, name, email, department } = req.body || {};
+    if (!tenantId || !name || !email) {
+      return res
+        .status(400)
+        .json({ message: "tenantId, name et email sont requis" });
     }
+    const existing = await Employee.findOne({ tenantId, email });
+    if (existing)
+      return res.status(400).json({ message: "Employee already exists" });
 
-    const employee = new Employee({
+    const created = await Employee.create({
+      tenantId,
       name,
       email,
       department,
     });
-
-    const newEmployee = await employee.save();
-    res.status(201).json(newEmployee);
+    res.status(201).json(created);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// Mettre à jour un employé
-router.patch("/:id", async (req, res) => {
-  try {
-    const employee = await Employee.findById(req.params.id);
-
-    if (!employee) {
-      return res.status(404).json({ message: "Employee not found" });
-    }
-
-    if (req.body.name != null) {
-      employee.name = req.body.name;
-    }
-
-    if (req.body.department != null) {
-      employee.department = req.body.department;
-    }
-
-    if (req.body.isActive != null) {
-      employee.isActive = req.body.isActive;
-    }
-
-    const updatedEmployee = await employee.save();
-    res.json(updatedEmployee);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Supprimer un employé
+// DELETE /api/employees/:id
 router.delete("/:id", async (req, res) => {
   try {
     const employee = await Employee.findById(req.params.id);
-
-    if (!employee) {
+    if (!employee)
       return res.status(404).json({ message: "Employee not found" });
-    }
-
     await Employee.deleteOne({ _id: req.params.id });
     res.json({ message: "Employee deleted" });
   } catch (err) {
