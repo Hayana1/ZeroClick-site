@@ -6,6 +6,7 @@ import EmployeesPage from "./pages/Employees/EmployeesPage";
 import CampaignsPage from "./pages/Campaigns/CampaignsPage";
 import DirectoryPage from "./pages/Directory/DirectoryPage"; // ⬅️ nouveau
 import TenantPicker from "./components/TenantPicker";
+import ResultsPage from "./pages/Results/ResultsPage";
 
 export default function AppRouter() {
   return (
@@ -21,6 +22,10 @@ export default function AppRouter() {
             <Link to="/ZeroApp/campaigns" className="hover:underline">
               Campagnes
             </Link>
+
+            <Link to="/ZeroApp/results" className="hover:underline">
+              Resultats
+            </Link>
           </nav>
           <TenantPicker />
         </div>
@@ -33,6 +38,7 @@ export default function AppRouter() {
           <Route path="tenants" element={<TenantsPage />} />
           <Route path="employees" element={<EmployeesPage />} />
           <Route path="campaigns" element={<CampaignsPage />} />
+          <Route path="results" element={<ResultsPage />} />
           <Route
             path="*"
             element={<Navigate to="/ZeroApp/directory" replace />}

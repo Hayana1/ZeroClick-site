@@ -18,6 +18,12 @@ export const api = {
     req(`/tenants`, { method: "POST", body: JSON.stringify(body) }),
   deleteTenant: (tid) => req(`/tenants/${tid}`, { method: "DELETE" }),
 
+  bulkDeleteBatches: (tenantId, ids) =>
+    req(`/tenants/${tenantId}/batches:delete`, {
+      method: "POST",
+      body: JSON.stringify({ ids }),
+    }),
+
   // Employees (scopé par tenant)
   listEmployees: (tid) => req(`/tenants/${tid}/employees`),
   createEmployee: (tid, body) =>
@@ -45,12 +51,23 @@ export const api = {
       method: "PATCH",
       body: JSON.stringify({ employeeId, sent }),
     }),
-
   putSelections: (tid, bid, selections) =>
     req(`/tenants/${tid}/batches/${bid}/selections`, {
       method: "PUT",
       body: JSON.stringify({ selections }),
     }),
+
+  // Tracking links (toujours via API_BASE_URL)
+  getTrackingLinks: (tenantId, batchId) =>
+    req(`/tenants/${tenantId}/batches/${batchId}/tracking-links`),
+
+  markLinkCopied: (token) =>
+    req(`/tracking/mark-copied`, {
+      method: "POST",
+      body: JSON.stringify({ token }),
+    }),
+
+  getTargets: (tid, bid) => req(`/tenants/${tid}/batches/${bid}/targets`),
 
   // Thèmes (persistés dans Batch.themesByGroup)
   patchTheme: (tid, bid, groupName, value) =>
@@ -64,5 +81,12 @@ export const api = {
       body: JSON.stringify({ themes }),
     }),
 
+  resultsOverview: (tid) => req(`/tenants/${tid}/results/overview`),
+  // Détails d’un batch (groupé par département + employés cliquants)
+  resultsForBatch: (tid, bid) => req(`/tenants/${tid}/batches/${bid}/results`),
+
+  getResultsSummary: (tid) => req(`/tenants/${tid}/results`),
+
+  // Construit l’URL de clic à partir du backend
   trackingFromToken: (token) => `${API_BASE_URL}/clicks/${token}`,
 };

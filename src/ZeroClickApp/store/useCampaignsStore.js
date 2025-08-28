@@ -9,16 +9,21 @@ export const useCampaignsStore = create((set, get) => ({
   error: null,
 
   // Maps en mémoire (par campagne)
-  sentMap: {}, // { [campaignId]: { [employeeId]: boolean } }
-  themesByGroup: {}, // { [campaignId]: { [groupName]: string } }
+  // sentMap: { [campaignId]: { [employeeId]: boolean } }
+  // themesByGroup: { [campaignId]: { [groupName]: string } }
+  // copiedMap: { [campaignId]: { [employeeId]: true } }
+  // trackingLinks: { [campaignId]: { [employeeId]: "https://..." } }
+  sentMap: {},
+  themesByGroup: {},
+  copiedMap: {},
+  trackingLinks: {},
 
-  /* -------- LIST + HYDRATE (selections + themes) -------- */
+  /* ===================== LOAD LIST ===================== */
   fetch: async (tenantId) => {
     set({ loading: true, error: null });
     try {
       const rows = await api.listBatches(tenantId);
 
-      // hydrate depuis les champs renvoyés par /batches
       const sent = {};
       const themes = {};
       for (const c of rows) {
@@ -41,12 +46,12 @@ export const useCampaignsStore = create((set, get) => ({
     }
   },
 
-  /* -------- SET ACTIVE + HYDRATE SI MANQUANT -------- */
+  /* ===================== SET ACTIVE ===================== */
   setActive: async (tenantId, campaignId) => {
     set({ activeId: campaignId });
-    const { sentMap, themesByGroup } = get();
+    const { sentMap, themesByGroup, copiedMap, trackingLinks } = get();
 
-    // hydrate la sélection si absente
+    // hydrate selections si manquant
     if (!sentMap[campaignId]) {
       try {
         const map = await api.getSelectionMap(tenantId, campaignId);
@@ -56,19 +61,24 @@ export const useCampaignsStore = create((set, get) => ({
       }
     }
 
-    // (facultatif) si tu avais une route GET /themes, tu pourrais hydrater ici.
-    // Mais comme /batches renvoie déjà themesByGroup, on n’a rien à faire
+    // garantir l'existence des maps dérivées
     if (!themesByGroup[campaignId]) {
-      set({ themesByGroup: { ...get().themesByGroup, [campaignId]: {} } });
+      set({ themesByGroup: { ...themesByGroup, [campaignId]: {} } });
+    }
+    if (!copiedMap[campaignId]) {
+      set({ copiedMap: { ...copiedMap, [campaignId]: {} } });
+    }
+    if (!trackingLinks[campaignId]) {
+      set({ trackingLinks: { ...trackingLinks, [campaignId]: {} } });
     }
   },
 
-  /* -------- TOGGLE SENT (optimistic) + persist -------- */
+  /* ===================== TOGGLE SENT ===================== */
   toggleSent: async (tenantId, campaignId, employeeId) => {
     const prev = get().sentMap[campaignId] || {};
     const nextVal = !prev[employeeId];
 
-    // optimistic UI
+    // optimistic
     set({
       sentMap: {
         ...get().sentMap,
@@ -87,14 +97,14 @@ export const useCampaignsStore = create((set, get) => ({
     }
   },
 
-  /* -------- THEME PAR GROUPE (optimistic) + persist -------- */
+  /* ===================== THEME BY GROUP ===================== */
   setThemeForGroup: async (tenantId, campaignId, groupName, value) => {
     const prevAll = get().themesByGroup;
     const prev = prevAll[campaignId] || {};
     const nextForCampaign = { ...prev, [groupName]: value };
     const nextAll = { ...prevAll, [campaignId]: nextForCampaign };
 
-    // optimistic UI
+    // optimistic
     set({ themesByGroup: nextAll });
 
     try {
@@ -109,7 +119,34 @@ export const useCampaignsStore = create((set, get) => ({
     }
   },
 
-  /* -------- CREATE / DELETE -------- */
+  /* ===================== MARK LINK COPIED ===================== */
+  markLinkCopied: async (campaignId, employeeId, token) => {
+    const all = get().copiedMap || {};
+    const perCampaign = all[campaignId] || {};
+
+    // optimistic
+    set({
+      copiedMap: {
+        ...all,
+        [campaignId]: { ...perCampaign, [employeeId]: true },
+      },
+    });
+
+    try {
+      // Si ton API attend { token }, adapte ici :
+      await api.markLinkCopied(token);
+    } catch (e) {
+      // rollback optionnel
+      const current = { ...(get().copiedMap[campaignId] || {}) };
+      delete current[employeeId];
+      set({
+        copiedMap: { ...get().copiedMap, [campaignId]: current },
+        error: e.message || "Erreur marquage lien copié",
+      });
+    }
+  },
+
+  /* ===================== CREATE / DELETE ===================== */
   addCampaign: async (tenantId, payload) => {
     const created = await api.createBatch(tenantId, payload);
 
@@ -121,11 +158,38 @@ export const useCampaignsStore = create((set, get) => ({
         ...get().themesByGroup,
         [created._id]: created.themesByGroup || {},
       },
+      // init pour éviter undefined
+      copiedMap: { ...get().copiedMap, [created._id]: {} },
+      trackingLinks: { ...get().trackingLinks, [created._id]: {} },
     });
 
     return created;
   },
 
+  removeCampaign: async (id) => {
+    await api.deleteBatch(id);
+    const rest = get().campaigns.filter((c) => c._id !== id);
+
+    const sent = { ...get().sentMap };
+    const themes = { ...get().themesByGroup };
+    const copied = { ...get().copiedMap };
+    const links = { ...get().trackingLinks };
+    delete sent[id];
+    delete themes[id];
+    delete copied[id];
+    delete links[id];
+
+    set({
+      campaigns: rest,
+      activeId: rest[0]?._id || null,
+      sentMap: sent,
+      themesByGroup: themes,
+      copiedMap: copied,
+      trackingLinks: links,
+    });
+  },
+
+  /* ===================== BULK GROUP SENT ===================== */
   bulkSetGroupSent: async (tenantId, campaignId, employeeIds, value) => {
     const all = get().sentMap;
     const prev = all[campaignId] || {};
@@ -136,7 +200,8 @@ export const useCampaignsStore = create((set, get) => ({
     set({ sentMap: { ...all, [campaignId]: next } });
 
     try {
-      await api.putSelections(tenantId, campaignId, next); // <- ENVOIE LA MAP FUSIONNÉE
+      // ENVOIE LA MAP FUSIONNÉE pour cette campagne
+      await api.putSelections(tenantId, campaignId, next);
     } catch (e) {
       // rollback
       set({
@@ -146,20 +211,27 @@ export const useCampaignsStore = create((set, get) => ({
     }
   },
 
-  removeCampaign: async (id) => {
-    await api.deleteBatch(id);
-    const rest = get().campaigns.filter((c) => c._id !== id);
-
-    const sent = { ...get().sentMap };
-    const themes = { ...get().themesByGroup };
-    delete sent[id];
-    delete themes[id];
-
-    set({
-      campaigns: rest,
-      activeId: rest[0]?._id || null,
-      sentMap: sent,
-      themesByGroup: themes,
-    });
+  /* ===================== TRACKING LINKS ===================== */
+  fetchTrackingLinks: async (tenantId, campaignId) => {
+    try {
+      const rows = await api.getTargets(tenantId, campaignId); // [{ employeeId, url }]
+      const map = {};
+      for (const t of rows || []) map[t.employeeId] = t.url;
+      set({
+        trackingLinks: {
+          ...get().trackingLinks,
+          [campaignId]: map,
+        },
+      });
+    } catch (e) {
+      set({ error: e.message || "Erreur chargement liens de tracking" });
+      // garantir au moins une map vide pour éviter undefined dans le composant
+      set({
+        trackingLinks: {
+          ...get().trackingLinks,
+          [campaignId]: get().trackingLinks[campaignId] || {},
+        },
+      });
+    }
   },
 }));
