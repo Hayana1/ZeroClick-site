@@ -28,6 +28,7 @@ router.get("/:tenantId/batches", async (req, res) => {
       ...b,
       selections: Object.fromEntries(Object.entries(b.selections || {})),
       themesByGroup: Object.fromEntries(Object.entries(b.themesByGroup || {})),
+      groupConfigs: Object.fromEntries(Object.entries(b.groupConfigs || {})),
     }));
 
     res.json(mapped);
@@ -75,6 +76,7 @@ router.post("/:tenantId/batches", async (req, res) => {
       totalEmployees: employees.length,
       selections: {}, // Map vide (coté mongoose)
       themesByGroup: {}, // Map vide (coté mongoose)
+      groupConfigs: {}, // Map vide (coté mongoose)
     });
 
     // Génère les cibles (token) pour le tracking
@@ -100,6 +102,7 @@ router.post("/:tenantId/batches", async (req, res) => {
       ...batch.toObject(),
       selections: {},
       themesByGroup: {},
+      groupConfigs: {},
     });
   } catch (e) {
     res.status(400).json({ error: e.message });
@@ -241,6 +244,67 @@ router.patch("/:tenantId/batches/:batchId/theme", async (req, res) => {
 });
 
 /* -------------------------------------------
+ * PATCH config de groupe (theme/scenario)
+ * PATCH /api/tenants/:tenantId/batches/:batchId/group-config
+ * body: { groupName, config: { theme?, scenarioId?, category? }, merge?: boolean }
+ * Par défaut merge=true (n’écrase pas les champs absents)
+ * ----------------------------------------- */
+router.patch("/:tenantId/batches/:batchId/group-config", async (req, res) => {
+  const { tenantId, batchId } = req.params;
+  const { groupName, config, merge = true } = req.body || {};
+  if (!groupName) return res.status(400).json({ error: "groupName requis" });
+  if (!config || typeof config !== "object") {
+    return res.status(400).json({ error: "config objet requis" });
+  }
+
+  const batch = await Batch.findOne({ _id: batchId, tenantId });
+  if (!batch) return res.status(404).json({ error: "Batch introuvable" });
+
+  const prev = (batch.groupConfigs && batch.groupConfigs.get(groupName)) || {};
+  const next = merge ? { ...prev, ...config } : config;
+  batch.groupConfigs.set(groupName, next);
+  batch.markModified("groupConfigs");
+
+  // Compatibilité ascendante: si un theme est fourni, alimente aussi themesByGroup
+  if (Object.prototype.hasOwnProperty.call(config, "theme")) {
+    batch.themesByGroup.set(groupName, config.theme || "");
+    batch.markModified("themesByGroup");
+  }
+
+  await batch.save();
+
+  // Si un scenarioId est fourni, propager aux Targets du groupe (département)
+  if (config && config.scenarioId) {
+    try {
+      const employees = await Employee.find(
+        { tenantId, department: groupName },
+        { _id: 1 }
+      ).lean();
+      const empIds = employees.map((e) => e._id);
+      if (empIds.length) {
+        await Target.updateMany(
+          { batchId, tenantId, employeeId: { $in: empIds } },
+          { $set: { scenarioId: config.scenarioId } }
+        );
+      }
+    } catch (e) {
+      console.warn("Propagation scenarioId -> Targets échouée:", e.message);
+    }
+  }
+
+  const outConfigs = {};
+  for (const [k, v] of (batch.groupConfigs || new Map()).entries()) {
+    outConfigs[k] = v;
+  }
+  const outThemes = {};
+  for (const [k, v] of (batch.themesByGroup || new Map()).entries()) {
+    outThemes[k] = v;
+  }
+
+  res.json({ ok: true, groupConfigs: outConfigs, themesByGroup: outThemes });
+});
+
+/* -------------------------------------------
  * (Optionnel) PUT tous les thèmes d'un coup
  * PUT /api/tenants/:tenantId/batches/:batchId/themes
  * body: { themes: { "RH": "Bulletin de paie", ... } }
@@ -280,11 +344,12 @@ router.get("/:tenantId/batches/:batchId/targets", async (req, res) => {
     { employeeId: 1, token: 1 }
   ).lean();
   const BASE = process.env.PUBLIC_TRACK_BASE_URL || "http://localhost:7300/api";
+  const ROOT = BASE.replace(/\/?api$/, "");
   res.json(
     targets.map((t) => ({
       employeeId: t.employeeId.toString(),
       token: t.token,
-      url: `${BASE}/clicks/${t.token}`,
+      url: `${ROOT}/t/${t.token}`,
     }))
   );
 });

@@ -36,6 +36,12 @@ const TargetSchema = new mongoose.Schema(
 
     linkCopiedAt: { type: Date, default: null },
     linkCopiedCount: { type: Number, default: 0 },
+
+    // Formation associée (MVP Training)
+    scenarioId: { type: String, default: null },
+    trainingCompletedAt: { type: Date, default: null },
+    quizScore: { type: Number, default: null },
+    xpEarned: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

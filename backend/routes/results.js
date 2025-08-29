@@ -135,13 +135,30 @@ router.get("/tenants/:tenantId/batches/:batchId/results", async (req, res) => {
   // Ordonne les départements + tri des employés par nom
   const rows = Array.from(byDept.entries())
     .sort(([a], [b]) => a.localeCompare(b))
-    .map(([department, employees]) => ({
-      department,
-      clickCount: employees.length,
-      employees: employees.sort((a, b) =>
-        (a.name || "").localeCompare(b.name || "")
-      ),
-    }));
+    .map(([department, employees]) => {
+      // Récupère theme/scenario configurés pour ce groupe (département)
+      const themesByGroup = batch.themesByGroup || {};
+      const groupConfigs = batch.groupConfigs || {};
+      const theme =
+        themesByGroup instanceof Map
+          ? themesByGroup.get(department) || ""
+          : themesByGroup[department] || "";
+      const cfg =
+        groupConfigs instanceof Map
+          ? groupConfigs.get(department) || {}
+          : groupConfigs[department] || {};
+      const scenarioId = cfg.scenarioId || null;
+      const category = cfg.category || null;
+
+      return {
+        department,
+        clickCount: employees.length,
+        config: { theme, scenarioId, category },
+        employees: employees.sort((a, b) =>
+          (a.name || "").localeCompare(b.name || "")
+        ),
+      };
+    });
 
   const totalEmployees =
     batch.totalEmployees ??

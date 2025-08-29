@@ -2,267 +2,32 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useTenantStore } from "../../store/useTenantStore";
 import { useEmployeesStore } from "../../store/useEmployeesStore";
 import { useCampaignsStore } from "../../store/useCampaignsStore";
-import TenantPicker from "../../components/TenantPicker";
 import {
-  FiSend,
-  FiCpu,
   FiPlus,
   FiTrash2,
-  FiFilter,
-  FiSearch,
   FiCheck,
   FiX,
   FiUsers,
   FiMail,
   FiChevronDown,
   FiChevronUp,
-  FiBarChart2,
   FiSave,
   FiCopy,
   FiCheckCircle,
-  FiClock,
-  FiEye,
-  FiEyeOff,
   FiLink,
 } from "react-icons/fi";
-
-// Composant pour l'indicateur de statut
-const StatusIndicator = ({ status }) => {
-  const statusConfig = {
-    saving: { color: "text-blue-500", text: "En cours..." },
-    saved: { color: "text-green-500", text: "Sauvegardé" },
-    error: { color: "text-red-500", text: "Erreur" },
-    idle: { color: "text-gray-400", text: "Non sauvegardé" },
-  };
-
-  const config = statusConfig[status] || statusConfig.idle;
-
-  return (
-    <div className={`flex items-center text-xs ${config.color} mt-1`}>
-      {status === "saving" && <FiClock className="mr-1" size={12} />}
-      {status === "saved" && <FiCheckCircle className="mr-1" size={12} />}
-      {status === "error" && <FiX className="mr-1" size={12} />}
-      {config.text}
-    </div>
-  );
-};
-
-// Composant pour la barre de progression
-const ProgressBar = ({ progress, size = "md" }) => {
-  const height = size === "sm" ? "h-1.5" : "h-2";
-
-  return (
-    <div className="w-full bg-gray-200 rounded-full">
-      <div
-        className={`bg-blue-600 rounded-full ${height} transition-all duration-300`}
-        style={{ width: `${progress}%` }}
-      />
-    </div>
-  );
-};
-
-// Composant pour les boutons d'action de groupe
-const GroupActions = ({
-  onSelectAll,
-  onDeselectAll,
-  onPreview,
-  isPreviewing,
-}) => {
-  return (
-    <div className="flex items-center gap-2">
-      <button
-        onClick={onSelectAll}
-        className="text-xs bg-green-50 text-green-700 border border-green-200 px-2 py-1 rounded-lg hover:bg-green-100 transition-colors flex items-center"
-        title="Tout sélectionner"
-      >
-        <FiCheck size={12} className="mr-1" />
-        Tout
-      </button>
-      <button
-        onClick={onDeselectAll}
-        className="text-xs bg-red-50 text-red-700 border border-red-200 px-2 py-1 rounded-lg hover:bg-red-100 transition-colors flex items-center"
-        title="Tout désélectionner"
-      >
-        <FiX size={12} className="mr-1" />
-        Aucun
-      </button>
-      <button
-        onClick={onPreview}
-        className={`text-xs border px-2 py-1 rounded-lg transition-colors flex items-center ${
-          isPreviewing
-            ? "bg-purple-100 text-purple-700 border-purple-300"
-            : "bg-gray-100 text-gray-700 border-gray-300 hover:bg-gray-200"
-        }`}
-        title="Aperçu des liens"
-      >
-        {isPreviewing ? <FiEyeOff size={12} /> : <FiEye size={12} />}
-        <span className="ml-1">Liens</span>
-      </button>
-    </div>
-  );
-};
-
-// Composant pour les stats de campagne
-const CampaignStats = ({ campaign, isActive, onClick }) => {
-  return (
-    <div
-      onClick={onClick}
-      className={`w-full p-4 rounded-xl border-2 cursor-pointer transition-all ${
-        isActive
-          ? "border-blue-500 bg-blue-50 shadow-md"
-          : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
-      }`}
-    >
-      <div className="font-medium text-gray-900 truncate">{campaign.name}</div>
-      <div className="text-xs text-gray-500 mt-1">
-        {new Date(campaign.dateCreated).toLocaleDateString("fr-FR")}
-      </div>
-
-      <div className="mt-3">
-        <div className="flex justify-between text-xs text-gray-600 mb-1">
-          <span>Progression</span>
-          <span>{campaign.progress}%</span>
-        </div>
-        <ProgressBar progress={campaign.progress} />
-      </div>
-
-      <div className="flex justify-between mt-3 text-xs">
-        <div className="flex items-center text-green-600">
-          <FiSend size={12} className="mr-1" />
-          <span>{campaign.sentCount ?? 0} envoyés</span>
-        </div>
-        <div className="flex items-center text-blue-600">
-          <FiCpu size={12} className="mr-1" />
-          <span>{campaign.clickCount ?? 0} clics</span>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Composants UI helpers
-const Toolbar = ({ dept, setDept, q, setQ, activeCampaign, departments }) => {
-  return (
-    <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="flex-1 min-w-[200px]">
-          <TenantPicker />
-        </div>
-
-        <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
-          <FiFilter size={16} className="text-gray-500" />
-          <select
-            className="bg-transparent border-none text-sm focus:outline-none"
-            value={dept}
-            onChange={(e) => setDept(e.target.value)}
-          >
-            {departments.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="relative flex-1 min-w-[240px]">
-          <FiSearch
-            size={18}
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-          />
-          <input
-            className="w-full border border-gray-200 rounded-lg pl-10 pr-4 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-            placeholder="Rechercher un employé..."
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-        </div>
-
-        {activeCampaign && (
-          <div className="ml-auto bg-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
-            <FiBarChart2 size={14} className="mr-1" />
-            <span className="font-medium">{activeCampaign.name}</span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const EmptyStateNoCampaign = () => {
-  return (
-    <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-      <FiMail size={48} className="mx-auto text-gray-300 mb-4" />
-      <h3 className="text-lg font-medium text-gray-700 mb-2">
-        Aucune campagne sélectionnée
-      </h3>
-      <p className="text-gray-500">
-        Sélectionnez ou créez une campagne pour commencer.
-      </p>
-    </div>
-  );
-};
-
-const EmptyStateNoEmployees = () => {
-  return (
-    <div className="bg-white rounded-xl shadow-sm p-8 text-center">
-      <FiUsers size={48} className="mx-auto text-gray-300 mb-4" />
-      <h3 className="text-lg font-medium text-gray-700 mb-2">
-        Aucun employé trouvé
-      </h3>
-      <p className="text-gray-500">
-        Ajustez vos filtres pour afficher les employés.
-      </p>
-    </div>
-  );
-};
-
-const Modal = ({ children, onClose }) => {
-  return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-md overflow-hidden relative">
-        <button
-          className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
-          onClick={onClose}
-          aria-label="Fermer"
-        >
-          <FiX size={18} />
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-};
-
-const BlockingSpinner = ({ text }) => {
-  return (
-    <div className="fixed inset-0 bg-black/10 flex items-center justify-center z-40">
-      <div className="bg-white rounded-lg shadow-md px-6 py-4 flex items-center gap-3">
-        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600" />
-        <span>{text}</span>
-      </div>
-    </div>
-  );
-};
-
-const ToastError = ({ messageTitle, messageBody, onClose }) => {
-  return (
-    <div className="fixed bottom-4 right-4 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-md flex items-start gap-3 max-w-md z-30">
-      <div className="mt-0.5">
-        <FiX size={18} className="text-red-500" />
-      </div>
-      <div>
-        <p className="font-medium">{messageTitle}</p>
-        <p className="text-sm">{messageBody}</p>
-      </div>
-      <button
-        onClick={onClose}
-        className="ml-4 text-red-500 hover:text-red-700"
-      >
-        <FiX size={18} />
-      </button>
-    </div>
-  );
-};
+import Toolbar from "./components/Toolbar";
+import StatusIndicator from "./components/StatusIndicator";
+import GroupActions from "./components/GroupActions";
+import CampaignStats from "./components/CampaignStats";
+import ProgressBar from "./components/ProgressBar";
+import ScenarioDropdown from "./components/ScenarioDropdown";
+import EmptyStateNoCampaign from "./components/EmptyStateNoCampaign";
+import EmptyStateNoEmployees from "./components/EmptyStateNoEmployees";
+import Modal from "./components/Modal";
+import BlockingSpinner from "./components/BlockingSpinner";
+import ToastError from "./components/ToastError";
+import { Th, Td } from "./components/TableCells";
 
 async function copyToClipboard(text) {
   try {
@@ -309,10 +74,12 @@ export default function CampaignsPage() {
     setActive,
     toggleSent,
     setThemeForGroup,
+    setScenarioForGroup,
     addCampaign,
     removeCampaign,
     sentMap = {},
     themesByGroup = {},
+    groupConfigs = {},
     bulkSetGroupSent,
     copiedMap = {},
     markLinkCopied,
@@ -331,6 +98,7 @@ export default function CampaignsPage() {
 
   // état local "edit buffer" des thèmes + statut "saving" par groupe
   const [themeDrafts, setThemeDrafts] = useState({});
+  const [scenarioDrafts, setScenarioDrafts] = useState({}); // { [groupName]: { id, category } }
   const [themeSaving, setThemeSaving] = useState({});
 
   // ✅ compute activeCampaign BEFORE any effect that uses it
@@ -372,12 +140,26 @@ export default function CampaignsPage() {
     return (themesByGroup && themesByGroup[activeCampaign._id]) || {};
   }, [themesByGroup, activeCampaign]);
 
+  // configs actuelles (scenarioId/category/theme) de la campagne
+  const campaignGroupConfigs = useMemo(() => {
+    if (!activeCampaign) return {};
+    return (groupConfigs && groupConfigs[activeCampaign._id]) || {};
+  }, [groupConfigs, activeCampaign]);
+
   // quand on change de campagne, on recharge le buffer local avec les valeurs persistées
   useEffect(() => {
     if (!activeCampaign) return;
     setThemeDrafts({ ...(campaignThemes || {}) });
+    // Init scénarios depuis les configs
+    const sc = {};
+    const cfg = campaignGroupConfigs || {};
+    for (const [g, v] of Object.entries(cfg)) {
+      if (v && (v.scenarioId || v.category))
+        sc[g] = { id: v.scenarioId || "", category: v.category || "" };
+    }
+    setScenarioDrafts(sc);
     setThemeSaving({}); // reset des états de sauvegarde
-  }, [activeCampaign, campaignThemes]);
+  }, [activeCampaign, campaignThemes, campaignGroupConfigs]);
 
   const toggleSelectBatch = (id) => {
     setSelectedBatchIds((prev) => {
@@ -478,12 +260,31 @@ export default function CampaignsPage() {
     setThemeSaving((s) => ({ ...s, [groupName]: "idle" }));
   };
 
-  const persistTheme = async (groupName) => {
+  const handleScenarioChange = (groupName, val) => {
+    setScenarioDrafts((d) => ({
+      ...d,
+      [groupName]: val || { id: "", category: "" },
+    }));
+    setThemeSaving((s) => ({ ...s, [groupName]: "idle" }));
+  };
+
+  const persistGroupConfig = async (groupName) => {
     if (!tenantId || !activeCampaign) return;
-    const value = themeDrafts[groupName] ?? "";
+    const theme = themeDrafts[groupName] ?? "";
+    const sc = scenarioDrafts[groupName] || {};
+    const payload = {
+      theme,
+      scenarioId: sc.id || undefined,
+      category: sc.category || undefined,
+    };
     try {
       setThemeSaving((s) => ({ ...s, [groupName]: "saving" }));
-      await setThemeForGroup(tenantId, activeCampaign._id, groupName, value);
+      await setScenarioForGroup(
+        tenantId,
+        activeCampaign._id,
+        groupName,
+        payload
+      );
       setThemeSaving((s) => ({ ...s, [groupName]: "saved" }));
       setTimeout(() => {
         setThemeSaving((s) =>
@@ -618,8 +419,8 @@ export default function CampaignsPage() {
                     className="p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() => toggleGroup(groupName)}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-start lg:items-center justify-between gap-3 flex-wrap">
+                      <div className="flex items-start lg:items-center gap-3 min-w-0">
                         <span
                           className={`p-2 rounded-lg ${
                             isExpanded
@@ -633,7 +434,7 @@ export default function CampaignsPage() {
                             <FiChevronDown size={18} />
                           )}
                         </span>
-                        <div>
+                        <div className="min-w-0">
                           <h3 className="font-medium text-gray-900">
                             {groupName}
                           </h3>
@@ -654,27 +455,38 @@ export default function CampaignsPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3">
+                      <div
+                        className="flex items-start lg:items-center gap-3 flex-wrap justify-end max-w-full"
+                        onClick={(e) => e.stopPropagation()}
+                      >
                         {/* Champ de thème avec indicateur de statut */}
-                        <div className="flex flex-col items-end">
-                          <div className="flex items-center gap-2">
+                        <div className="flex flex-col items-stretch lg:items-end w-full lg:w-auto max-w-full">
+                          <div className="flex flex-wrap items-center gap-2 max-w-full">
+                            <ScenarioDropdown
+                              value={scenarioDrafts[groupName] || null}
+                              onChange={(val) =>
+                                handleScenarioChange(groupName, val)
+                              }
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 mt-2 max-w-full">
                             <input
-                              className="w-56 border border-gray-200 rounded-lg px-3 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                              placeholder="Thème de la semaine…"
+                              className="w-auto max-w-full border border-gray-200 rounded-lg px-3 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                              placeholder="Thème…"
                               value={draftValue}
                               onChange={(e) =>
                                 handleThemeChange(groupName, e.target.value)
                               }
-                              onBlur={() => persistTheme(groupName)}
+                              onBlur={() => persistGroupConfig(groupName)}
                               onClick={(e) => e.stopPropagation()}
                             />
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                persistTheme(groupName);
+                                persistGroupConfig(groupName);
                               }}
                               className="p-2 text-gray-500 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-                              title="Sauvegarder le thème"
+                              title="Sauvegarder la configuration"
                             >
                               <FiSave size={16} />
                             </button>
@@ -838,10 +650,29 @@ export default function CampaignsPage() {
                         </table>
                       </div>
 
-                      {draftValue && (
+                      {(draftValue ||
+                        scenarioDrafts[groupName]?.id ||
+                        campaignGroupConfigs[groupName]?.scenarioId) && (
                         <div className="p-3 text-sm bg-blue-50 text-blue-800 border-t">
-                          <span className="font-medium">Thème appliqué :</span>{" "}
-                          {draftValue}
+                          {draftValue && (
+                            <>
+                              <span className="font-medium">
+                                Thème appliqué :
+                              </span>{" "}
+                              {draftValue}
+                            </>
+                          )}
+                          {(scenarioDrafts[groupName]?.id ||
+                            campaignGroupConfigs[groupName]?.scenarioId) && (
+                            <>
+                              {draftValue ? " · " : ""}
+                              <span className="font-medium">
+                                Scénario :
+                              </span>{" "}
+                              {scenarioDrafts[groupName]?.id ||
+                                campaignGroupConfigs[groupName]?.scenarioId}
+                            </>
+                          )}
                         </div>
                       )}
                     </>
@@ -942,14 +773,4 @@ export default function CampaignsPage() {
   );
 }
 
-function Th({ children }) {
-  return (
-    <th className="text-left font-medium px-4 py-3 text-gray-700 whitespace-nowrap">
-      {children}
-    </th>
-  );
-}
-
-function Td({ children, className = "" }) {
-  return <td className={`px-4 py-3 align-middle ${className}`}>{children}</td>;
-}
+// Th/Td déplacés dans ./components/TableCells

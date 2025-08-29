@@ -81,6 +81,13 @@ export const api = {
       body: JSON.stringify({ themes }),
     }),
 
+  // Config de groupe (theme/scenario)
+  patchGroupConfig: (tid, bid, groupName, config, merge = true) =>
+    req(`/tenants/${tid}/batches/${bid}/group-config`, {
+      method: "PATCH",
+      body: JSON.stringify({ groupName, config, merge }),
+    }),
+
   resultsOverview: (tid) => req(`/tenants/${tid}/results/overview`),
   // Détails d’un batch (groupé par département + employés cliquants)
   resultsForBatch: (tid, bid) => req(`/tenants/${tid}/batches/${bid}/results`),
@@ -89,4 +96,11 @@ export const api = {
 
   // Construit l’URL de clic à partir du backend
   trackingFromToken: (token) => `${API_BASE_URL}/clicks/${token}`,
+
+  // Training (MVP)
+  completeTraining: ({ sendId, scenarioId, totalScore }) =>
+    req(`/training/complete`, {
+      method: "POST",
+      body: JSON.stringify({ sendId, scenarioId, totalScore }),
+    }),
 };

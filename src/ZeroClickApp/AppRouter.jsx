@@ -7,7 +7,7 @@ import CampaignsPage from "./pages/Campaigns/CampaignsPage";
 import DirectoryPage from "./pages/Directory/DirectoryPage";
 import TenantPicker from "./components/TenantPicker";
 import ResultsPage from "./pages/Results/ResultsPage";
-import Oups from "../pages/Oups";
+import TrainingOups from "./pages/Training/Oups";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -158,11 +158,8 @@ export default function AppRouter() {
           <Route path="employees" element={<EmployeesPage />} />
           <Route path="campaigns" element={<CampaignsPage />} />
           <Route path="results" element={<ResultsPage />} />
-          <Route
-            path="*"
-            element={<Navigate to="/ZeroApp/directory" replace />}
-          />
-          <Route path="/oups" element={<Oups />} />
+          <Route path="/training/:scenarioId" element={<TrainingOups />} />
+          <Route path="*" element={<Navigate to="/ZeroApp/directory" replace />} />
         </Routes>
       </main>
     </div>

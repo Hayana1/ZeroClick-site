@@ -287,9 +287,26 @@ export default function ResultsPage() {
                           <h3 className="font-medium text-gray-900 text-sm md:text-base">
                             {d.department || "—"}
                           </h3>
-                          <div className="text-xs md:text-sm text-blue-700 mt-1">
-                            <FiCpu className="inline mr-1" />
-                            {d.clickCount ?? 0} clics
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 mt-1">
+                            <div className="text-xs md:text-sm text-blue-700">
+                              <FiCpu className="inline mr-1" />
+                              {d.clickCount ?? 0} clics
+                            </div>
+                            {(d.config?.theme || d.config?.scenarioId) && (
+                              <div className="text-[11px] md:text-xs text-gray-600">
+                                {d.config?.theme && (
+                                  <>
+                                    <span className="font-medium">Thème:</span> {d.config.theme}
+                                  </>
+                                )}
+                                {d.config?.scenarioId && (
+                                  <>
+                                    {d.config?.theme ? " · " : ""}
+                                    <span className="font-medium">Scénario:</span> {d.config?.category || "—"} · {d.config.scenarioId}
+                                  </>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

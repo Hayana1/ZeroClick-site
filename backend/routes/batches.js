@@ -103,7 +103,7 @@ router.post("/", async (req, res) => {
     const links = targets.map((t) => ({
       employee: t.employeeId,
       token: t.token,
-      trackingUrl: `${base}/api/clicks/${t.token}`,
+      trackingUrl: `${base}/t/${t.token}`,
       clickedAt: t.clickedAt,
       clickCount: t.clickCount,
     }));
@@ -138,7 +138,7 @@ router.get("/:id", async (req, res) => {
     const links = targets.map((t) => ({
       employee: t.employeeId,
       token: t.token,
-      trackingUrl: `${base}/api/clicks/${t.token}`,
+      trackingUrl: `${base}/t/${t.token}`,
       clickedAt: t.clickedAt,
       clickCount: t.clickCount,
     }));

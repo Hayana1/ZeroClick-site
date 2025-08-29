@@ -15,6 +15,7 @@ export const useCampaignsStore = create((set, get) => ({
   // trackingLinks: { [campaignId]: { [employeeId]: "https://..." } }
   sentMap: {},
   themesByGroup: {},
+  groupConfigs: {},
   copiedMap: {},
   trackingLinks: {},
 
@@ -26,9 +27,11 @@ export const useCampaignsStore = create((set, get) => ({
 
       const sent = {};
       const themes = {};
+      const configs = {};
       for (const c of rows) {
         sent[c._id] = c.selections || {};
         themes[c._id] = c.themesByGroup || {};
+        configs[c._id] = c.groupConfigs || {};
       }
 
       set({
@@ -37,6 +40,7 @@ export const useCampaignsStore = create((set, get) => ({
         sentMap: sent,
         themesByGroup: themes,
         loading: false,
+        groupConfigs: configs,
       });
     } catch (e) {
       set({
@@ -49,7 +53,7 @@ export const useCampaignsStore = create((set, get) => ({
   /* ===================== SET ACTIVE ===================== */
   setActive: async (tenantId, campaignId) => {
     set({ activeId: campaignId });
-    const { sentMap, themesByGroup, copiedMap, trackingLinks } = get();
+    const { sentMap, themesByGroup, groupConfigs, copiedMap, trackingLinks } = get();
 
     // hydrate selections si manquant
     if (!sentMap[campaignId]) {
@@ -70,6 +74,9 @@ export const useCampaignsStore = create((set, get) => ({
     }
     if (!trackingLinks[campaignId]) {
       set({ trackingLinks: { ...trackingLinks, [campaignId]: {} } });
+    }
+    if (!groupConfigs[campaignId]) {
+      set({ groupConfigs: { ...groupConfigs, [campaignId]: {} } });
     }
   },
 
@@ -115,6 +122,56 @@ export const useCampaignsStore = create((set, get) => ({
         themesByGroup: prevAll,
         error: e.message || "Erreur sauvegarde thème",
       });
+      throw e;
+    }
+  },
+
+  /* ===================== GROUP CONFIG (theme/scenario) ===================== */
+  setScenarioForGroup: async (
+    tenantId,
+    campaignId,
+    groupName,
+    { theme, scenarioId, category } = {}
+  ) => {
+    const prevConfigsAll = get().groupConfigs;
+    const prevConfigs = prevConfigsAll[campaignId] || {};
+    const nextGroupCfg = {
+      ...(prevConfigs[groupName] || {}),
+      ...(theme !== undefined ? { theme } : {}),
+      ...(scenarioId !== undefined ? { scenarioId } : {}),
+      ...(category !== undefined ? { category } : {}),
+    };
+    const nextConfigsAll = {
+      ...prevConfigsAll,
+      [campaignId]: { ...prevConfigs, [groupName]: nextGroupCfg },
+    };
+
+    // garder themesByGroup à jour pour compat
+    const prevThemesAll = get().themesByGroup;
+    const prevThemes = prevThemesAll[campaignId] || {};
+    const nextThemes =
+      theme !== undefined ? { ...prevThemes, [groupName]: theme || "" } : prevThemes;
+    const nextThemesAll = { ...prevThemesAll, [campaignId]: nextThemes };
+
+    // optimistic
+    set({ groupConfigs: nextConfigsAll, themesByGroup: nextThemesAll });
+
+    try {
+      const res = await api.patchGroupConfig(
+        tenantId,
+        campaignId,
+        groupName,
+        { theme, scenarioId, category },
+        true
+      );
+      // normaliser retour
+      set({
+        groupConfigs: { ...get().groupConfigs, [campaignId]: res.groupConfigs || {} },
+        themesByGroup: { ...get().themesByGroup, [campaignId]: res.themesByGroup || {} },
+      });
+    } catch (e) {
+      // rollback
+      set({ groupConfigs: prevConfigsAll, themesByGroup: prevThemesAll, error: e.message || "Erreur sauvegarde config" });
       throw e;
     }
   },

@@ -95,6 +95,7 @@ async function start() {
     app.use("/api/clicks", require("./routes/clicks"));
     app.use("/api", require("./routes/results"));
     app.use("/api/tracking", require("./routes/tracking.misc"));
+    app.use(require("./routes/training"));
 
     // Health
     app.get("/api/health", (_req, res) => res.json({ ok: true }));

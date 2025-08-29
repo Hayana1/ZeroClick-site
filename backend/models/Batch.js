@@ -33,6 +33,13 @@ const BatchSchema = new mongoose.Schema(
       of: String,
       default: {},
     },
+    // Nouvel objet de configuration par groupe (compat thème + scenario)
+    groupConfigs: {
+      // groupName -> { theme?: string, scenarioId?: string, category?: string }
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
   },
   { timestamps: { createdAt: "dateCreated", updatedAt: "dateUpdated" } }
 );
