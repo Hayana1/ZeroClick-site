@@ -1,0 +1,239 @@
+[
+  {
+    "id": "it.microsoft365.reset.v1",
+    "name": "Microsoft 365 - Réinitialisation de mot de passe",
+    "category": "it-saas",
+    "difficulty": 3,
+    "email": {
+      "subject": "Votre mot de passe Microsoft 365 expire aujourd’hui",
+      "html": "<html><body><p>Bonjour,</p><p>Votre mot de passe Office 365 expire dans moins de 24h. Pour éviter la suspension de votre compte, réinitialisez-le immédiatement via le lien ci-dessous :</p><a href='https://secure-microsoft365.com/reset'>Réinitialiser mon mot de passe</a></body></html>"
+    },
+    "training": {
+      "id": "tb.it.microsoft365.reset.v1",
+      "title": "Vérifier les demandes de réinitialisation",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Toujours vérifier le domaine exact",
+          "content": "Les attaquants imitent microsoft.com avec des variantes (micr0soft, office365-secure…)",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Que faire si vous recevez ce type d’email ?",
+          "options": [
+            "Cliquer immédiatement",
+            "Vérifier l’URL avant toute action",
+            "Envoyer vos identifiants"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 30, "badge": "Détective Microsoft" }
+    }
+  },
+  {
+    "id": "it.docusign.signature.v1",
+    "name": "DocuSign - Document en attente",
+    "category": "it-saas",
+    "difficulty": 3,
+    "email": {
+      "subject": "Action requise : Document en attente de signature",
+      "html": "<html><body><p>Bonjour,</p><p>Un document important est en attente de votre signature via DocuSign. Cliquez ci-dessous pour y accéder :</p><a href='https://docusign-portal-secure.com/doc/123'>Accéder au document</a></body></html>"
+    },
+    "training": {
+      "id": "tb.it.docusign.signature.v1",
+      "title": "Signatures électroniques piégées",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Vérifiez toujours l’URL officielle",
+          "content": "docuSign.com et non pas docusign-portal-secure.com",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Quel réflexe adopter ?",
+          "options": [
+            "Signer directement",
+            "Valider auprès de l’expéditeur via un autre canal"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 25, "badge": "Œil juridique" }
+    }
+  },
+  {
+    "id": "it.teams.invitation.v1",
+    "name": "Teams - Nouvelle réunion",
+    "category": "it-saas",
+    "difficulty": 3,
+    "email": {
+      "subject": "Invitation à une réunion Teams",
+      "html": "<html><body><p>Bonjour,</p><p>Vous avez été ajouté à une réunion planifiée : <strong>Budget Q3 Review</strong>. Cliquez ci-dessous pour rejoindre :</p><a href='https://teams-secure.net/join/456'>Rejoindre la réunion</a></body></html>"
+    },
+    "training": {
+      "id": "tb.it.teams.invitation.v1",
+      "title": "Reconnaître les fausses invitations",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Passez toujours la souris sur le lien",
+          "content": "teams.microsoft.com ≠ teams-secure.net",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Que devez-vous vérifier ?",
+          "options": [
+            "Titre de la réunion",
+            "L’URL complète du lien",
+            "L’heure de la réunion"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 20, "badge": "Chasseur d’invitations" }
+    }
+  },
+
+  {
+    "id": "finance.wirechange.v1",
+    "name": "Changement de coordonnées bancaires fournisseur",
+    "category": "finance",
+    "difficulty": 3,
+    "email": {
+      "subject": "Mise à jour urgente de nos informations bancaires",
+      "html": "<html><body><p>Bonjour,</p><p>Merci de bien vouloir mettre à jour nos informations bancaires pour les prochains paiements :</p><p><strong>Nouvel IBAN :</strong> DE98 3704 0044 0532 0130 00</p><p>Merci de confirmer par retour de mail.</p></body></html>"
+    },
+    "training": {
+      "id": "tb.finance.wirechange.v1",
+      "title": "Fraude au virement fournisseur",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Validez toujours via un canal secondaire",
+          "content": "Un simple appel téléphonique connu suffit à déjouer l’arnaque.",
+          "points": 20
+        },
+        {
+          "type": "mcq",
+          "title": "Que faire ?",
+          "options": [
+            "Modifier directement les infos",
+            "Vérifier par téléphone",
+            "Ignorer"
+          ],
+          "correctIndex": 1,
+          "points": 25
+        }
+      ],
+      "reward": { "xp": 40, "badge": "Bouclier Finance" }
+    }
+  },
+  {
+    "id": "finance.fakeinvoice.v1",
+    "name": "Facture urgente à régler",
+    "category": "finance",
+    "difficulty": 3,
+    "email": {
+      "subject": "URGENT - Facture impayée",
+      "html": "<html><body><p>Bonjour,</p><p>Veuillez trouver ci-joint la facture #4839 à régler sous 48h pour éviter des pénalités.</p><a href='https://secure-invoice-pay.com/download'>Télécharger la facture</a></body></html>"
+    },
+    "training": {
+      "id": "tb.finance.fakeinvoice.v1",
+      "title": "Reconnaître les fausses factures",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Méfiez-vous des urgences financières",
+          "content": "La peur et l’urgence sont les armes du fraudeur.",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Premier réflexe ?",
+          "options": [
+            "Cliquer vite",
+            "Vérifier auprès du fournisseur habituel"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 35, "badge": "Chasseur de factures" }
+    }
+  },
+  {
+    "id": "finance.clientcomplaint.v1",
+    "name": "Plainte client avec pièce jointe",
+    "category": "finance",
+    "difficulty": 3,
+    "email": {
+      "subject": "Plainte urgente - Veuillez traiter immédiatement",
+      "html": "<html><body><p>Bonjour,</p><p>Un client insatisfait a envoyé une réclamation concernant votre service. Consultez la pièce jointe et répondez sous 24h.</p><a href='https://client-complaint-secure.com/file'>Voir la plainte</a></body></html>"
+    },
+    "training": {
+      "id": "tb.finance.clientcomplaint.v1",
+      "title": "Pièges liés aux clients mécontents",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Attention aux pièces jointes inattendues",
+          "content": "Un PDF piégé est une porte d’entrée fréquente.",
+          "points": 20
+        },
+        {
+          "type": "mcq",
+          "title": "Que faire ?",
+          "options": [
+            "Ouvrir directement",
+            "Confirmer via le CRM ou un contact officiel"
+          ],
+          "correctIndex": 1,
+          "points": 25
+        }
+      ],
+      "reward": { "xp": 30, "badge": "Client vigilant" }
+    }
+  },
+
+  {
+    "id": "exec.ceofraud.v1",
+    "name": "Fraude au président — Virement urgent",
+    "category": "executive",
+    "difficulty": 3,
+    "email": {
+      "subject": "Action immédiate demandée",
+      "html": "<html><body><p>Bonjour,</p><p>Je suis en réunion et ne peux pas parler. Merci de procéder d’urgence à un virement de <strong>49 800 $</strong> vers notre partenaire stratégique. Je vous enverrai les justificatifs après.</p><p><strong>Coordonnées bancaires :</strong> FR76 3000 6000 1122 3344 5566 778</p><p>Ceci est confidentiel, ne partagez pas avec l’équipe.</p><p>— Jean-Marc Legrand, PDG</p></body></html>"
+    },
+    "training": {
+      "id": "tb.exec.ceofraud.v1",
+      "title": "Reconnaître une fraude au président",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Méfiez-vous des demandes urgentes",
+          "content": "Les fraudeurs imitent la direction pour exiger un virement rapide et confidentiel.",
+          "points": 20
+        },
+        {
+          "type": "mcq",
+          "title": "Quel est le bon réflexe ?",
+          "options": [
+            "Faire le virement immédiatement",
+            "Appeler le PDG ou son assistant via un numéro connu",
+            "Répondre au courriel pour confirmer"
+          ],
+          "correctIndex": 1,
+          "points": 30
+        }
+      ],
+      "reward": { "xp": 50, "badge": "Bouclier Direction" }
+    }
+  }
+]

@@ -1,25 +1,25 @@
-// Oups.js (version améliorée)
-import React, { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
+// Oups.js (version ULTRA gamifiée, couleurs et style conservés)
+import React, { useState, useMemo, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ShieldCheck,
+  AlertTriangle,
+  Lock,
+  Eye,
+  CheckCircle,
+  XCircle,
+  ChevronDown,
   Trophy,
-  Award,
+  Target,
   Star,
-  Activity,
-  Users,
-  MousePointerClick,
-  Percent,
-  CalendarClock,
-  TrendingUp,
-  TrendingDown,
-  Minus,
+  Crown,
+  Timer,
+  Award,
+  Sparkles,
+  Rocket,
 } from "lucide-react";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:7300/api";
-
-/* ------------------------ Typewriter (inchangé) ------------------------ */
+/* ------------------------ Typewriter ------------------------ */
 function useTypewriter(fullText, speed = 35, startDelay = 200) {
   const [text, setText] = useState("");
   const [done, setDone] = useState(false);
@@ -47,192 +47,177 @@ function useTypewriter(fullText, speed = 35, startDelay = 200) {
   return { text, done };
 }
 
-/* ------------------------ Helpers ------------------------ */
-function torontoDateTime(iso) {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  return d.toLocaleString("fr-CA", {
-    timeZone: "America/Toronto",
-    dateStyle: "short",
-    timeStyle: "medium",
-  });
-}
-
 function classNames(...a) {
   return a.filter(Boolean).join(" ");
 }
 
+const PixelIcon = ({ name, size = 24, className = "" }) => (
+  <img
+    src={`/Tiles/${name}.png`}
+    alt={name}
+    width={size}
+    height={size}
+    className={`pixel ${className}`}
+    style={{ imageRendering: "pixelated" }}
+  />
+);
+
 /* ====================================================================== */
+
+// Petits utilitaires de jeu
+const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
 export default function Oups() {
   /** Hero CTA */
   const ctaFull = "Test de cybersécurité!";
   const { text: typedCTA, done: typedDone } = useTypewriter(ctaFull, 28, 250);
 
-  /** UI state */
-  const [mode, setMode] = useState("total"); // "total" | "month"
-  const [monthKey, setMonthKey] = useState(() => {
-    const d = new Date();
-    const mm = String(d.getMonth() + 1).padStart(2, "0");
-    return `${d.getFullYear()}-${mm}`; // "YYYY-MM"
-  });
+  /** Gamification State */
+  const [score, setScore] = useState(0);
+  const [level, setLevel] = useState(1);
+  const [xp, setXp] = useState(0); // 0-100
+  const [streak, setStreak] = useState(0);
+  const [timer, setTimer] = useState(45); // compte à rebours pour le quiz
+  const [expandedSection, setExpandedSection] = useState(null);
+  const [toasts, setToasts] = useState([]);
+  const [quizStep, setQuizStep] = useState(0);
+  const [answered, setAnswered] = useState(false);
+  const [showFireworks, setShowFireworks] = useState(false);
 
-  /** Data state */
-  const [allTimeRows, setAllTimeRows] = useState([]);
-  const [monthRows, setMonthRows] = useState([]);
-  const [employees, setEmployees] = useState([]);
-  const [batches, setBatches] = useState([]);
-
-  const [loading, setLoading] = useState(true);
-  const [err, setErr] = useState("");
-
-  /* ------------------------ Fetch data ------------------------ */
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        setLoading(true);
-        setErr("");
-
-        const [allTimeRes, employeesRes, batchesRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/leaderboard/all-time?limit=500`),
-          fetch(`${API_BASE_URL}/employees`),
-          fetch(`${API_BASE_URL}/batches`),
-        ]);
-        if (!allTimeRes.ok) throw new Error("Erreur API leaderboard (total)");
-        if (!employeesRes.ok) throw new Error("Erreur API employés");
-        if (!batchesRes.ok) throw new Error("Erreur API campagnes");
-
-        const [allTimeData, employeesData, batchesData] = await Promise.all([
-          allTimeRes.json(),
-          employeesRes.json(),
-          batchesRes.json(),
-        ]);
-        if (!cancelled) {
-          setAllTimeRows(Array.isArray(allTimeData) ? allTimeData : []);
-          setEmployees(Array.isArray(employeesData) ? employeesData : []);
-          setBatches(Array.isArray(batchesData) ? batchesData : []);
-        }
-      } catch (e) {
-        if (!cancelled) setErr(e?.message || String(e));
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  /** Fetch month ranking when monthKey or mode changes to "month" */
-  useEffect(() => {
-    if (mode !== "month") return;
-    let cancelled = false;
-    (async () => {
-      try {
-        setLoading(true);
-        setErr("");
-        const [Y, M] = monthKey.split("-").map(Number);
-        const res = await fetch(
-          `${API_BASE_URL}/leaderboard/month?year=${Y}&month=${M}&limit=500`
-        );
-        if (!res.ok) throw new Error("Erreur API leaderboard (mois)");
-        const data = await res.json();
-        if (!cancelled)
-          setMonthRows(Array.isArray(data?.rows) ? data.rows : []);
-      } catch (e) {
-        if (!cancelled) setErr(e?.message || String(e));
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [mode, monthKey]);
-
-  /* ------------------------ Derived metrics ------------------------ */
-  const currentRows = mode === "total" ? allTimeRows : monthRows;
-
-  const maxClicks = useMemo(
-    () =>
-      Math.max(
-        ...currentRows.map((r) =>
-          mode === "total" ? r.clicksAllTime || 0 : r.clicksInMonth || 0
-        ),
-        1
-      ),
-    [currentRows, mode]
+  // Quêtes (objectifs rapides)
+  const quests = useMemo(
+    () => [
+      { id: "q1", label: "Identifier 3 signes de phishing", done: streak >= 1 },
+      {
+        id: "q2",
+        label: "Répondre juste à 2 questions d'affilée",
+        done: streak >= 2,
+      },
+      { id: "q3", label: "Atteindre 200 points", done: score >= 200 },
+    ],
+    [streak, score]
   );
 
-  // Adapt rows to UI "score" with extra info
-  const ranking = useMemo(() => {
-    const rows = currentRows || [];
-    // on prépare la liste avec notre score de vigilance
-    const adapted = rows.map((r) => {
-      const clicks =
-        mode === "total" ? r.clicksAllTime || 0 : r.clicksInMonth || 0;
-      const parts =
-        mode === "total"
-          ? r.participationsAllTime || 0
-          : r.participationsInMonth || 0;
-      const last =
-        mode === "total" ? r.lastClickAtAllTime : r.lastClickAtInMonth;
+  // Quiz simple (gamifié) — sans changer la palette
+  const QUIZ = [
+    {
+      q: "Quel indice est le PLUS suspect dans un email ?",
+      choices: [
+        "Signature avec logo",
+        "URL masquée avec un domaine étrange",
+        "Formule de politesse classique",
+        "Aucune faute",
+      ],
+      correct: 1,
+      explain:
+        "Survolez les liens : si le domaine réel ne correspond pas à l'expéditeur, c'est un drapeau rouge.",
+      tile: "link-warning",
+    },
+    {
+      q: "La meilleure première action face à un message pressant ?",
+      choices: [
+        "Cliquer vite avant de perdre l'accès",
+        "Répondre avec ses infos",
+        "Vérifier l'expéditeur et prendre du recul",
+        "Télécharger la pièce jointe pour vérifier",
+      ],
+      correct: 2,
+      explain:
+        "L'urgence est une tactique courante. Validez l'expéditeur et la demande via un canal officiel.",
+      tile: "time-pressure",
+    },
+    {
+      q: "Que faire APRÈS avoir cliqué par erreur ?",
+      choices: [
+        "Ignorer si rien ne s'affiche",
+        "Changer ses mots de passe et prévenir l'IT",
+        "Transférer à des collègues",
+        "Redémarrer 10 fois l'ordi",
+      ],
+      correct: 1,
+      explain:
+        "Agissez vite : changez vos mots de passe critiques et prévenez l'équipe IT pour limiter l'impact.",
+      tile: "first-aid",
+    },
+  ];
 
-      const safe = Math.max(0, parts - clicks);
-      const vigilanceRate = parts > 0 ? safe / parts : 0; // 1.0 = parfait (0 clic)
-      const score = Math.round(vigilanceRate * 100); // 0..100
+  // Timer pour le quiz
+  useEffect(() => {
+    if (quizStep >= QUIZ.length) return; // fini
+    if (answered) return; // pause pendant feedback
+    if (timer <= 0) {
+      handleAnswer(-1); // temps écoulé = faux
+      return;
+    }
+    const id = setTimeout(() => setTimer((t) => t - 1), 1000);
+    return () => clearTimeout(id);
+  }, [timer, quizStep, answered]);
 
-      let trend = "steady";
-      if (vigilanceRate >= 0.66) trend = "up";
-      else if (vigilanceRate < 0.33) trend = "down";
+  const xpToLevel = useMemo(() => 100, []);
 
-      return {
-        name: r.name || r.email,
-        email: r.email,
-        department: r.department || "—",
-        clicks, // incidents
-        parts, // expositions
-        vigilanceRate, // 0..1
-        last, // date du dernier clic (si existe)
-        score, // 0..100
-        trend,
-      };
-    });
+  function addToast(text, type = "success") {
+    const id = Math.random().toString(36).slice(2);
+    setToasts((prev) => [...prev, { id, text, type }]);
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, 2200);
+  }
 
-    // tri: +vigilance, +participations, +ancien dernier clic
-    adapted.sort((a, b) => {
-      if (b.vigilanceRate !== a.vigilanceRate)
-        return b.vigilanceRate - a.vigilanceRate;
-      if (b.parts !== a.parts) return b.parts - a.parts;
-      const aTime = a.last ? new Date(a.last).getTime() : 0;
-      const bTime = b.last ? new Date(b.last).getTime() : 0;
-      return aTime - bTime; // plus ancien (plus petit) d'abord
-    });
+  function grantReward(isCorrect) {
+    if (isCorrect) {
+      const add = 120 - quizStep * 20; // points décroissants
+      const newScore = score + add;
+      const newXp = xp + 40;
+      const newStreak = streak + 1;
+      setScore(newScore);
+      setXp(newXp >= xpToLevel ? newXp - xpToLevel : newXp);
+      if (newXp >= xpToLevel) {
+        setLevel((l) => l + 1);
+        addToast("Niveau supérieur !", "level");
+        pulseFireworks();
+      }
+      setStreak(newStreak);
+      if (newStreak === 2) addToast("Série x2 !", "streak");
+      if (newScore >= 200) addToast("Objectif 200 pts atteint !", "goal");
+    } else {
+      setStreak(0);
+    }
+  }
 
-    return adapted;
-  }, [currentRows, mode]);
+  function pulseFireworks() {
+    setShowFireworks(true);
+    setTimeout(() => setShowFireworks(false), 1200);
+  }
 
-  // Global KPIs
-  const kpis = useMemo(() => {
-    const totalCampaigns = batches.length;
-    const totalEmployees = employees.length;
-    const totalClicks = batches.reduce(
-      (acc, b) => acc + (b.clickCount || 0),
-      0
+  function handleAnswer(idx) {
+    if (answered) return;
+    setAnswered(true);
+    const item = QUIZ[quizStep];
+    const isCorrect = idx === item.correct;
+
+    grantReward(isCorrect);
+    addToast(
+      isCorrect ? "+ Réponse correcte" : "Mauvaise réponse",
+      isCorrect ? "success" : "error"
     );
-    const totalSent = batches.reduce(
-      (acc, b) => acc + (b.totalEmployees || 0),
-      0
-    );
-    const globalCTR = totalSent > 0 ? (totalClicks / totalSent) * 100 : 0;
-    return { totalCampaigns, totalEmployees, totalClicks, globalCTR };
-  }, [batches, employees]);
 
-  /* ====================================================================== */
+    setTimeout(() => {
+      setQuizStep((s) => s + 1);
+      setTimer(45);
+      setAnswered(false);
+    }, 900);
+  }
+
+  const progress = clamp((xp / xpToLevel) * 100, 0, 100);
+
+  const toggleSection = (section) => {
+    setExpandedSection(expandedSection === section ? null : section);
+  };
+
+  const finished = quizStep >= QUIZ.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100 relative overflow-hidden">
       {/* Trust banner */}
       <div className="bg-gradient-to-r from-purple-900 to-indigo-900 border-b border-gray-700">
         <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-center gap-3">
@@ -244,10 +229,53 @@ export default function Oups() {
         </div>
       </div>
 
+      {/* HUD (score / niveau / timer) */}
+      <div className="mx-auto max-w-7xl px-6 py-3 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <PixelIcon name="shield" size={24} />
+          <span className="text-gray-300 text-sm">Niveau</span>
+          <span className="px-2 py-0.5 rounded-md bg-gray-700/70 border border-gray-600 text-purple-200 text-sm font-semibold">
+            {level}
+          </span>
+        </div>
+        <div className="flex-1 max-w-xl mx-4">
+          <div className="text-xs text-gray-400 mb-1 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-purple-300" />
+            Expérience
+          </div>
+          <div className="w-full h-2 rounded-full bg-gray-700 overflow-hidden border border-gray-600">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ type: "spring", stiffness: 80, damping: 20 }}
+              className="h-full bg-gradient-to-r from-purple-500 to-indigo-400"
+            />
+          </div>
+        </div>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-yellow-300" />
+            <span className="text-gray-200 font-semibold">{score}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Timer className="w-5 h-5 text-purple-300" />
+            <span className="text-gray-200 font-semibold">
+              {clamp(timer, 0, 99)}s
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Target className="w-5 h-5 text-indigo-300" />
+            <span className="text-gray-200 font-semibold">
+              Série x{Math.max(1, streak)}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10 opacity-20 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(139,92,246,0.3),transparent)]" />
-        <div className="mx-auto max-w-7xl px-6 py-14 md:py-20 flex flex-col items-center text-center">
+        <div className="mx-auto max-w-7xl px-6 py-10 md:py-16 flex flex-col items-center text-center">
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -259,19 +287,15 @@ export default function Oups() {
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+            animate={{ opacity: 1, y: [0, -10, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             className="mt-8 rounded-3xl overflow-hidden shadow-2xl"
           >
-            <img
-              src="https://c.tenor.com/TbGh9uzZ8mUAAAAd/tenor.gif"
-              alt="GIF humoristique sur la cybersécurité"
-              className="w-full max-w-md mx-auto rounded-2xl"
-            />
+            <PixelIcon name="boo" size={150} />
           </motion.div>
 
           <div className="mt-8 max-w-2xl">
-            <div className="mt-8 flex flex-col items-center">
+            <div className="mt-4 flex flex-col items-center">
               <span className="inline-flex items-center text-xl font-semibold text-purple-300">
                 {typedCTA || ctaFull}
                 <span
@@ -291,316 +315,349 @@ export default function Oups() {
               Ne vous inquiétez pas, il s'agit d'une simulation de formation
               pour la lutte contre la fraude par courriel.
             </p>
-          </div>
-          {/* Indicateur de scroll */}
-          <div className="flex justify-center mt-6 animate-bounce">
-            <span className="text-gray-400 text-sm flex items-center gap-2">
-              Faites défiler pour voir le classement
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-purple-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </span>
-          </div>
-        </div>
-      </section>
 
-      {/* KPIs */}
-      <section className="mx-auto max-w-7xl px-6 -mt-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-purple-900/30">
-              <Activity className="h-5 w-5 text-purple-400" />
-            </div>
-            <div>
-              <div className="text-gray-400 text-xs">Campagnes</div>
-              <div className="text-xl font-semibold text-white">
-                {kpis.totalCampaigns}
-              </div>
-            </div>
-          </div>
-          <div className="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-purple-900/30">
-              <Users className="h-5 w-5 text-purple-400" />
-            </div>
-            <div>
-              <div className="text-gray-400 text-xs">Employés</div>
-              <div className="text-xl font-semibold text-white">
-                {kpis.totalEmployees}
-              </div>
-            </div>
-          </div>
-          <div className="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-purple-900/30">
-              <MousePointerClick className="h-5 w-5 text-purple-400" />
-            </div>
-            <div>
-              <div className="text-gray-400 text-xs">Clics totaux</div>
-              <div className="text-xl font-semibold text-white">
-                {kpis.totalClicks}
-              </div>
-            </div>
-          </div>
-          <div className="bg-gray-800 rounded-xl p-5 shadow-lg border border-gray-700 flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-purple-900/30">
-              <Percent className="h-5 w-5 text-purple-400" />
-            </div>
-            <div>
-              <div className="text-gray-400 text-xs">CTR global</div>
-              <div className="text-xl font-semibold text-white">
-                {kpis.globalCTR.toFixed(1)}%
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Classement */}
-      <section className="mx-auto max-w-7xl px-6 py-10">
-        <div className="bg-gray-800 rounded-2xl shadow-xl p-6 md:p-8 border border-gray-700">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-amber-500/10">
-                <Trophy className="h-6 w-6 text-amber-400" />
-              </div>
-              <h2 className="text-2xl md:text-3xl font-bold text-white">
-                Classement des Vigilants
-              </h2>
-            </div>
-
-            {/* Mode switch */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-              <div
-                className={classNames(
-                  "inline-flex rounded-lg border border-gray-700 p-1 bg-gray-700",
-                  "shadow-sm"
-                )}
-              >
-                <button
-                  onClick={() => setMode("total")}
+            {/* Ruban de quêtes rapides */}
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-3">
+              {quests.map((q) => (
+                <div
+                  key={q.id}
                   className={classNames(
-                    "px-3 py-1.5 text-sm rounded-md transition-colors",
-                    mode === "total"
-                      ? "bg-purple-700 text-white shadow"
-                      : "text-gray-300"
+                    "rounded-xl border p-3 flex items-center gap-3",
+                    "bg-gray-800/80 border-gray-700"
                   )}
                 >
-                  Total
-                </button>
-                <button
-                  onClick={() => setMode("month")}
-                  className={classNames(
-                    "px-3 py-1.5 text-sm rounded-md flex items-center gap-1 transition-colors",
-                    mode === "month"
-                      ? "bg-purple-700 text-white shadow"
-                      : "text-gray-300 "
-                  )}
-                >
-                  <CalendarClock className="h-4 w-4" /> Mois
-                </button>
-              </div>
-
-              {/* Sélecteur mois */}
-              {mode === "month" && (
-                <div className="relative">
-                  <CalendarClock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <input
-                    type="month"
-                    value={monthKey}
-                    onChange={(e) => setMonthKey(e.target.value)}
-                    className="bg-gray-700 border border-gray-600 rounded-lg pl-9 pr-3 py-2 text-sm text-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none"
-                  />
+                  <PixelIcon name={q.done ? "check" : "quest"} size={22} />
+                  <span
+                    className={classNames(
+                      "text-sm",
+                      q.done ? "text-green-300" : "text-gray-300"
+                    )}
+                  >
+                    {q.label}
+                  </span>
+                  {q.done ? (
+                    <CheckCircle className="w-4 h-4 text-green-400 ml-auto" />
+                  ) : null}
                 </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quiz Gamifié */}
+      <section className="mx-auto max-w-4xl px-6 pb-4">
+        <div className="bg-gray-800 rounded-2xl shadow-xl p-6 border border-gray-700">
+          <div className="flex items-center justify-between mb-5">
+            <h2 className="text-2xl md:text-3xl font-bold text-white">
+              Challenge Anti‑Phishing
+            </h2>
+            <div className="flex items-center gap-2 text-sm text-gray-300">
+              <Star className="w-4 h-4 text-yellow-300" />
+              {quizStep + 1}/{QUIZ.length}
+            </div>
+          </div>
+
+          <AnimatePresence mode="wait">
+            {!finished ? (
+              <motion.div
+                key={quizStep}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                <div className="flex items-start gap-3">
+                  <PixelIcon name={QUIZ[quizStep].tile} size={26} />
+                  <p className="text-lg text-gray-200 font-medium">
+                    {QUIZ[quizStep].q}
+                  </p>
+                </div>
+                <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {QUIZ[quizStep].choices.map((c, idx) => (
+                    <button
+                      key={idx}
+                      disabled={answered}
+                      onClick={() => handleAnswer(idx)}
+                      className={classNames(
+                        "w-full text-left p-4 rounded-xl border transition",
+                        "bg-gray-800/70 border-gray-700 text-gray-200 hover:bg-gray-800 hover:border-gray-600",
+                        answered &&
+                          idx === QUIZ[quizStep].correct &&
+                          "border-green-400",
+                        answered &&
+                          idx !== QUIZ[quizStep].correct &&
+                          "opacity-60"
+                      )}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+
+                <AnimatePresence>
+                  {answered && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      className="mt-4 p-4 rounded-xl bg-purple-900/20 border border-purple-700/30 text-purple-200"
+                    >
+                      <div className="flex items-start gap-3">
+                        <Eye className="w-5 h-5 flex-shrink-0" />
+                        <p className="text-sm">{QUIZ[quizStep].explain}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="done"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25 }}
+                className="text-center"
+              >
+                <div className="flex justify-center mb-4">
+                  <Crown className="w-10 h-10 text-yellow-300" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Bravo !</h3>
+                <p className="mt-2 text-gray-300">
+                  Vous avez terminé le challenge. Score final :{" "}
+                  <span className="text-indigo-300 font-semibold">
+                    {score} pts
+                  </span>
+                </p>
+                <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div className="rounded-xl border p-4 bg-gray-800/80 border-gray-700">
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Trophy className="w-4 h-4 text-yellow-300" /> Score
+                    </div>
+                    <div className="text-2xl font-bold text-white">{score}</div>
+                  </div>
+                  <div className="rounded-xl border p-4 bg-gray-800/80 border-gray-700">
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Award className="w-4 h-4 text-purple-300" /> Niveau
+                    </div>
+                    <div className="text-2xl font-bold text-white">{level}</div>
+                  </div>
+                  <div className="rounded-xl border p-4 bg-gray-800/80 border-gray-700">
+                    <div className="flex items-center gap-2 text-gray-300">
+                      <Star className="w-4 h-4 text-indigo-300" /> Série max
+                    </div>
+                    <div className="text-2xl font-bold text-white">
+                      x{Math.max(1, streak)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-center">
+                  <a
+                    href="#formation"
+                    className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-purple-700/40 bg-purple-900/20 text-purple-200 hover:bg-purple-900/30 transition"
+                  >
+                    <Rocket className="w-5 h-5" /> Continuer la formation
+                  </a>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </section>
+
+      {/* Section éducative (accordéons) */}
+      <section id="formation" className="mx-auto max-w-4xl px-6 py-10">
+        <div className="bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-700">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 text-center">
+            Apprenez à reconnaître les emails de phishing
+          </h2>
+
+          <div className="space-y-4">
+            {/* Section 1 */}
+            <div className="bg-gray-750 rounded-xl overflow-hidden">
+              <button
+                onClick={() => toggleSection("signes")}
+                className="w-full p-4 text-left flex justify-between items-center text-purple-300 font-semibold"
+              >
+                <span className="flex items-center gap-2">
+                  <AlertTriangle className="h-5 w-5" />
+                  Signes révélateurs d'un email de phishing
+                </span>
+                <ChevronDown
+                  className={classNames(
+                    "h-5 w-5 transform transition-transform",
+                    expandedSection === "signes" ? "rotate-180" : ""
+                  )}
+                />
+              </button>
+
+              {expandedSection === "signes" && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="px-4 pb-4"
+                >
+                  <ul className="space-y-3 text-gray-300">
+                    {[
+                      "Expéditeur inconnu ou adresse email suspecte",
+                      "Fautes d'orthographe et grammaire médiocre",
+                      "Sentiment d'urgence ou menace",
+                      "Demande d'informations personnelles",
+                      "Liens ou pièces jointes suspects",
+                    ].map((t, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <XCircle className="h-5 w-5 text-red-400 mt-0.5 flex-shrink-0" />
+                        <span>{t}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Section 2 */}
+            <div className="bg-gray-750 rounded-xl overflow-hidden">
+              <button
+                onClick={() => toggleSection("prevention")}
+                className="w-full p-4 text-left flex justify-between items-center text-purple-300 font-semibold"
+              >
+                <span className="flex items-center gap-2">
+                  <Lock className="h-5 w-5" />
+                  Mesures de prévention
+                </span>
+                <ChevronDown
+                  className={classNames(
+                    "h-5 w-5 transform transition-transform",
+                    expandedSection === "prevention" ? "rotate-180" : ""
+                  )}
+                />
+              </button>
+
+              {expandedSection === "prevention" && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="px-4 pb-4"
+                >
+                  <ul className="space-y-3 text-gray-300">
+                    {[
+                      "Vérifiez toujours l'adresse de l'expéditeur",
+                      "Survolez les liens avant de cliquer",
+                      "Ne communiquez jamais vos identifiants",
+                      "Utilisez l'authentification à deux facteurs",
+                      "Signalez les emails suspects au service informatique",
+                    ].map((t, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <CheckCircle className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                        <span>{t}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Section 3 */}
+            <div className="bg-gray-750 rounded-xl overflow-hidden">
+              <button
+                onClick={() => toggleSection("que-faire")}
+                className="w-full p-4 text-left flex justify-between items-center text-purple-300 font-semibold"
+              >
+                <span className="flex items-center gap-2">
+                  <Eye className="h-5 w-5" />
+                  Que faire si vous cliquez sur un lien suspect?
+                </span>
+                <ChevronDown
+                  className={classNames(
+                    "h-5 w-5 transform transition-transform",
+                    expandedSection === "que-faire" ? "rotate-180" : ""
+                  )}
+                />
+              </button>
+
+              {expandedSection === "que-faire" && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  className="px-4 pb-4"
+                >
+                  <ol className="space-y-3 text-gray-300 list-decimal pl-5">
+                    <li>Déconnectez-vous immédiatement d'Internet</li>
+                    <li>Scannez votre appareil avec un antivirus</li>
+                    <li>Changez vos mots de passe importants</li>
+                    <li>Surveillez vos comptes pour toute activité suspecte</li>
+                    <li>Signalez l'incident à votre service informatique</li>
+                  </ol>
+                </motion.div>
               )}
             </div>
           </div>
 
-          <p className="text-center text-gray-400 mb-8">
-            {mode === "total"
-              ? "Classement global basé sur l'ensemble des campagnes."
-              : `Classement du mois — ${monthKey}`}
-          </p>
-
-          {/* Loading / error */}
-          {err && (
-            <div className="mb-6 text-center text-red-400 text-sm">{err}</div>
-          )}
-          {loading && (
-            <div className="mb-6 flex justify-center">
-              <div className="animate-pulse flex space-x-2">
-                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                <div className="w-3 h-3 bg-purple-500 rounded-full animation-delay-200"></div>
-                <div className="w-3 h-3 bg-purple-500 rounded-full animation-delay-400"></div>
-              </div>
+          <div className="mt-8 p-4 bg-purple-900/20 rounded-lg border border-purple-700/30">
+            <div className="flex items-start gap-3">
+              <ShieldCheck className="h-6 w-6 text-purple-400 mt-0.5 flex-shrink-0" />
+              <p className="text-purple-200">
+                <strong>Rappel important :</strong> Votre vigilance est la
+                première ligne de défense contre les cybermenaces. Restez
+                attentifs aux signes d'alerte et suivez les procédures de
+                sécurité établies par votre organisation.
+              </p>
             </div>
-          )}
-
-          <div className="overflow-x-auto rounded-lg border border-gray-700">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-black">
-                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
-                    Position
-                  </th>
-                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
-                    Employé
-                  </th>
-                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
-                    Département
-                  </th>
-                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
-                    {mode === "total" ? "Clics (Total)" : "Clics (Mois)"}
-                  </th>
-                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
-                    Score
-                  </th>
-                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
-                    Progression
-                  </th>
-                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
-                    Dernier clic
-                  </th>
-                  <th className="p-3 text-left font-medium text-gray-700 text-xs uppercase tracking-wider">
-                    Badge
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {ranking.map((employee, index) => (
-                  <tr
-                    key={employee.email + index}
-                    className="border-b border-gray-700  transition-colors"
-                  >
-                    <td className="p-3 font-medium text-white">
-                      <div className="flex items-center">
-                        {index === 0 && (
-                          <Trophy className="h-5 w-5 text-amber-400 mr-2" />
-                        )}
-                        {index === 1 && (
-                          <Award className="h-5 w-5 text-gray-300 mr-2" />
-                        )}
-                        {index === 2 && (
-                          <Award className="h-5 w-5 text-amber-600 mr-2" />
-                        )}
-                        {index > 2 && <span className="ml-2">{index + 1}</span>}
-                      </div>
-                    </td>
-
-                    <td className="p-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-purple-900/30 flex items-center justify-center">
-                          <span className="text-sm">🧑‍💼</span>
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-100">
-                            {employee.name}
-                          </div>
-                          <div className="text-xs text-gray-400">
-                            {employee.email}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="p-3 text-gray-300">{employee.department}</td>
-
-                    <td className="p-3">
-                      <span className="font-semibold text-gray-100">
-                        {employee.clicks}
-                      </span>
-                      <span className="text-xs text-gray-700 ml-1">
-                        / {employee.parts}
-                      </span>
-                    </td>
-
-                    <td className="p-3">
-                      <div className="flex items-center gap-2">
-                        <div className="w-20 bg-gray-700 rounded-full h-2">
-                          <div
-                            className="bg-gradient-to-r from-purple-500 to-indigo-500 h-2 rounded-full transition-all duration-500 ease-out"
-                            style={{ width: `${employee.score}%` }}
-                          />
-                        </div>
-                        <span className="font-semibold text-gray-100 text-sm w-10">
-                          {employee.score}%
-                        </span>
-                      </div>
-                    </td>
-
-                    <td className="p-3">
-                      {employee.trend === "up" && (
-                        <span className="inline-flex items-center gap-1 text-green-400 font-medium text-sm">
-                          <TrendingUp className="h-4 w-4" /> Progression
-                        </span>
-                      )}
-                      {employee.trend === "down" && (
-                        <span className="inline-flex items-center gap-1 text-red-400 font-medium text-sm">
-                          <TrendingDown className="h-4 w-4" /> À améliorer
-                        </span>
-                      )}
-                      {employee.trend === "steady" && (
-                        <span className="inline-flex items-center gap-1 text-blue-400 font-medium text-sm">
-                          <Minus className="h-4 w-4" /> Stable
-                        </span>
-                      )}
-                    </td>
-
-                    <td className="p-3 text-sm text-gray-400">
-                      {torontoDateTime(employee.last)}
-                    </td>
-
-                    <td className="p-3">
-                      {index === 0 && (
-                        <span className="inline-flex items-center gap-1 bg-amber-400/10 text-amber-300 px-2.5 py-1 rounded-full text-xs border border-amber-400/20">
-                          <Star className="h-3.5 w-3.5" /> Champion
-                        </span>
-                      )}
-                      {index === 1 && (
-                        <span className="inline-flex items-center gap-1 bg-gray-400/10 text-gray-300 px-2.5 py-1 rounded-full text-xs border border-gray-400/20">
-                          <Star className="h-3.5 w-3.5" /> Expert
-                        </span>
-                      )}
-                      {index === 2 && (
-                        <span className="inline-flex items-center gap-1 bg-amber-600/10 text-amber-400 px-2.5 py-1 rounded-full text-xs border border-amber-600/20">
-                          <Star className="h-3.5 w-3.5" /> Apprenti
-                        </span>
-                      )}
-                      {index > 2 && employee.score >= 80 && (
-                        <span className="inline-flex items-center gap-1 bg-green-400/10 text-green-300 px-2.5 py-1 rounded-full text-xs border border-green-400/20">
-                          Bon élève
-                        </span>
-                      )}
-                      {index > 2 && employee.score < 80 && (
-                        <span className="inline-flex items-center gap-1 bg-blue-400/10 text-blue-300 px-2.5 py-1 rounded-full text-xs border border-blue-400/20">
-                          En formation
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-
-                {!loading && !err && ranking.length === 0 && (
-                  <tr>
-                    <td colSpan={8} className="p-6 text-center text-gray-500">
-                      Aucun résultat à afficher pour l'instant.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
           </div>
         </div>
       </section>
+
+      {/* Toasts gamifiés */}
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 space-y-2 w-[90%] max-w-md z-50">
+        <AnimatePresence>
+          {toasts.map((t) => (
+            <motion.div
+              key={t.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className={classNames(
+                "px-4 py-3 rounded-xl border shadow-lg",
+                "bg-gray-900/90 border-gray-700 text-gray-200"
+              )}
+            >
+              <div className="flex items-center gap-3">
+                {t.type === "success" && (
+                  <CheckCircle className="w-5 h-5 text-green-400" />
+                )}
+                {t.type === "error" && (
+                  <XCircle className="w-5 h-5 text-red-400" />
+                )}
+                {t.type === "level" && (
+                  <Crown className="w-5 h-5 text-yellow-300" />
+                )}
+                {t.type === "streak" && (
+                  <Target className="w-5 h-5 text-indigo-300" />
+                )}
+                {t.type === "goal" && (
+                  <Trophy className="w-5 h-5 text-yellow-300" />
+                )}
+                <span className="text-sm">{t.text}</span>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Fireworks (subtiles) */}
+      <AnimatePresence>
+        {showFireworks && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.9 }}
+            exit={{ opacity: 0 }}
+            className="pointer-events-none fixed inset-0 z-40"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(147,51,234,0.15),transparent_60%)]" />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Footer */}
       <footer className="mt-10 border-t border-gray-800 bg-gray-900 py-7">
@@ -617,23 +674,9 @@ export default function Oups() {
 
       {/* Tiny CSS for cursor blink */}
       <style>{`
-        @keyframes blink { 
-          0%, 50% { opacity: 1; } 
-          50.01%, 100% { opacity: 0; } 
-        }
-        body {
-          font-family: "Titillium Web", sans-serif;
-        }
-        
-        .animation-delay-200 {
-          animation-delay: 0.2s;
-        }
-        .animation-delay-400 {
-          animation-delay: 0.4s;
-        }
-        .bg-gray-750 {
-          background-color: #2d3748;
-        }
+        @keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+        body { font-family: "Titillium Web", sans-serif; }
+        .bg-gray-750 { background-color: #2d3748; }
       `}</style>
     </div>
   );

@@ -11,6 +11,17 @@ import {
 } from "react-feather";
 import { useNavigate } from "react-router-dom";
 
+const PixelIcon = ({ name, size = 24, className = "" }) => (
+  <img
+    src={`/Tiles/${name}.png`}
+    alt={name}
+    width={size}
+    height={size}
+    className={`pixel ${className}`}
+    style={{ imageRendering: "pixelated" }}
+  />
+);
+
 export default function Features() {
   const navigate = useNavigate();
   return (
@@ -335,9 +346,9 @@ export default function Features() {
             onClick={() => navigate("/Form")}
             className="group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-[#8A4FFF]/40"
           >
-            <span className="relative z-10 flex items-center justify-center">
-              🎯 Try a free simulation
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              <PixelIcon name="chevalier" size={25} />
+              Try a free simulation
             </span>
             <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
           </button>

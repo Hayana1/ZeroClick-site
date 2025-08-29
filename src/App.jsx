@@ -4,10 +4,10 @@ import "./App.css";
 
 import LandingPage from "./pages/LandingPage";
 import ContactForm from "./pages/Form";
-import Demo from "./pages/DemoLanding";
-import ZeroClickShockToCalm from "./pages/Demo";
+
 import DemoZeroClick from "./pages/Oups";
-import BatchManagementPage from "./pages/Management";
+
+import AppRouter from "./ZeroClickApp/AppRouter";
 
 export default function App() {
   return (
@@ -15,10 +15,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/form" element={<ContactForm />} />
-        <Route path="/demo" element={<Demo />} />
-        <Route path="/demo-page" element={<ZeroClickShockToCalm />} />{" "}
         <Route path="/Oups" element={<DemoZeroClick />} /> {/* page tampon */}
-        <Route path="/Manage" element={<BatchManagementPage />} />
+        <Route path="/ZeroApp/*" element={<AppRouter />} />
       </Routes>
     </Router>
   );

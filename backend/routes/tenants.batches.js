@@ -84,10 +84,12 @@ router.post("/:tenantId/batches", async (req, res) => {
     if (employees.length) {
       await Target.insertMany(
         employees.map((e) => ({
+          tenantId,
           batchId: batch._id,
           employeeId: e._id,
           token: newToken(),
           markedSent: false,
+
           sentAt: null,
         }))
       );
@@ -155,7 +157,7 @@ router.patch("/:tenantId/batches/:batchId/selection", async (req, res) => {
     : { $set: { markedSent: false }, $unset: { sentAt: 1 } };
 
   const updated = await Target.findOneAndUpdate(
-    { batchId, employeeId },
+    { tenantId, batchId, employeeId },
     update,
     { new: true, upsert: true, setDefaultsOnInsert: true }
   );
@@ -202,7 +204,7 @@ router.put("/:tenantId/batches/:batchId/selections", async (req, res) => {
       ? { $set: { markedSent: true, sentAt: new Date() } }
       : { $set: { markedSent: false }, $unset: { sentAt: 1 } };
     ops.push(
-      Target.updateOne({ batchId, employeeId }, update, {
+      Target.updateOne({ tenantId, batchId, employeeId }, update, {
         upsert: true,
         setDefaultsOnInsert: true,
       })

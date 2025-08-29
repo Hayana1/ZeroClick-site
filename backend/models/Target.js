@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const TargetSchema = new mongoose.Schema(
   {
+    tenantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Tenant",
+      index: true,
+      required: true,
+    },
     batchId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Batch",
@@ -33,5 +39,13 @@ const TargetSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// 📌 Index stratégiques
+TargetSchema.index(
+  { tenantId: 1, batchId: 1, employeeId: 1 },
+  { unique: true }
+);
+TargetSchema.index({ tenantId: 1, batchId: 1 });
+TargetSchema.index({ token: 1 }, { unique: true });
 
 module.exports = mongoose.model("Target", TargetSchema);

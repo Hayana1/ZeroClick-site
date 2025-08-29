@@ -8,6 +8,18 @@ import {
   ArrowRight,
 } from "react-feather";
 
+// ADD just under the other imports
+const PixelIcon = ({ name, size = 24, className = "" }) => (
+  <img
+    src={`/Tiles/${name}.png`}
+    alt={name}
+    width={size}
+    height={size}
+    className={`pixel ${className}`}
+    style={{ imageRendering: "pixelated" }}
+  />
+);
+
 export default function Hero() {
   const navigate = useNavigate();
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -128,15 +140,15 @@ export default function Hero() {
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 h-3/5 bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] rounded-full filter blur-[100px] opacity-3" />
 
       <div className="relative max-w-4xl mx-auto z-10">
-        <div className="inline-flex items-center px-4 py-2 mb-10 rounded-full bg-[#8A4FFF]/10 border border-[#8A4FFF]/20 text-[#D9C7FF] text-sm font-medium backdrop-blur-md transition-all hover:bg-[#8A4FFF]/15 hover:border-[#8A4FFF]/40 animate-bounce-in">
+        <div className="inline-flex items-center px-6 py-3 mb-10 rounded-full bg-[#8A4FFF]/10 border border-[#8A4FFF]/20 text-[#D9C7FF] text-lg font-medium backdrop-blur-md transition-all hover:bg-[#8A4FFF]/15 hover:border-[#8A4FFF]/40 animate-bounce-in">
           <CheckCircle
-            className="w-4 h-4 mr-2 text-[#B47AFF]"
+            className="w-5 h-5 mr-2 text-[#B47AFF]"
             strokeWidth={2.5}
           />
           Made in Québec, not Silicon Valley
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 leading-tight tracking-tight">
+        <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight tracking-tight">
           <TypewriterText
             text="One click can cost everything."
             className="text-white font-medium block mb-4"
@@ -155,7 +167,7 @@ export default function Hero() {
           className="opacity-0 animate-fade-in"
           style={{ animationDelay: "1.8s", animationFillMode: "forwards" }}
         >
-          <p className="text-lg text-[#D9C7FF] mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-[#D9C7FF] mb-12 max-w-2xl mx-auto leading-relaxed">
             Realistic inbox scenarios that feel natural.{" "}
             <span className="font-medium bg-[#1E1B2B] px-2 py-1 rounded-md text-[#B47AFF] border border-[#3A2E5D]">
               Your team learns without pressure
@@ -170,18 +182,19 @@ export default function Hero() {
         >
           <button
             onClick={() => navigate("/Form")}
-            className="group relative overflow-hidden px-6 py-3 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-medium rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-[#8A4FFF]/30"
+            className="group relative overflow-hidden px-7 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-[#8A4FFF]/30 text-lg"
           >
             <span className="relative z-10 flex items-center justify-center">
-              🐣 Try a free simulation
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <PixelIcon name="sorcier-malefique" size={28} className="mr-2" />
+              Try a free simulation
+              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </span>
             <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
             <span className="absolute top-0 left-0 w-full h-full overflow-hidden">
               <span className="absolute top-0 left-0 w-8 h-full bg-white opacity-0 group-hover:opacity-10 transform -skew-x-12 group-hover:left-[calc(100%+16px)] transition-all duration-1000"></span>
             </span>
           </button>
-          <p className="mt-3 text-xs text-[#A794D4]">
+          <p className="mt-3 text-sm text-[#A794D4]">
             Better a fake trap today than a real loss tomorrow • No commitment
           </p>
         </div>
@@ -195,7 +208,7 @@ export default function Hero() {
             {
               icon: (
                 <FileText
-                  className="w-6 h-6 text-[#8A4FFF]"
+                  className="w-7 h-7 text-[#8A4FFF]"
                   strokeWidth={1.5}
                 />
               ),
@@ -206,7 +219,7 @@ export default function Hero() {
             {
               icon: (
                 <RefreshCw
-                  className="w-6 h-6 text-[#9D5AFF]"
+                  className="w-7 h-7 text-[#9D5AFF]"
                   strokeWidth={1.5}
                 />
               ),
@@ -217,8 +230,8 @@ export default function Hero() {
             {
               icon: (
                 <CheckCircle
-                  className="w-6 h-6 text-[#B47AFF]"
-                  strokeWidth={1.5}
+                  className="w-5 h-5 mr-2 text-[#B47AFF]"
+                  strokeWidth={2.5}
                 />
               ),
               title: "Peace of mind",
@@ -228,7 +241,7 @@ export default function Hero() {
           ].map((feature, index) => (
             <div
               key={index}
-              className={`group relative bg-[#1E1B2B]/70 backdrop-blur-sm p-5 rounded-xl border border-[#2D2442] transition-all duration-500 transform perspective-1000 ${
+              className={`group relative bg-[#1E1B2B]/70 backdrop-blur-sm p-6 rounded-xl border border-[#2D2442] transition-all duration-500 transform perspective-1000 ${
                 hoveredCard === index ? "scale-105 -translate-y-2" : ""
               }`}
               onMouseEnter={() => setHoveredCard(index)}
@@ -242,25 +255,25 @@ export default function Hero() {
               }}
             >
               <div className="absolute -top-2 -right-2 z-10">
-                <span className="text-xs bg-[#8A4FFF]/10 text-[#B47AFF] px-2 py-1 rounded-full border border-[#8A4FFF]/20">
+                <span className="text-sm bg-[#8A4FFF]/10 text-[#B47AFF] px-2 py-1 rounded-full border border-[#8A4FFF]/20">
                   {feature.badge}
                 </span>
               </div>
 
-              <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2D2442] w-12 h-12 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#8A4FFF]/10 transition-colors duration-500 group-hover:scale-110">
+              <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2D2442] w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#8A4FFF]/10 transition-colors duration-500 group-hover:scale-110">
                 {feature.icon}
               </div>
 
-              <h3 className="text-lg font-medium text-white mb-2 group-hover:text-[#D9C7FF] transition-colors">
+              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-[#D9C7FF] transition-colors">
                 {feature.title}
               </h3>
 
-              <p className="text-[#D1C4E9] text-sm leading-relaxed">
+              <p className="text-[#D1C4E9] text-base leading-relaxed">
                 {feature.desc}
               </p>
 
               <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <ChevronsRight className="w-4 h-4 text-[#8A4FFF] animate-bounce-horizontal" />
+                <ChevronsRight className="w-5 h-5 text-[#8A4FFF] animate-bounce-horizontal" />
               </div>
 
               {/* Effet de lumière derrière la carte */}
@@ -285,7 +298,6 @@ export default function Hero() {
             opacity: 0;
           }
         }
-
         @keyframes bounce-in {
           0% {
             transform: scale(0.95);
@@ -299,7 +311,6 @@ export default function Hero() {
             opacity: 1;
           }
         }
-
         @keyframes fade-in {
           from {
             opacity: 0;
@@ -310,7 +321,6 @@ export default function Hero() {
             transform: translateY(0);
           }
         }
-
         @keyframes pulse-soft {
           0% {
             box-shadow: 0 0 0 0 rgba(138, 79, 255, 0.3);
@@ -322,7 +332,6 @@ export default function Hero() {
             box-shadow: 0 0 0 0 rgba(138, 79, 255, 0);
           }
         }
-
         @keyframes bounce-horizontal {
           0%,
           100% {
@@ -332,27 +341,21 @@ export default function Hero() {
             transform: translateX(3px);
           }
         }
-
         .animate-bounce-in {
           animation: bounce-in 0.8s ease-out;
         }
-
         .animate-fade-in {
           animation: fade-in 0.8s ease-out;
         }
-
         .animate-pulse-soft {
           animation: pulse-soft 3s infinite;
         }
-
         .animate-pulse-slow {
           animation: pulse-soft 5s infinite;
         }
-
         .animate-bounce-horizontal {
           animation: bounce-horizontal 1.5s infinite;
         }
-
         .perspective-1000 {
           perspective: 1000px;
         }
@@ -368,12 +371,10 @@ const TypewriterText = ({ text, className, delay = 0, speed = 50 }) => {
 
   useEffect(() => {
     if (currentIndex >= text.length) return;
-
     const timeout = setTimeout(() => {
       setDisplayText((prev) => prev + text[currentIndex]);
       setCurrentIndex((prev) => prev + 1);
     }, speed + Math.random() * 30);
-
     return () => clearTimeout(timeout);
   }, [currentIndex, text, speed]);
 
@@ -381,7 +382,7 @@ const TypewriterText = ({ text, className, delay = 0, speed = 50 }) => {
     <span className={className}>
       {displayText}
       {currentIndex < text.length && (
-        <span className="inline-block w-0.5 h-5 ml-0.5 bg-current animate-pulse align-middle"></span>
+        <span className="inline-block w-0.5 h-6 ml-0.5 bg-current animate-pulse align-middle"></span>
       )}
     </span>
   );

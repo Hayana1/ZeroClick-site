@@ -25,13 +25,17 @@ const ProgressBar = ({ value }) => (
 
 function Th({ children }) {
   return (
-    <th className="text-left font-medium px-4 py-3 text-gray-700 whitespace-nowrap">
+    <th className="text-left font-medium px-2 md:px-4 py-3 text-gray-700 whitespace-nowrap">
       {children}
     </th>
   );
 }
 function Td({ children, className = "" }) {
-  return <td className={`px-4 py-3 align-middle ${className}`}>{children}</td>;
+  return (
+    <td className={`px-2 md:px-4 py-3 align-middle ${className}`}>
+      {children}
+    </td>
+  );
 }
 
 export default function ResultsPage() {
@@ -52,6 +56,7 @@ export default function ResultsPage() {
   const [q, setQ] = useState("");
   const [dept, setDept] = useState("Tous");
   const [expandedDepts, setExpandedDepts] = useState({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // tenants + overview
   useEffect(() => {
@@ -101,10 +106,25 @@ export default function ResultsPage() {
   }, [batchResults, activeBatchId, q, dept]);
 
   return (
-    <div className="flex gap-6 p-6 bg-gray-50 min-h-screen">
+    <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6 bg-gray-50 min-h-screen">
+      {/* Bouton pour ouvrir/fermer la sidebar sur mobile */}
+      <div className="md:hidden flex justify-between items-center mb-4 bg-white p-3 rounded-lg shadow-sm">
+        <h2 className="text-lg font-semibold text-gray-800">Résultats</h2>
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 rounded-lg bg-gray-100 text-gray-700"
+        >
+          {isSidebarOpen ? "Fermer" : "Batches"}
+        </button>
+      </div>
+
       {/* SIDEBAR */}
-      <aside className="w-full md:w-80 bg-white rounded-xl shadow-sm p-5 flex flex-col">
-        <div className="flex items-center justify-between mb-4">
+      <aside
+        className={`${
+          isSidebarOpen ? "block" : "hidden"
+        } md:block w-full md:w-80 bg-white rounded-xl shadow-sm p-4 md:p-5 flex flex-col`}
+      >
+        <div className="hidden md:flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-800">Résultats</h2>
         </div>
 
@@ -118,8 +138,11 @@ export default function ResultsPage() {
             overview.map((b) => (
               <div
                 key={b._id}
-                onClick={() => setActiveBatch(b._id)}
-                className={`w-full p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                onClick={() => {
+                  setActiveBatch(b._id);
+                  setIsSidebarOpen(false); // Fermer la sidebar sur mobile après sélection
+                }}
+                className={`w-full p-3 md:p-4 rounded-xl border-2 cursor-pointer transition-all ${
                   b._id === activeBatchId
                     ? "border-blue-500 bg-blue-50 shadow-md"
                     : "border-gray-200 bg-white hover:border-gray-300 hover:shadow-sm"
@@ -164,16 +187,16 @@ export default function ResultsPage() {
       {/* MAIN */}
       <main className="flex-1">
         {/* Toolbar */}
-        <div className="bg-white rounded-xl shadow-sm p-5 mb-6">
-          <div className="flex flex-wrap gap-4 items-center">
-            <div className="flex-1 min-w-[200px]">
+        <div className="bg-white rounded-xl shadow-sm p-4 md:p-5 mb-4 md:mb-6">
+          <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-start md:items-center">
+            <div className="w-full md:flex-1">
               <TenantPicker />
             </div>
 
-            <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
-              <FiFilter size={16} className="text-gray-500" />
+            <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 w-full md:w-auto">
+              <FiFilter size={16} className="text-gray-500 flex-shrink-0" />
               <select
-                className="bg-transparent border-none text-sm focus:outline-none"
+                className="bg-transparent border-none text-sm focus:outline-none w-full"
                 value={dept}
                 onChange={(e) => setDept(e.target.value)}
               >
@@ -185,7 +208,7 @@ export default function ResultsPage() {
               </select>
             </div>
 
-            <div className="relative flex-1 min-w-[240px]">
+            <div className="relative w-full md:flex-1">
               <FiSearch
                 size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -199,9 +222,9 @@ export default function ResultsPage() {
             </div>
 
             {activeBatch && (
-              <div className="ml-auto bg-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center">
+              <div className="ml-auto bg-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center w-full md:w-auto justify-center md:justify-start mt-2 md:mt-0">
                 <FiBarChart2 size={14} className="mr-1" />
-                <span className="font-medium">
+                <span className="font-medium truncate">
                   {activeBatch.name} — {activeBatch.clickCount ?? 0} clics
                 </span>
               </div>
@@ -211,19 +234,19 @@ export default function ResultsPage() {
 
         {/* Contenu batch */}
         {!activeBatchId && (
-          <div className="bg-white rounded-xl shadow-sm p-8 text-center text-gray-600">
+          <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 text-center text-gray-600">
             Sélectionne un batch à gauche.
           </div>
         )}
 
         {activeBatchId && loadingBatch && (
-          <div className="bg-white rounded-xl shadow-sm p-8 text-center text-gray-600">
+          <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 text-center text-gray-600">
             Chargement des détails…
           </div>
         )}
 
         {activeBatchId && errorBatch && (
-          <div className="bg-white rounded-xl shadow-sm p-8 text-center text-red-600">
+          <div className="bg-white rounded-xl shadow-sm p-6 md:p-8 text-center text-red-600">
             {errorBatch}
           </div>
         )}
@@ -240,7 +263,7 @@ export default function ResultsPage() {
                   className="bg-white rounded-xl shadow-sm overflow-hidden"
                 >
                   <div
-                    className="p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="p-3 md:p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors"
                     onClick={() =>
                       setExpandedDepts((p) => ({ ...p, [key]: !isOpen }))
                     }
@@ -248,23 +271,23 @@ export default function ResultsPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span
-                          className={`p-2 rounded-lg ${
+                          className={`p-1 md:p-2 rounded-lg ${
                             isOpen
                               ? "bg-blue-100 text-blue-800"
                               : "bg-gray-100 text-gray-800"
                           }`}
                         >
                           {isOpen ? (
-                            <FiChevronUp size={18} />
+                            <FiChevronUp size={16} className="md:w-[18px]" />
                           ) : (
-                            <FiChevronDown size={18} />
+                            <FiChevronDown size={16} className="md:w-[18px]" />
                           )}
                         </span>
                         <div>
-                          <h3 className="font-medium text-gray-900">
+                          <h3 className="font-medium text-gray-900 text-sm md:text-base">
                             {d.department || "—"}
                           </h3>
-                          <div className="text-sm text-blue-700 mt-1">
+                          <div className="text-xs md:text-sm text-blue-700 mt-1">
                             <FiCpu className="inline mr-1" />
                             {d.clickCount ?? 0} clics
                           </div>
@@ -275,19 +298,29 @@ export default function ResultsPage() {
 
                   {isOpen && (
                     <div className="overflow-x-auto">
-                      <table className="w-full text-sm">
+                      <table className="w-full text-xs md:text-sm">
                         <thead className="bg-gray-50">
                           <tr>
                             <Th>
-                              <FiUsers size={14} /> Nom
+                              <FiUsers
+                                size={12}
+                                className="md:size-[14px] inline mr-1"
+                              />{" "}
+                              Nom
                             </Th>
                             <Th>
-                              <FiMail size={14} /> Email
+                              <FiMail
+                                size={12}
+                                className="md:size-[14px] inline mr-1"
+                              />{" "}
+                              Email
                             </Th>
-                            <Th>Département</Th>
-                            <Th>1er clic</Th>
-                            <Th>IP</Th>
-                            <Th>UA</Th>
+                            <Th className="hidden sm:table-cell">
+                              Département
+                            </Th>
+                            <Th className="hidden lg:table-cell">1er clic</Th>
+                            <Th className="hidden xl:table-cell">IP</Th>
+                            <Th className="hidden xl:table-cell">UA</Th>
                             <Th>Bot ?</Th>
                           </tr>
                         </thead>
@@ -299,18 +332,20 @@ export default function ResultsPage() {
                             >
                               <Td className="font-medium">{e.name}</Td>
                               <Td className="text-gray-700">{e.email}</Td>
-                              <Td className="text-gray-500">
+                              <Td className="text-gray-500 hidden sm:table-cell">
                                 {e.department || "—"}
                               </Td>
-                              <Td className="text-gray-600">
+                              <Td className="text-gray-600 hidden lg:table-cell">
                                 {e.firstClickAt
                                   ? new Date(e.firstClickAt).toLocaleString(
                                       "fr-FR"
                                     )
                                   : "—"}
                               </Td>
-                              <Td className="text-gray-600">{e.ip || "—"}</Td>
-                              <Td className="text-gray-500 truncate max-w-[260px]">
+                              <Td className="text-gray-600 hidden xl:table-cell">
+                                {e.ip || "—"}
+                              </Td>
+                              <Td className="text-gray-500 truncate max-w-[120px] xl:max-w-[260px] hidden xl:table-cell">
                                 {e.userAgent || "—"}
                               </Td>
                               <Td className="text-gray-600">

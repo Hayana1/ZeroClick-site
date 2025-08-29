@@ -15,6 +15,17 @@ import {
   Zap,
 } from "react-feather";
 
+const PixelIcon = ({ name, size = 24, className = "" }) => (
+  <img
+    src={`/Tiles/${name}.png`}
+    alt={name}
+    width={size}
+    height={size}
+    className={`pixel ${className}`}
+    style={{ imageRendering: "pixelated" }}
+  />
+);
+
 export default function ReadyToTry() {
   const [state, handleSubmit] = useForm("mwpqqwkw");
   const [currentStep, setCurrentStep] = useState(1);
@@ -102,10 +113,10 @@ export default function ReadyToTry() {
 
           <div className="relative z-10">
             {/* Badge animé */}
-            <div className="inline-flex items-center px-4 py-2 mb-6 rounded-full bg-gradient-to-r from-[#8A4FFF]/10 to-[#B47AFF]/10 border border-[#8A4FFF]/30 text-[#D9C7FF] text-sm font-medium animate-bounce">
-              <Gift className="w-4 h-4 mr-2 text-[#B47AFF]" strokeWidth={2} />
-              FREE TRIAL – 1 month included
-            </div>
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              <PixelIcon name="fantome" size={35} />
+              <span>1-month trial for FREE</span>
+            </span>
 
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
               Ready to{" "}
