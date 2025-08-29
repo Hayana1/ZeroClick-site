@@ -56,15 +56,26 @@ export default function TrainingOups() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [ack, setAck] = useState("");
+  const [totalPoints, setTotalPoints] = useState(null);
+  const [earnedPoints, setEarnedPoints] = useState(0);
 
   const scenario = useMemo(
     () => scenarios.find((s) => s.id === scenarioId) || null,
     [scenarioId]
   );
   const steps = useMemo(() => scenario?.training?.steps || [], [scenario]);
+  const [answers, setAnswers] = useState({}); // { [stepIdx]: optionIdx }
+  const totalMcq = useMemo(
+    () => steps.reduce((n, s) => n + (s?.type === "mcq" ? 1 : 0), 0),
+    [steps]
+  );
+  const answeredCount = useMemo(
+    () => Object.keys(answers).length,
+    [answers]
+  );
 
-  const progressPct = steps.length
-    ? Math.round(((done ? steps.length : 0) / steps.length) * 100)
+  const progressPct = totalMcq
+    ? Math.round((answeredCount / totalMcq) * 100)
     : 0;
 
   async function onComplete() {
@@ -72,14 +83,29 @@ export default function TrainingOups() {
     setError("");
     setAck("");
     try {
-      const totalScore = 0; // brancher quiz plus tard
+      // Score = somme des points des MCQ correctes (par défaut 10)
+      let totalScore = 0;
+      steps.forEach((step, idx) => {
+        if (step?.type === "mcq") {
+          const picked = answers[idx];
+          if (typeof picked === "number" && picked === step.correctIndex) {
+            totalScore += Number(step.points || 10);
+          }
+        }
+      });
       const res = await api.completeTraining({
         sendId,
         scenarioId,
         totalScore,
       });
       setDone(true);
-      setAck(res?.rewardXp ? `+${res.rewardXp} XP` : "Enregistré ✅");
+      if (res && typeof res.totalPoints !== "undefined") {
+        setTotalPoints(res.totalPoints);
+        setEarnedPoints(res.pointsEarned || 0);
+        setAck(`+${res.pointsEarned || 0} pts · total ${res.totalPoints}`);
+      } else {
+        setAck(res?.rewardXp ? `+${res.rewardXp} XP` : "Enregistré ✅");
+      }
     } catch (e) {
       setError(e?.message || "Erreur d'envoi");
     } finally {
@@ -161,6 +187,14 @@ export default function TrainingOups() {
                   style={{ width: `${progressPct}%` }}
                 />
               </div>
+              <div className="mt-2 text-xs text-indigo-300">
+                ⚡ Points cumulés: {totalPoints ?? "—"}
+                {done && earnedPoints > 0 && (
+                  <span className="ml-2 text-emerald-300">
+                    (+{earnedPoints})
+                  </span>
+                )}
+              </div>
               {ack && (
                 <div className="mt-2 text-xs text-emerald-300">{ack}</div>
               )}
@@ -195,18 +229,52 @@ export default function TrainingOups() {
                     {step.content}
                   </p>
                 )}
-                {Array.isArray(step.options) && (
-                  <ul className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {step.options.map((o, i) => (
-                      <li
-                        key={i}
-                        className="px-3 py-2 rounded-lg border border-gray-700 bg-gray-800/70 text-gray-200 text-sm"
-                      >
-                        {o}
-                      </li>
-                    ))}
-                  </ul>
-                )}
+            {Array.isArray(step.options) && (
+              <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                {step.options.map((o, i) => {
+                  const picked = answers[idx];
+                  const isSelected = picked === i;
+                  const isCorrect =
+                    typeof step.correctIndex === "number" && i === step.correctIndex;
+                  const selectedIsCorrect =
+                    typeof picked === "number" && picked === step.correctIndex;
+                  const base =
+                    "w-full text-left px-3 py-2 rounded-lg border transition text-sm";
+                  const idle = "bg-gray-800/70 border-gray-700 text-gray-200 hover:bg-gray-800 hover:border-gray-600";
+                  const ok = "bg-emerald-900/20 border-emerald-600/40 text-emerald-200";
+                  const ko = "bg-red-900/20 border-red-600/40 text-red-200";
+                  const cls = isSelected ? (selectedIsCorrect ? ok : ko) : idle;
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      className={`${base} ${cls}`}
+                      onClick={() =>
+                        setAnswers((prev) => ({ ...prev, [idx]: i }))
+                      }
+                    >
+                      {o}
+                      {isSelected && (
+                        <span className="ml-2 text-xs opacity-80">
+                          {selectedIsCorrect
+                            ? "✔ Correct"
+                            : isCorrect
+                            ? "(bonne réponse)"
+                            : "✖"}
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            {step?.type === "mcq" && typeof answers[idx] === "number" && (
+              <div className="mt-2 text-xs text-gray-400">
+                {answers[idx] === step.correctIndex
+                  ? "Bonne réponse !"
+                  : `Mauvaise réponse — Bonne réponse : ${step.options?.[step.correctIndex] ?? "(indisponible)"}`}
+              </div>
+            )}
               </article>
             ))}
           </div>

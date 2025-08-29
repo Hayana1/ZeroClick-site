@@ -5,6 +5,7 @@ const router = express.Router();
 
 const Target = require("../models/Target");
 const Batch = require("../models/Batch");
+const Employee = require("../models/Employee");
 
 const WEB_URL = process.env.FRONTEND_URL?.split(",")[0]?.trim() || "http://localhost:5173";
 const ENABLE_TRAINING_REWARD = String(process.env.ENABLE_TRAINING_REWARD || "true") === "true";
@@ -55,14 +56,40 @@ router.post("/api/training/complete", async (req, res) => {
     if (scenarioId) target.scenarioId = scenarioId; // lock-in scenario si manquant
     if (typeof totalScore === "number") target.quizScore = totalScore;
 
+    // Points gamifiés (employé)
+    let pointsEarned = 10; // +10 par scénario complété (MVP)
+    if (typeof totalScore === "number" && totalScore > 0) {
+      // Bonus léger si quiz > 0
+      pointsEarned += 0; // garder simple; ajuster si besoin
+    }
+
     let rewardXp = 0;
     if (ENABLE_TRAINING_REWARD) {
-      rewardXp = 30; // MVP
+      rewardXp = 30; // XP parallèle (optionnel)
       target.xpEarned = (target.xpEarned || 0) + rewardXp;
     }
 
     await target.save();
-    return res.json({ ok: true, rewardXp });
+
+    // Incrémente les points de l'employé
+    const emp = await Employee.findById(target.employeeId);
+    if (emp) {
+      emp.trainingPoints = (emp.trainingPoints || 0) + pointsEarned;
+      try {
+        emp.trainingHistory = emp.trainingHistory || [];
+        emp.trainingHistory.push({ scenarioId: target.scenarioId || scenarioId || "unknown", score: totalScore || 0, date: new Date() });
+      } catch (_) {}
+      await emp.save();
+    }
+
+    return res.json({
+      success: true,
+      employeeId: String(target.employeeId),
+      scenarioId: target.scenarioId || scenarioId || "unknown",
+      pointsEarned,
+      totalPoints: emp ? emp.trainingPoints : pointsEarned,
+      rewardXp,
+    });
   } catch (e) {
     console.error("/api/training/complete error:", e);
     return res.status(500).json({ error: e.message || "Erreur interne" });

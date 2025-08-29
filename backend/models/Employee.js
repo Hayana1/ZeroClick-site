@@ -12,6 +12,15 @@ const employeeSchema = new mongoose.Schema(
     email: { type: String, required: true, trim: true },
     department: { type: String, default: "" },
     isActive: { type: Boolean, default: true },
+    // Gamification / formation
+    trainingPoints: { type: Number, default: 0 },
+    trainingHistory: [
+      {
+        scenarioId: { type: String },
+        score: { type: Number, default: 0 },
+        date: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );
