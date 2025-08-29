@@ -48,17 +48,21 @@ console.log("CORS self origin:", SELF_ORIGIN);
 app.set("trust proxy", 1);
 app.use(express.json());
 
-app.use(
-  cors({
+// CORS: autorise dynamiquement l'origine du serveur (même domaine)
+// pour éviter des 403 en prod si BASE_URL est manquant/mal configuré.
+app.use((req, res, next) => {
+  const reqOrigin = `${req.protocol}://${stripSlash(req.get("host"))}`;
+  return cors({
     origin: (origin, cb) => {
       // Autoriser:
       // - Requêtes sans origin (curl, health, server-to-server)
       // - Les origines listées dans FRONTEND_URL
-      // - L’origine du backend lui-même (page handshake -> POST confirm)
+      // - L’origine de cette requête (page handshake -> POST confirm en same-origin)
       if (
         !origin ||
         ALLOWLIST.includes(stripSlash(origin)) ||
-        stripSlash(origin) === SELF_ORIGIN
+        stripSlash(origin) === SELF_ORIGIN ||
+        stripSlash(origin) === reqOrigin
       ) {
         return cb(null, true);
       }
@@ -66,8 +70,8 @@ app.use(
     },
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     credentials: true,
-  })
-);
+  })(req, res, next);
+});
 
 // (facultatif) handler d’erreurs CORS pour éviter un crash non-catché
 app.use((err, _req, res, next) => {
