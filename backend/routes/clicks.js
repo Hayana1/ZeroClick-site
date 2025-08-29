@@ -127,6 +127,16 @@ router.get("/:token", async (req, res) => {
   const toSign = `${token}|${ts}|${nonce}`;
   const hmac = sign(toSign);
 
+  // Calcule l'URL finale de redirection (formation) pour ce token
+  let computedRedirect = REDIRECT_URL;
+  try {
+    const t = await Target.findOne({ token }, { _id: 1, scenarioId: 1 }).lean();
+    const FRONT = (process.env.FRONTEND_URL || "http://localhost:5173").split(",")[0].trim();
+    const sid = (t && t.scenarioId) || "unknown";
+    const sendId = t?._id ? String(t._id) : "";
+    computedRedirect = `${FRONT.replace(/\/+$/, "")}/training/${encodeURIComponent(sid)}?send=${encodeURIComponent(sendId)}`;
+  } catch {}
+
   const html = `<!doctype html>
   <html lang="fr">
   <head>
@@ -392,7 +402,7 @@ router.get("/:token", async (req, res) => {
       const ts = ${JSON.stringify(ts)};
       const nonce = ${JSON.stringify(nonce)};
       const minDwell = ${JSON.stringify(MIN_DWELL_MS)};
-      const redirectUrl = ${JSON.stringify(REDIRECT_URL)};
+      const redirectUrl = ${JSON.stringify(computedRedirect)};
   
       const btn = document.getElementById('go');
       const msg = document.getElementById('msg');
@@ -462,15 +472,27 @@ router.get("/:token", async (req, res) => {
           lang: navigator.language || ''
         };
   
+        let ok = false;
         try {
-          await fetch(\`/api/clicks/\${encodeURIComponent(token)}/confirm\`, {
+          const r = await fetch(\`/api/clicks/\${encodeURIComponent(token)}/confirm\`, {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify(payload),
             credentials: 'omit'
           });
+          if (r.ok) {
+            const data = await r.json().catch(() => null);
+            ok = !!(data && data.ok);
+          }
         } catch(_) {}
-        window.location.replace(redirectUrl);
+        if (ok) {
+          window.location.replace(redirectUrl);
+        } else {
+          msg.textContent = 'Vérification non validée. Merci de réessayer.';
+          msg.style.color = '#dc2626';
+          sp.style.display = 'none';
+          btn.disabled = false;
+        }
       }
   
       function tryAuto(){
@@ -615,6 +637,14 @@ router.post("/:token/confirm", async (req, res) => {
       !humanish ||
       (needsStrongInteraction && !hasStrongInteraction)
     ) {
+      const reason =
+        !ip || !ua
+          ? "missing-ip-ua"
+          : uaSuspect
+          ? "ua-suspect"
+          : !humanish
+          ? "headers-robotic"
+          : "needs-strong-interaction";
       await ClickEvent.create({
         tenantId: target.tenantId,
         batchId: target.batchId,
@@ -624,15 +654,27 @@ router.post("/:token/confirm", async (req, res) => {
         userAgent: ua || undefined,
         ip: ip || undefined,
         isLikelyBot: true,
-        kind:
-          !ip || !ua
-            ? "missing-ip-ua"
-            : uaSuspect
-            ? "ua-suspect"
-            : !humanish
-            ? "headers-robotic"
-            : "needs-strong-interaction",
+        kind: reason,
       }).catch(() => {});
+      try {
+        if (NOTIFY_SUSPECT && shouldNotify(`suspect:${token}`, 15000)) {
+          const embed = {
+            title: "Clic suspect bloqué",
+            description: `Raison: ${reason}`,
+            color: 0xef4444, // rouge
+            timestamp: new Date().toISOString(),
+            fields: [
+              { name: "Batch", value: String(target.batchId || '—'), inline: true },
+              { name: "Employé", value: String(target.employeeId || '—'), inline: true },
+              { name: "IP", value: ip || '—', inline: true },
+              { name: "UA", value: ua ? ua.slice(0, 160) : '—', inline: false },
+            ],
+          };
+          notifyDiscord({ content: null, embeds: [embed] });
+        }
+      } catch (e) {
+        console.warn("[discord] suspect notify error:", e?.message || e);
+      }
       return res.status(202).json({ ok: false, reason: "suspect" });
     }
 

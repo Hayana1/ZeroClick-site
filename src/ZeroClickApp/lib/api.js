@@ -110,4 +110,7 @@ export const api = {
       method: "POST",
       body: JSON.stringify({ sendId, scenarioId, totalScore }),
     }),
+
+  // Training: infos employé par sendId (pour header gamifié)
+  getTrainingSend: (sendId) => req(`/training/send/${encodeURIComponent(sendId)}`),
 };

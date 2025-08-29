@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import scenarios from "../../../../backend/data/scenarios.json";
 import { api } from "../../lib/api";
@@ -58,6 +58,10 @@ export default function TrainingOups() {
   const [ack, setAck] = useState("");
   const [totalPoints, setTotalPoints] = useState(null);
   const [earnedPoints, setEarnedPoints] = useState(0);
+  const [employeeName, setEmployeeName] = useState("");
+  const [recentHistory, setRecentHistory] = useState([]);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const firstName = useMemo(() => (employeeName || "").split(" ")[0] || "", [employeeName]);
 
   const scenario = useMemo(
     () => scenarios.find((s) => s.id === scenarioId) || null,
@@ -77,6 +81,24 @@ export default function TrainingOups() {
   const progressPct = totalMcq
     ? Math.round((answeredCount / totalMcq) * 100)
     : 0;
+
+  // Charger infos employé (points + historique) via sendId
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      if (!sendId) return;
+      try {
+        const data = await api.getTrainingSend(sendId);
+        if (!mounted) return;
+        setEmployeeName(data?.employee?.name || "");
+        setTotalPoints(data?.employee?.trainingPoints ?? null);
+        setRecentHistory(Array.isArray(data?.employee?.trainingHistory) ? data.employee.trainingHistory : []);
+      } catch (_) {}
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [sendId]);
 
   async function onComplete() {
     setSaving(true);
@@ -103,6 +125,15 @@ export default function TrainingOups() {
         setTotalPoints(res.totalPoints);
         setEarnedPoints(res.pointsEarned || 0);
         setAck(`+${res.pointsEarned || 0} pts · total ${res.totalPoints}`);
+        // Confetti si seuil franchi
+        const prev = Number(totalPoints || 0);
+        const next = Number(res.totalPoints || 0);
+        const milestones = [50, 100, 200, 300, 500];
+        const crossed = milestones.find((m) => prev < m && next >= m);
+        if (crossed) {
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 1500);
+        }
       } else {
         setAck(res?.rewardXp ? `+${res.rewardXp} XP` : "Enregistré ✅");
       }
@@ -137,7 +168,7 @@ export default function TrainingOups() {
       <section className="mx-auto max-w-6xl px-6 pt-10 md:pt-14">
         <div className="flex flex-col items-center text-center">
           <div className="text-3xl md:text-4xl lg:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-indigo-300">
-            Oups ! Vous avez cliqué…
+            {firstName ? `Oups ${firstName}, tu es tombé dans le piège…` : "Oups ! Vous avez cliqué…"}
           </div>
           <div className="mt-6 opacity-90">
             <PixelIcon name="boo" size={120} />
@@ -179,7 +210,7 @@ export default function TrainingOups() {
                 )}
               </div>
             </div>
-            <div className="w-full md:w-64">
+            <div className="w-full md:w-72">
               <div className="text-xs text-gray-400 mb-1">Progression</div>
               <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden border border-gray-700">
                 <div
@@ -201,6 +232,36 @@ export default function TrainingOups() {
               {error && (
                 <div className="mt-2 text-xs text-red-400">{error}</div>
               )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gamified summary card */}
+      <section className="mx-auto max-w-4xl px-6 mt-6">
+        <div className="rounded-2xl border border-gray-700 bg-gray-900/70 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="text-sm text-gray-300">
+              <span className="mr-2">🏆 Niveau:</span>
+              <span className="font-semibold text-indigo-300">
+                {(() => {
+                  const p = Number(totalPoints || 0);
+                  if (p >= 200) return "3";
+                  if (p >= 100) return "2";
+                  if (p >= 50) return "1";
+                  return "0";
+                })()}
+              </span>
+            </div>
+            <div className="text-sm text-gray-300">
+              <span className="mr-2">📜 Derniers scénarios:</span>
+              <span className="font-mono text-gray-200">
+                {recentHistory && recentHistory.length
+                  ? recentHistory
+                      .map((h) => `${h.scenarioId}${typeof h.score === "number" ? `(+${h.score})` : ""}`)
+                      .join(" · ")
+                  : "—"}
+              </span>
             </div>
           </div>
         </div>
@@ -314,6 +375,13 @@ export default function TrainingOups() {
           </p>
         </div>
       </footer>
+
+      {/* Confetti simple */}
+      {showConfetti && (
+        <div className="pointer-events-none fixed inset-0 z-50">
+          <div className="absolute inset-0 animate-pulse" style={{ background: "radial-gradient(ellipse at center, rgba(99,102,241,0.25), transparent 60%)" }} />
+        </div>
+      )}
 
       <style>{`
         body { font-family: "Titillium Web", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Cantarell, Noto Sans, sans-serif; }

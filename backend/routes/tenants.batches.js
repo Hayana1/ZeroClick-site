@@ -353,8 +353,11 @@ router.get("/:tenantId/batches/:batchId/targets", async (req, res) => {
     { batchId },
     { employeeId: 1, token: 1 }
   ).lean();
-  const BASE = process.env.PUBLIC_TRACK_BASE_URL || "http://localhost:7300/api";
-  const ROOT = BASE.replace(/\/?api$/, "");
+  // Déterminer dynamiquement l'origine si l'env n'est pas défini
+  const fromEnv = process.env.PUBLIC_TRACK_BASE_URL;
+  const ROOT = fromEnv
+    ? fromEnv.replace(/\/?api$/, "")
+    : `${(req.get("x-forwarded-proto") || req.protocol)}://${req.get("host")}`;
   res.json(
     targets.map((t) => ({
       employeeId: t.employeeId.toString(),

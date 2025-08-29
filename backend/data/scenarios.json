@@ -235,5 +235,290 @@
       ],
       "reward": { "xp": 50, "badge": "Bouclier Direction" }
     }
+  },
+  {
+    "id": "it.gdocs.share.v1",
+    "name": "Google Docs – Document partagé",
+    "category": "it-saas",
+    "difficulty": 2,
+    "email": {
+      "subject": "[Google Drive] Un document a été partagé avec vous",
+      "html": "<html><body><p>Bonjour,</p><p><strong>Thomas</strong> a partagé un document avec vous : <em>Budget prévisionnel Q4</em>.</p><p>Accédez au document via le lien sécurisé ci-dessous :</p><a href='https://drive-docs-share-secure.com/open?id=1A2B3C'>Ouvrir dans Google Docs</a><p>— L’équipe Google Drive</p></body></html>"
+    },
+    "training": {
+      "id": "tb.it.gdocs.share.v1",
+      "title": "Liens Drive imités",
+      "steps": [
+        { "type": "tip", "title": "Vérifier l’URL exacte du domaine Google", "content": "drive.google.com / docs.google.com uniquement", "points": 15 },
+        { "type": "mcq", "title": "Quel réflexe adopter ?", "options": ["Se connecter via le lien", "Ouvrir Google Drive depuis vos favoris et rechercher le fichier"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 25, "badge": "Œil SaaS" }
+    }
+  },
+  {
+    "id": "it.slack.invite.v1",
+    "name": "Slack – Invitation à un espace",
+    "category": "it-saas",
+    "difficulty": 2,
+    "email": {
+      "subject": "Invitation à rejoindre l’espace Slack ACME",
+      "html": "<html><body><p>Bonjour,</p><p>Vous avez été invité à rejoindre l’espace Slack <strong>ACME</strong>.</p><a href='https://slack-workspace-join.app/invite/abc'>Accepter l’invitation</a><p>Si vous n’êtes pas à l’origine de cette demande, ignorez ce message.</p></body></html>"
+    },
+    "training": {
+      "id": "tb.it.slack.invite.v1",
+      "title": "Invitations Slack truquées",
+      "steps": [
+        { "type": "tip", "title": "Domaine officiel Slack", "content": "slack.com, slack-files.com – pas de variantes exotiques.", "points": 15 },
+        { "type": "mcq", "title": "Comment vérifier l’invitation ?", "options": ["Cliquer directement", "Ouvrir Slack puis ajouter l’espace via le menu"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 20, "badge": "SaaS Vigilant" }
+    }
+  },
+  {
+    "id": "it.zoom.meeting.v1",
+    "name": "Zoom – Convocation de réunion",
+    "category": "it-saas",
+    "difficulty": 2,
+    "email": {
+      "subject": "Invitation à une réunion Zoom – Mise à jour sécurité",
+      "html": "<html><body><p>Bonjour,</p><p>Vous êtes convié à une réunion <strong>Zoom</strong> concernant une mise à jour de sécurité.</p><p>Date: lundi 10h00</p><a href='https://zoom-secure-join.co/session/88'>Rejoindre la réunion</a></body></html>"
+    },
+    "training": {
+      "id": "tb.it.zoom.meeting.v1",
+      "title": "Fausses invitations visio",
+      "steps": [
+        { "type": "tip", "title": "Inspecter le lien de réunion", "content": "zoom.us ou zoom.com uniquement.", "points": 15 },
+        { "type": "mcq", "title": "Premier contrôle ?", "options": ["Cliquer si l’heure est proche", "Vérifier l’expéditeur et l’URL complète"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 20, "badge": "Veilleur Visio" }
+    }
+  },
+  {
+    "id": "finance.vat.refund.v1",
+    "name": "Remboursement TVA – Message des impôts",
+    "category": "finance",
+    "difficulty": 2,
+    "email": {
+      "subject": "Avis de remboursement TVA – Action requise",
+      "html": "<html><body><p>Madame, Monsieur,</p><p>Vous êtes éligible à un remboursement de TVA de <strong>1 248,30 €</strong>.</p><p>Veuillez compléter le formulaire ci-joint pour percevoir le montant.</p><a href='https://impots-gouv-secure.net/form'>Formulaire de remboursement</a></body></html>"
+    },
+    "training": {
+      "id": "tb.finance.vat.refund.v1",
+      "title": "Faux remboursements fiscaux",
+      "steps": [
+        { "type": "tip", "title": "Autorités: vérifiez le domaine", "content": "impots.gouv.fr uniquement (certificat valide).", "points": 15 },
+        { "type": "mcq", "title": "Que faire ?", "options": ["Saisir ses coordonnées bancaires", "Contacter son SIE via le portail officiel"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 30, "badge": "Bouclier Fiscal" }
+    }
+  },
+  {
+    "id": "finance.rfp.fake.v1",
+    "name": "Appel d’offres frauduleux",
+    "category": "finance",
+    "difficulty": 3,
+    "email": {
+      "subject": "AO – Demande de devis urgente",
+      "html": "<html><body><p>Bonjour,</p><p>Dans le cadre d’un <strong>appel d’offres</strong>, merci d’envoyer un devis sous 24h pour le matériel ci-joint.</p><a href='https://rfp-portal-secure.biz/specs.pdf'>Spécifications PDF</a></body></html>"
+    },
+    "training": {
+      "id": "tb.finance.rfp.fake.v1",
+      "title": "Appels d’offres piégés",
+      "steps": [
+        { "type": "tip", "title": "Toujours valider la source", "content": "Vérifier le domaine et l’organisme porteur de l’AO.", "points": 15 },
+        { "type": "mcq", "title": "Réflexe essentiel ?", "options": ["Télécharger directement le PDF", "Vérifier l’origine via contact officiel"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 35, "badge": "Chasseur d’AO" }
+    }
+  },
+  {
+    "id": "rh.payslip.notice.v1",
+    "name": "Avis de paie électronique",
+    "category": "rh",
+    "difficulty": 2,
+    "email": {
+      "subject": "Votre bulletin de paie est disponible",
+      "html": "<html><body><p>Bonjour,</p><p>Votre <strong>bulletin de paie</strong> de ce mois est disponible.</p><a href='https://hr-pay-portal.io/document/344'>Consulter mon bulletin</a></body></html>"
+    },
+    "training": {
+      "id": "tb.rh.payslip.notice.v1",
+      "title": "Faux portails RH",
+      "steps": [
+        { "type": "tip", "title": "Portail RH officiel", "content": "Utilisez votre lien habituel, pas un lien reçu par mail.", "points": 15 },
+        { "type": "mcq", "title": "Bon réflexe ?", "options": ["Saisir ses identifiants", "Ouvrir l’appli RH interne puis consulter"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 20, "badge": "Détective RH" }
+    }
+  },
+  {
+    "id": "rh.meeting.convocation.v1",
+    "name": "Convocation RH – Entretien de suivi",
+    "category": "rh",
+    "difficulty": 2,
+    "email": {
+      "subject": "Convocation entretien – Service RH",
+      "html": "<html><body><p>Bonjour,</p><p>Vous êtes convoqué(e) à un entretien de suivi. Merci de confirmer votre présence.</p><a href='https://rh-confirm-agenda.com/rdv/12'>Confirmer ma présence</a></body></html>"
+    },
+    "training": {
+      "id": "tb.rh.meeting.convocation.v1",
+      "title": "Faux agendas RH",
+      "steps": [
+        { "type": "tip", "title": "Agenda interne", "content": "Utilisez le calendrier d’entreprise, pas un lien externe.", "points": 15 },
+        { "type": "mcq", "title": "Que faire ?", "options": ["Cliquer pour confirmer", "Contacter le RH via Teams/annuaire"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 20, "badge": "Vigilant RH" }
+    }
+  },
+  {
+    "id": "candidate.cv.docx.v1",
+    "name": "Candidature spontanée (CV .docx)",
+    "category": "candidature",
+    "difficulty": 2,
+    "email": {
+      "subject": "Candidature – Poste assistant(e) administratif(ve)",
+      "html": "<html><body><p>Bonjour,</p><p>Veuillez trouver en pièce jointe mon <strong>CV</strong>.</p><a href='https://cv-share-cloud.net/CV_Marie_Durand.docx'>Télécharger le CV</a></body></html>"
+    },
+    "training": {
+      "id": "tb.candidate.cv.docx.v1",
+      "title": "Pièces jointes piégées",
+      "steps": [
+        { "type": "tip", "title": "Toujours analyser les pièces jointes", "content": "Privilégier l’aperçu sécurisé ou l’antivirus.", "points": 15 },
+        { "type": "mcq", "title": "Meilleure pratique ?", "options": ["Ouvrir directement", "Transférer au SI si doute"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 25, "badge": "Œil Recrutement" }
+    }
+  },
+  {
+    "id": "client.ticket.reply.v1",
+    "name": "Client – Réponse à ticket support",
+    "category": "clients",
+    "difficulty": 2,
+    "email": {
+      "subject": "[Ticket #5843] Mise à jour requise",
+      "html": "<html><body><p>Bonjour,</p><p>Merci d’ajouter les informations manquantes sur votre ticket.</p><a href='https://support-client-portal.eu/ticket/5843'>Accéder au ticket</a></body></html>"
+    },
+    "training": {
+      "id": "tb.client.ticket.reply.v1",
+      "title": "Portails client détournés",
+      "steps": [
+        { "type": "tip", "title": "Accéder via le portail officiel", "content": "N’utilisez pas un lien inconnu reçu par mail.", "points": 15 },
+        { "type": "mcq", "title": "Que vérifier ?", "options": ["Le numéro de ticket uniquement", "Le domaine exact du portail support"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 20, "badge": "Support Guard" }
+    }
+  },
+  {
+    "id": "institution.tax.notice.v1",
+    "name": "Avis officiel – Autorité fiscale",
+    "category": "institution",
+    "difficulty": 3,
+    "email": {
+      "subject": "Notification officielle – Mise à jour dossier entreprise",
+      "html": "<html><body><p>Madame, Monsieur,</p><p>Veuillez mettre à jour votre dossier pour éviter pénalités.</p><a href='https://notification-fiscale-gouv.com/update'>Mettre à jour</a></body></html>"
+    },
+    "training": {
+      "id": "tb.institution.tax.notice.v1",
+      "title": "Imitations d’autorités",
+      "steps": [
+        { "type": "tip", "title": "Cachet numérique & domaine", "content": "Toujours contrôler l’URL + certificat.", "points": 15 },
+        { "type": "mcq", "title": "Action correcte ?", "options": ["Remplir le formulaire", "Se connecter au portail officiel via adresse connue"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 35, "badge": "Bouclier Institution" }
+    }
+  },
+  {
+    "id": "it.onedrive.share.v1",
+    "name": "OneDrive – Fichier partagé",
+    "category": "it-saas",
+    "difficulty": 2,
+    "email": {
+      "subject": "Un fichier a été partagé avec vous",
+      "html": "<html><body><p>Bonjour,</p><p>Un document confidentiel a été partagé via OneDrive.</p><a href='https://onedrive-docs-secure.net/view/998'>Voir le document</a></body></html>"
+    },
+    "training": {
+      "id": "tb.it.onedrive.share.v1",
+      "title": "Partage cloud trompeur",
+      "steps": [
+        { "type": "tip", "title": "Ne vous fiez pas au logo seul", "content": "Vérifiez le domaine + connexion SSO habituelle.", "points": 15 },
+        { "type": "mcq", "title": "Premier test ?", "options": ["Cliquer et voir", "Rejoindre OneDrive via portail entreprise"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 20, "badge": "Cloud Alerte" }
+    }
+  },
+  {
+    "id": "it.github.alert.v1",
+    "name": "GitHub – Alerte de sécurité",
+    "category": "it-saas",
+    "difficulty": 3,
+    "email": {
+      "subject": "[GitHub] Alerte critique sur votre dépôt",
+      "html": "<html><body><p>Une vulnérabilité a été détectée dans votre dépôt <strong>acme/web</strong>.</p><a href='https://github-secure-alerts.dev/adv/123'>Voir l’alerte</a></body></html>"
+    },
+    "training": {
+      "id": "tb.it.github.alert.v1",
+      "title": "Faux avis sécurité DevOps",
+      "steps": [
+        { "type": "tip", "title": "Jamais se connecter via lien inconnu", "content": "Ouvrir github.com et vérifier les alertes.", "points": 15 },
+        { "type": "mcq", "title": "Bon réflexe ?", "options": ["Répondre au mail", "Vérifier depuis GitHub → Security"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 30, "badge": "DevSec Aware" }
+    }
+  },
+  {
+    "id": "it.password.manager.v1",
+    "name": "Gestionnaire de mots de passe – Demande de réauth",
+    "category": "it-saas",
+    "difficulty": 3,
+    "email": {
+      "subject": "[Vault] Session expirée – Connectez‑vous",
+      "html": "<html><body><p>Votre session a expiré. Pour continuer, reconnectez-vous.</p><a href='https://vault-auth-secure.app/login'>Se reconnecter</a></body></html>"
+    },
+    "training": {
+      "id": "tb.it.password.manager.v1",
+      "title": "Réauthentifications piégées",
+      "steps": [
+        { "type": "tip", "title": "Utilisez l’app dédiée", "content": "Ouvrez directement votre gestionnaire, pas un lien.", "points": 15 },
+        { "type": "mcq", "title": "Réflexe sécurité ?", "options": ["Cliquer si urgent", "Vérifier depuis l’app locale/SaaS connu"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 30, "badge": "Keeper Safe" }
+    }
+  },
+  {
+    "id": "exec.ceofraud.invoice.v1",
+    "name": "Fraude direction – Facture confidentielle",
+    "category": "executive",
+    "difficulty": 3,
+    "email": {
+      "subject": "Urgent – Traitement d’une facture confidentielle",
+      "html": "<html><body><p>Je suis en déplacement. Merci de régler la facture jointe aujourd’hui même.</p><a href='https://exec-approval-secure.pro/invoice.pdf'>Voir la facture</a><p>— Direction</p></body></html>"
+    },
+    "training": {
+      "id": "tb.exec.ceofraud.invoice.v1",
+      "title": "Factures secrètes et pression hiérarchique",
+      "steps": [
+        { "type": "tip", "title": "Toujours valider via un canal secondaire", "content": "Appeler l’assistant/la direction.", "points": 15 },
+        { "type": "mcq", "title": "Bonne pratique ?", "options": ["Payer en urgence", "Valider la demande via un contact connu"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 35, "badge": "Bouclier Direction" }
+    }
+  },
+  {
+    "id": "institution.police.summons.v1",
+    "name": "Convocation police – Notification",
+    "category": "institution",
+    "difficulty": 3,
+    "email": {
+      "subject": "Convocation officielle – Veuillez prendre connaissance",
+      "html": "<html><body><p>Une convocation est émise à votre nom. Consultez-la dès que possible.</p><a href='https://convocation-police-info.org/notice/77'>Voir la convocation</a></body></html>"
+    },
+    "training": {
+      "id": "tb.institution.police.summons.v1",
+      "title": "Tentatives d’intimidation officielles",
+      "steps": [
+        { "type": "tip", "title": "Privilégier les canaux officiels", "content": "Appeler le commissariat avec un numéro connu.", "points": 15 },
+        { "type": "mcq", "title": "Premier réflexe ?", "options": ["Cliquer pour voir", "Vérifier l’authenticité via un canal vérifié"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 35, "badge": "Bouclier Institution" }
+    }
   }
 ]
