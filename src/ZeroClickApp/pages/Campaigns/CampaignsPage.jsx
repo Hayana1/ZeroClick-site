@@ -85,6 +85,8 @@ export default function CampaignsPage() {
     markLinkCopied,
     trackingLinks = {},
     fetchTrackingLinks,
+    scenarioUsageByEmployee,
+    fetchScenarioUsage,
   } = useCampaignsStore();
 
   const [q, setQ] = useState("");
@@ -133,6 +135,14 @@ export default function CampaignsPage() {
       fetchCampaigns(tenantId);
     }
   }, [tenantId, fetchEmployees, fetchCampaigns]);
+
+  useEffect(() => {
+    if (!tenantId || employees.length === 0) return;
+    fetchScenarioUsage(
+      tenantId,
+      employees.map((e) => e._id)
+    );
+  }, [tenantId, employees, fetchScenarioUsage]);
 
   // thèmes actuels de la campagne (venant du store → Mongo)
   const campaignThemes = useMemo(() => {
@@ -462,13 +472,50 @@ export default function CampaignsPage() {
                         {/* Champ de thème avec indicateur de statut */}
                         <div className="flex flex-col items-stretch lg:items-end w-full lg:w-auto max-w-full">
                           <div className="flex flex-wrap items-center gap-2 max-w-full">
-                            <ScenarioDropdown
-                              value={scenarioDrafts[groupName] || null}
-                              onChange={(val) =>
-                                handleScenarioChange(groupName, val)
+                            {(() => {
+                              // Construit l'ensemble des scénarios déjà envoyés aux employés de ce groupe
+                              const usedSet = new Set();
+                              for (const emp of rows) {
+                                const list =
+                                  scenarioUsageByEmployee?.[emp._id] || [];
+                                for (const sid of list) usedSet.add(sid);
                               }
-                            />
+                              return (
+                                <ScenarioDropdown
+                                  value={scenarioDrafts[groupName] || null}
+                                  onChange={(val) =>
+                                    handleScenarioChange(groupName, val)
+                                  }
+                                  usedScenarioIds={usedSet}
+                                />
+                              );
+                            })()}
                           </div>
+                          {(() => {
+                            const selectedScenarioId =
+                              scenarioDrafts[groupName]?.id ||
+                              campaignGroupConfigs[groupName]?.scenarioId ||
+                              "";
+                            if (!selectedScenarioId) return null;
+                            const alreadyCount = rows.filter((emp) =>
+                              (
+                                scenarioUsageByEmployee?.[emp._id] || []
+                              ).includes(selectedScenarioId)
+                            ).length;
+                            return (
+                              <div
+                                className={`text-xs mt-1 self-end ${
+                                  alreadyCount > 0
+                                    ? "text-orange-600"
+                                    : "text-green-600"
+                                }`}
+                              >
+                                {alreadyCount > 0
+                                  ? `${alreadyCount}/${rows.length} ont déjà reçu ce scénario`
+                                  : `Nouveau scénario pour ce groupe`}
+                              </div>
+                            );
+                          })()}
                           <div className="flex items-center gap-2 mt-2 max-w-full">
                             <input
                               className="w-auto max-w-full border border-gray-200 rounded-lg px-3 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"

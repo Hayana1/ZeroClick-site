@@ -11,7 +11,7 @@ Fonctions:
 - Filtres: catégorie, difficulté
 - Affiche: "category · id — name"
 */
-const ScenarioDropdown = ({ value = null, onChange }) => {
+const ScenarioDropdown = ({ value = null, onChange, usedScenarioIds }) => {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState("Toutes");
   const [diff, setDiff] = useState("Toutes");
@@ -50,10 +50,13 @@ const ScenarioDropdown = ({ value = null, onChange }) => {
           list="scenario-options"
         />
         <datalist id="scenario-options">
-          {filtered.map((s) => (
-            <option key={s.id} value={`${s.category} · ${s.id} — ${s.name}`} />
-          ))}
-        </datalist>
+        {filtered.map((s) => (
+          <option
+            key={s.id}
+            value={`${s.category} · ${s.id} — ${s.name}${usedScenarioIds && (usedScenarioIds.has?.(s.id) || usedScenarioIds[s.id]) ? " · déjà envoyé" : ""}`}
+          />
+        ))}
+      </datalist>
       </div>
 
       <select
@@ -94,11 +97,15 @@ const ScenarioDropdown = ({ value = null, onChange }) => {
         }}
       >
         <option value="">— Aucun scénario —</option>
-        {filtered.map((s) => (
-          <option key={s.id} value={s.id}>
-            {`${s.category} · ${s.id} — ${s.name}`}
-          </option>
-        ))}
+        {filtered.map((s) => {
+          const used = !!(usedScenarioIds && (usedScenarioIds.has?.(s.id) || usedScenarioIds[s.id]));
+          const label = `${s.category} · ${s.id} — ${s.name}${used ? " · déjà envoyé" : ""}`;
+          return (
+            <option key={s.id} value={s.id} data-used={used}>
+              {label}
+            </option>
+          );
+        })}
       </select>
     </div>
   );

@@ -68,6 +68,13 @@ export const api = {
     }),
 
   getTargets: (tid, bid) => req(`/tenants/${tid}/batches/${bid}/targets`),
+  // Usage de scénarios par employé (pour marquage UI)
+  getScenarioUsage: (tid, employeeIds = []) => {
+    const q = Array.isArray(employeeIds) && employeeIds.length
+      ? `?employeeIds=${employeeIds.join(',')}`
+      : '';
+    return req(`/tenants/${tid}/scenario-usage${q}`);
+  },
 
   // Thèmes (persistés dans Batch.themesByGroup)
   patchTheme: (tid, bid, groupName, value) =>

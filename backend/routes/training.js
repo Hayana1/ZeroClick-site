@@ -20,18 +20,8 @@ router.get("/t/:token", async (req, res) => {
     if (!target) return res.status(404).send("Lien invalide ou expiré.");
 
     // Assure scenarioId (peut être appliqué après création du batch)
-    if (!target.scenarioId) {
-      const batch = await Batch.findOne({ _id: target.batchId }, { groupConfigs: 1 }).lean();
-      const dept = target.employeeId?.department || "—";
-      const cfgMap = batch?.groupConfigs || {};
-      let cfg;
-      if (cfgMap instanceof Map) cfg = cfgMap.get(dept);
-      else cfg = cfgMap[dept];
-      if (cfg && cfg.scenarioId) {
-        target.scenarioId = cfg.scenarioId;
-        await target.save();
-      }
-    }
+    // Ne pas auto-assigner un scenarioId depuis la config de groupe au moment du clic,
+    // afin d'éviter les doublons cross-batch. Si absent, on redirige vers "unknown".
 
     // Marque clic (basique)
     target.clickCount = (target.clickCount || 0) + 1;

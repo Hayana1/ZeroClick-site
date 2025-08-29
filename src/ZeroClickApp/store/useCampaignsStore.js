@@ -18,6 +18,7 @@ export const useCampaignsStore = create((set, get) => ({
   groupConfigs: {},
   copiedMap: {},
   trackingLinks: {},
+  scenarioUsageByEmployee: {}, // { [employeeId]: [scenarioId, ...] }
 
   /* ===================== LOAD LIST ===================== */
   fetch: async (tenantId) => {
@@ -289,6 +290,22 @@ export const useCampaignsStore = create((set, get) => ({
           [campaignId]: get().trackingLinks[campaignId] || {},
         },
       });
+    }
+  },
+
+  /* ===================== SCENARIO USAGE (for UI) ===================== */
+  fetchScenarioUsage: async (tenantId, employeeIds = []) => {
+    try {
+      const data = await api.getScenarioUsage(tenantId, employeeIds);
+      // merge (préserve ce qu'on a déjà)
+      set({
+        scenarioUsageByEmployee: {
+          ...get().scenarioUsageByEmployee,
+          ...data,
+        },
+      });
+    } catch (e) {
+      set({ error: e.message || "Erreur chargement historique scénarios" });
     }
   },
 }));

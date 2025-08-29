@@ -282,10 +282,20 @@ router.patch("/:tenantId/batches/:batchId/group-config", async (req, res) => {
       ).lean();
       const empIds = employees.map((e) => e._id);
       if (empIds.length) {
-        await Target.updateMany(
-          { batchId, tenantId, employeeId: { $in: empIds } },
-          { $set: { scenarioId: config.scenarioId } }
-        );
+        // Exclure ceux ayant déjà reçu ce scenarioId par le passé (tous batches)
+        const already = await Target.distinct("employeeId", {
+          tenantId,
+          employeeId: { $in: empIds },
+          scenarioId: config.scenarioId,
+        });
+        const alreadySet = new Set((already || []).map(String));
+        const eligible = empIds.filter((id) => !alreadySet.has(String(id)));
+        if (eligible.length) {
+          await Target.updateMany(
+            { batchId, tenantId, employeeId: { $in: eligible } },
+            { $set: { scenarioId: config.scenarioId } }
+          );
+        }
       }
     } catch (e) {
       console.warn("Propagation scenarioId -> Targets échouée:", e.message);

@@ -53,5 +53,12 @@ TargetSchema.index(
 );
 TargetSchema.index({ tenantId: 1, batchId: 1 });
 TargetSchema.index({ token: 1 }, { unique: true });
+// Empêche de ré-attribuer le même scénario au même employé (tous batches)
+TargetSchema.index(
+  { tenantId: 1, employeeId: 1, scenarioId: 1 },
+  { unique: true, partialFilterExpression: { scenarioId: { $type: "string" } } }
+);
+// Accélère la recherche du dernier envoi pour cooldowns
+TargetSchema.index({ tenantId: 1, employeeId: 1, sentAt: -1 });
 
 module.exports = mongoose.model("Target", TargetSchema);

@@ -94,6 +94,7 @@ async function start() {
     app.use("/api/batches", require("./routes/batches"));
     app.use("/api/clicks", require("./routes/clicks"));
     app.use("/api", require("./routes/results"));
+    app.use("/api/tenants", require("./routes/tenants.scenarios"));
     app.use("/api/tracking", require("./routes/tracking.misc"));
     app.use(require("./routes/training"));
 
