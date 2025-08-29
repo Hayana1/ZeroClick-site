@@ -5,8 +5,6 @@ import "./App.css";
 import LandingPage from "./pages/LandingPage";
 import ContactForm from "./pages/Form";
 
-import TrainingOups from "./ZeroClickApp/pages/Training/Oups";
-
 import AppRouter from "./ZeroClickApp/AppRouter";
 import TrainingOups from "./ZeroClickApp/pages/Training/Oups";
 
