@@ -111,6 +111,8 @@ export default function CampaignsPage() {
   const [activeView, setActiveView] = useState({}); // { [groupName]: 'editor' | 'preview' }
   const [mjmlErrors, setMjmlErrors] = useState({}); // { [groupName]: array|string }
   const [mjmlOpen, setMjmlOpen] = useState({}); // { [groupName]: boolean }
+  const [aiLoading, setAiLoading] = useState({}); // { [groupName]: boolean }
+  const [aiError, setAiError] = useState({}); // { [groupName]: string }
 
   // ✅ compute activeCampaign BEFORE any effect that uses it
   const activeCampaign = useMemo(
@@ -844,6 +846,55 @@ export default function CampaignsPage() {
                           </div>
                           {(activeView[groupName] || 'editor') === 'editor' && (
                             <div>
+                              <div className="flex items-center gap-2 mb-2 text-xs text-gray-600">
+                                <span>Scénario:</span>
+                                <span className="font-mono">{(
+                                  scenarioDrafts[groupName]?.id ||
+                                  campaignGroupConfigs[groupName]?.scenarioId ||
+                                  '—'
+                                )}</span>
+                                <span className="mx-2 text-gray-300">•</span>
+                                <span>Locale: fr</span>
+                              </div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <button
+                                  className="px-3 py-1.5 text-xs rounded bg-purple-600 text-white hover:bg-purple-700 disabled:opacity-60"
+                                  disabled={!!aiLoading[groupName]}
+                                  onClick={async () => {
+                                    setAiError((e) => ({ ...e, [groupName]: '' }));
+                                    setAiLoading((s) => ({ ...s, [groupName]: true }));
+                                    try {
+                                      const sid =
+                                        scenarioDrafts[groupName]?.id ||
+                                        campaignGroupConfigs[groupName]?.scenarioId || '';
+                                      if (!sid) throw new Error('Sélectionne d’abord un scénario');
+                                      const actionUrl = 'https://example.com/action';
+                                      const mj = await useCampaignsStore
+                                        .getState()
+                                        .generateMjml(tenantId, activeCampaign._id, groupName, {
+                                          scenarioId: sid,
+                                          locale: 'fr',
+                                          tone: 'formal',
+                                          ctaLabel: 'Confirmer la mise à jour',
+                                          actionUrl,
+                                          fallbackLogoUrl: 'https://via.placeholder.com/120x40?text=Logo',
+                                        });
+                                      setMjmlDrafts((s) => ({ ...s, [groupName]: mj }));
+                                      setActiveView((v) => ({ ...v, [groupName]: 'editor' }));
+                                    } catch (e) {
+                                      setAiError((er) => ({ ...er, [groupName]: e.message || 'Échec génération IA' }));
+                                      alert(`Échec génération IA: ${e.message || ''}`);
+                                    } finally {
+                                      setAiLoading((s) => ({ ...s, [groupName]: false }));
+                                    }
+                                  }}
+                                >
+                                  {aiLoading[groupName] ? 'Génération…' : 'Générer avec IA'}
+                                </button>
+                                {aiError[groupName] && (
+                                  <span className="text-xs text-red-600">{aiError[groupName]}</span>
+                                )}
+                              </div>
                               <textarea
                                 className="w-full h-48 border rounded-lg p-3 font-mono text-xs"
                                 placeholder="Collez ici votre MJML…"

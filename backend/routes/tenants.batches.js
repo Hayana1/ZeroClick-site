@@ -7,6 +7,8 @@ const Batch = require("../models/Batch");
 const Employee = require("../models/Employee");
 const Target = require("../models/Target");
 const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
 
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -470,5 +472,152 @@ router.patch("/:tenantId/batches/:batchId/mjml/save", async (req, res) => {
     return res.json({ ok: true, emailTemplates: out });
   } catch (e) {
     return res.status(500).json({ error: e.message || "Erreur sauvegarde MJML" });
+  }
+});
+
+/* -------------------------------------------
+ * AI: Génération MJML depuis scénario/brand
+ * POST /api/tenants/:tenantId/batches/:batchId/ai/generate-mjml
+ * body: { groupName, scenarioId, brandId?, locale?, tone?, ctaLabel?, actionUrl, fallbackLogoUrl?, dryRun? }
+ * ----------------------------------------- */
+const aiIpHits = new Map(); // ip -> [timestamps]
+function allowAI(ip, limit = 5, windowMs = 60_000) {
+  const now = Date.now();
+  const arr = aiIpHits.get(ip) || [];
+  const recent = arr.filter((t) => now - t < windowMs);
+  recent.push(now);
+  aiIpHits.set(ip, recent);
+  return recent.length <= limit;
+}
+
+function loadScenarios() {
+  try {
+    const p = path.join(__dirname, "../data/scenarios.json");
+    const raw = fs.readFileSync(p, "utf8");
+    return JSON.parse(raw);
+  } catch (e) {
+    return [];
+  }
+}
+
+function pickScenarioInfo(scenarios, scenarioId) {
+  const s = (scenarios || []).find((x) => x.id === scenarioId);
+  if (!s) return null;
+  return {
+    id: s.id,
+    name: s.name || s.id,
+    category: s.category || "",
+    emailSubject: (s.email && s.email.subject) || "",
+    trainingTitle: (s.training && s.training.title) || "",
+  };
+}
+
+router.post("/:tenantId/batches/:batchId/ai/generate-mjml", async (req, res) => {
+  try {
+    const { tenantId, batchId } = req.params;
+    const {
+      groupName = "",
+      scenarioId = "",
+      brandId,
+      locale = "fr",
+      tone = "formal",
+      ctaLabel = "Confirmer la mise à jour",
+      actionUrl = "https://example.com/action",
+      fallbackLogoUrl = "https://via.placeholder.com/120x40?text=Logo",
+      dryRun = false,
+    } = req.body || {};
+
+    if (!isValidId(tenantId) || !isValidId(batchId)) {
+      return res.status(400).json({ error: "IDs invalides" });
+    }
+    const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket?.remoteAddress || "";
+    if (!allowAI(ip)) return res.status(429).json({ error: "Rate limit" });
+
+    // Charger scénario
+    if (!scenarioId) return res.status(400).json({ error: "scenarioId requis" });
+    const scenarios = loadScenarios();
+    const scen = pickScenarioInfo(scenarios, scenarioId);
+    if (!scen) return res.status(404).json({ error: "Scenario inconnu" });
+
+    // Brand (placeholder: utiliser fallback si pas d’infrastructure brand)
+    const brand = {
+      displayName: groupName || "Votre entreprise",
+      logoUrl: fallbackLogoUrl,
+      colorPrimary: "#2563eb",
+      colorAccent: "#111827",
+    };
+
+    if (dryRun) {
+      return res.json({
+        mjml:
+          "<mjml><mj-head><mj-preview>Exemple</mj-preview><mj-attributes><mj-all font-family=\"Inter, Arial, sans-serif\"/></mj-attributes></mj-head><mj-body><mj-section><mj-column><mj-text>Exemple MJML (dryRun)</mj-text><mj-button href=\"" +
+          actionUrl +
+          "\" background-color=\"" +
+          brand.colorPrimary +
+          "\">" +
+          ctaLabel +
+          "</mj-button></mj-column></mj-section></mj-body></mjml>",
+      });
+    }
+
+    const OPENAI_API = process.env.OPENAI_API;
+    if (!OPENAI_API) return res.status(500).json({ error: "OPENAI_API manquant" });
+
+    const systemPrompt = [
+      "Tu es un assistant d’emailing.",
+      "Tu renvoies UNIQUEMENT du MJML valide, sans commentaires, sans backticks, sans <script>.",
+      "Le MJML doit être responsive, compatible Outlook, ratio texte/images correct, preheader, CTA bulletproof.",
+      "Aucune URL tierce non-HTTPS, pas de tracking visible, le href du CTA utilise actionUrl.",
+      "Utilise <mj-attributes> avec Inter, Arial, sans-serif.",
+      "Inclure <mj-preview>.",
+      "Palette: bouton = colorPrimary, accents = colorAccent.",
+      "Ajouter une section ‘note’ ou ‘muted’ si pertinent, lien texte légitime (href=actionUrl), footer discret + disclaimer.",
+    ].join(" ");
+
+    const userPrompt = [
+      `Locale: ${locale}. Ton: ${tone}.`,
+      `Scénario: ${scen.name} (catégorie ${scen.category}). Sujet: ${scen.emailSubject}.`,
+      `Brand: ${brand.displayName} (logo: ${brand.logoUrl}, couleurs: ${brand.colorPrimary} / ${brand.colorAccent}).`,
+      `CTA: ${ctaLabel} → ${actionUrl}.`,
+      `Contraintes: <mj-attributes> Inter/Arial, <mj-preview>, bouton aux couleurs, section note/muted, lien texte vers actionUrl, footer discret, pas de <script> ni ressources lourdes.`,
+      `Réponds uniquement par du MJML.`,
+    ].join("\n");
+
+    const model = process.env.OPENAI_MODEL || "gpt-4o-mini";
+    const r = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${OPENAI_API}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0.5,
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        max_tokens: 3500,
+      }),
+    });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      const msg = data?.error?.message || `OpenAI HTTP ${r.status}`;
+      return res.status(502).json({ error: msg });
+    }
+    let text = data?.choices?.[0]?.message?.content || "";
+    text = String(text || "").trim();
+
+    // Garde-fous de sortie
+    const tooLarge = text.length > 30_000; // ~30KB
+    const hasScript = /<script[\s>]/i.test(text) || /javascript\s*:/i.test(text) || /onerror\s*=|onload\s*=/i.test(text);
+    const looksMjml = /^<mjml[\s>]/i.test(text) && /<mj-body[\s>]/i.test(text);
+    if (tooLarge || hasScript || !looksMjml) {
+      return res.status(422).json({ error: "Contenu non conforme (pas de MJML valide ou contenu interdit)." });
+    }
+
+    return res.json({ mjml: text });
+  } catch (e) {
+    return res.status(500).json({ error: e.message || "Erreur génération IA" });
   }
 });

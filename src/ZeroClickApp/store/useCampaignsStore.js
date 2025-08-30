@@ -341,4 +341,17 @@ export const useCampaignsStore = create((set, get) => ({
     });
     return res;
   },
+
+  /* ===================== AI GENERATE MJML ===================== */
+  generateMjml: async (
+    tenantId,
+    campaignId,
+    groupName,
+    params = {}
+  ) => {
+    const payload = { groupName, ...params };
+    const res = await api.generateMjml(tenantId, campaignId, payload);
+    const mjml = String(res?.mjml || "");
+    return mjml;
+  },
 }));

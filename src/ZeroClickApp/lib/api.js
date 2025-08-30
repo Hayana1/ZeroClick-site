@@ -79,6 +79,11 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify(body || {}),
     }),
+  generateMjml: (tid, bid, body) =>
+    req(`/tenants/${tid}/batches/${bid}/ai/generate-mjml`, {
+      method: 'POST',
+      body: JSON.stringify(body || {}),
+    }),
   // Usage de scénarios par employé (pour marquage UI)
   getScenarioUsage: (tid, employeeIds = []) => {
     const q = Array.isArray(employeeIds) && employeeIds.length

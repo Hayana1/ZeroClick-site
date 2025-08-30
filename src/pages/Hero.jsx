@@ -140,7 +140,7 @@ export default function Hero() {
       <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 h-3/5 bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] rounded-full filter blur-[100px] opacity-3" />
 
       <div className="relative max-w-4xl mx-auto z-10">
-        <div className="inline-flex items-center px-6 py-3 mb-10 rounded-full bg-[#8A4FFF]/10 border border-[#8A4FFF]/20 text-[#D9C7FF] text-lg font-medium backdrop-blur-md transition-all hover:bg-[#8A4FFF]/15 hover:border-[#8A4FFF]/40 animate-bounce-in">
+        <div className="inline-flex items-center px-6 py-3 mb-10 rounded-full bg-[#8A4FFF]/10 border border-[#8A4FFF]/20 text-[#D9C7FF] text-sm md:text-base font-medium backdrop-blur-md transition-all hover:bg-[#8A4FFF]/15 hover:border-[#8A4FFF]/40 animate-bounce-in">
           <CheckCircle
             className="w-5 h-5 mr-2 text-[#B47AFF]"
             strokeWidth={2.5}
@@ -148,7 +148,7 @@ export default function Hero() {
           Made in Québec, not Silicon Valley
         </div>
 
-        <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-bold mb-8 leading-tight tracking-tight">
           <TypewriterText
             text="One click can cost everything."
             className="text-white font-medium block mb-4"
@@ -167,7 +167,7 @@ export default function Hero() {
           className="opacity-0 animate-fade-in"
           style={{ animationDelay: "1.8s", animationFillMode: "forwards" }}
         >
-          <p className="text-xl text-[#D9C7FF] mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-[#D9C7FF] mb-12 max-w-2xl mx-auto leading-relaxed">
             Realistic inbox scenarios that feel natural.{" "}
             <span className="font-medium bg-[#1E1B2B] px-2 py-1 rounded-md text-[#B47AFF] border border-[#3A2E5D]">
               Your team learns without pressure
@@ -182,12 +182,12 @@ export default function Hero() {
         >
           <button
             onClick={() => navigate("/Form")}
-            className="group relative overflow-hidden px-7 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-[#8A4FFF]/30 text-lg"
+            className="group relative overflow-hidden px-7 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-[#8A4FFF]/30 text-base"
           >
             <span className="relative z-10 flex items-center justify-center">
-              <PixelIcon name="sorcier-malefique" size={28} className="mr-2" />
+              <PixelIcon name="sorcier-malefique" size={24} className="mr-2" />
               Try a free simulation
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </span>
             <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
             <span className="absolute top-0 left-0 w-full h-full overflow-hidden">
@@ -264,11 +264,11 @@ export default function Hero() {
                 {feature.icon}
               </div>
 
-              <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-[#D9C7FF] transition-colors">
+              <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-[#D9C7FF] transition-colors">
                 {feature.title}
               </h3>
 
-              <p className="text-[#D1C4E9] text-base leading-relaxed">
+              <p className="text-[#D1C4E9] text-sm leading-relaxed">
                 {feature.desc}
               </p>
 
@@ -382,7 +382,7 @@ const TypewriterText = ({ text, className, delay = 0, speed = 50 }) => {
     <span className={className}>
       {displayText}
       {currentIndex < text.length && (
-        <span className="inline-block w-0.5 h-6 ml-0.5 bg-current animate-pulse align-middle"></span>
+        <span className="inline-block w-0.5 h-5 ml-0.5 bg-current animate-pulse align-middle"></span>
       )}
     </span>
   );
