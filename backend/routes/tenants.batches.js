@@ -6,6 +6,7 @@ const router = express.Router({ mergeParams: true });
 const Batch = require("../models/Batch");
 const Employee = require("../models/Employee");
 const Target = require("../models/Target");
+const crypto = require("crypto");
 
 const isValidId = (id) => mongoose.Types.ObjectId.isValid(id);
 
@@ -29,6 +30,7 @@ router.get("/:tenantId/batches", async (req, res) => {
       selections: Object.fromEntries(Object.entries(b.selections || {})),
       themesByGroup: Object.fromEntries(Object.entries(b.themesByGroup || {})),
       groupConfigs: Object.fromEntries(Object.entries(b.groupConfigs || {})),
+      emailTemplates: Object.fromEntries(Object.entries(b.emailTemplates || {})),
     }));
 
     res.json(mapped);
@@ -77,6 +79,7 @@ router.post("/:tenantId/batches", async (req, res) => {
       selections: {}, // Map vide (coté mongoose)
       themesByGroup: {}, // Map vide (coté mongoose)
       groupConfigs: {}, // Map vide (coté mongoose)
+      emailTemplates: {}, // Map vide (coté mongoose)
     });
 
     // Génère les cibles (token) pour le tracking
@@ -103,6 +106,7 @@ router.post("/:tenantId/batches", async (req, res) => {
       selections: {},
       themesByGroup: {},
       groupConfigs: {},
+      emailTemplates: {},
     });
   } catch (e) {
     res.status(400).json({ error: e.message });
@@ -368,3 +372,103 @@ router.get("/:tenantId/batches/:batchId/targets", async (req, res) => {
 });
 
 module.exports = router;
+/* -------------------------------------------
+ * MJML: rendu et sauvegarde de template par groupe
+ * POST   /api/tenants/:tenantId/batches/:batchId/mjml/render
+ * PATCH  /api/tenants/:tenantId/batches/:batchId/mjml/save
+ * ----------------------------------------- */
+
+// Simple rate limit IP: 10/min
+const mjmlIpHits = new Map(); // ip -> [timestamps]
+function allowMjml(ip, limit = 10, windowMs = 60_000) {
+  const now = Date.now();
+  const arr = mjmlIpHits.get(ip) || [];
+  const recent = arr.filter((t) => now - t < windowMs);
+  recent.push(now);
+  mjmlIpHits.set(ip, recent);
+  return recent.length <= limit;
+}
+
+async function callMjmlRender({ mjmlSource }) {
+  const APP_ID = process.env.MJML_APP_ID;
+  const API_SECRET = process.env.MJML_API_SECRET;
+  if (!APP_ID || !API_SECRET) throw new Error("MJML credentials missing");
+  const auth = Buffer.from(`${APP_ID}:${API_SECRET}`).toString("base64");
+  const r = await fetch("https://api.mjml.io/v1/render", {
+    method: "POST",
+    headers: {
+      "Authorization": `Basic ${auth}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      mjml: String(mjmlSource || ""),
+      keepComments: false,
+      validationLevel: "strict",
+    }),
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const msg = data && (data.message || data.error) ? `${data.message || data.error}` : `MJML HTTP ${r.status}`;
+    throw new Error(msg);
+  }
+  return { html: data.html || "", errors: data.errors || [] };
+}
+
+router.post("/:tenantId/batches/:batchId/mjml/render", async (req, res) => {
+  try {
+    const { tenantId, batchId } = req.params;
+    const { groupName = "", mjmlSource = "" } = req.body || {};
+    if (!isValidId(tenantId) || !isValidId(batchId)) {
+      return res.status(400).json({ error: "IDs invalides" });
+    }
+    const ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket?.remoteAddress || "";
+    if (!allowMjml(ip)) return res.status(429).json({ error: "Rate limit" });
+    if (typeof mjmlSource !== "string" || mjmlSource.length === 0) {
+      return res.status(400).json({ error: "mjmlSource requis" });
+    }
+    if (mjmlSource.length > 200_000) {
+      return res.status(413).json({ error: "MJML trop volumineux (max 200KB)" });
+    }
+    // Optionnel: strip <script>
+    const sanitized = mjmlSource.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
+    const out = await callMjmlRender({ mjmlSource: sanitized });
+    return res.json(out);
+  } catch (e) {
+    return res.status(500).json({ error: e.message || "Erreur rendu MJML" });
+  }
+});
+
+router.patch("/:tenantId/batches/:batchId/mjml/save", async (req, res) => {
+  try {
+    const { tenantId, batchId } = req.params;
+    const { groupName = "", mjmlSource = "", htmlRendered = "", textRendered } = req.body || {};
+    if (!isValidId(tenantId) || !isValidId(batchId)) {
+      return res.status(400).json({ error: "IDs invalides" });
+    }
+    if (!groupName) return res.status(400).json({ error: "groupName requis" });
+    if (typeof mjmlSource !== "string") {
+      return res.status(400).json({ error: "mjmlSource string requis" });
+    }
+    const batch = await Batch.findOne({ _id: batchId, tenantId });
+    if (!batch) return res.status(404).json({ error: "Batch introuvable" });
+
+    const entry = {
+      mjmlSource,
+      htmlRendered: String(htmlRendered || ""),
+      updatedAt: new Date(),
+    };
+    if (typeof textRendered === "string") entry.textRendered = textRendered;
+
+    batch.emailTemplates.set(groupName, entry);
+    batch.markModified("emailTemplates");
+    await batch.save();
+
+    const out = {};
+    for (const [k, v] of (batch.emailTemplates || new Map()).entries()) {
+      out[k] = v;
+    }
+    return res.json({ ok: true, emailTemplates: out });
+  } catch (e) {
+    return res.status(500).json({ error: e.message || "Erreur sauvegarde MJML" });
+  }
+});

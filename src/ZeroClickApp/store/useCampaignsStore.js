@@ -19,6 +19,7 @@ export const useCampaignsStore = create((set, get) => ({
   copiedMap: {},
   trackingLinks: {},
   scenarioUsageByEmployee: {}, // { [employeeId]: [scenarioId, ...] }
+  emailTemplatesByCampaign: {}, // { [campaignId]: { [groupName]: { mjmlSource, htmlRendered, updatedAt } } }
 
   /* ===================== LOAD LIST ===================== */
   fetch: async (tenantId) => {
@@ -29,10 +30,12 @@ export const useCampaignsStore = create((set, get) => ({
       const sent = {};
       const themes = {};
       const configs = {};
+      const emailTpls = {};
       for (const c of rows) {
         sent[c._id] = c.selections || {};
         themes[c._id] = c.themesByGroup || {};
         configs[c._id] = c.groupConfigs || {};
+        emailTpls[c._id] = c.emailTemplates || {};
       }
 
       set({
@@ -42,6 +45,7 @@ export const useCampaignsStore = create((set, get) => ({
         themesByGroup: themes,
         loading: false,
         groupConfigs: configs,
+        emailTemplatesByCampaign: emailTpls,
       });
     } catch (e) {
       set({
@@ -78,6 +82,9 @@ export const useCampaignsStore = create((set, get) => ({
     }
     if (!groupConfigs[campaignId]) {
       set({ groupConfigs: { ...groupConfigs, [campaignId]: {} } });
+    }
+    if (!get().emailTemplatesByCampaign[campaignId]) {
+      set({ emailTemplatesByCampaign: { ...get().emailTemplatesByCampaign, [campaignId]: {} } });
     }
   },
 
@@ -307,5 +314,31 @@ export const useCampaignsStore = create((set, get) => ({
     } catch (e) {
       set({ error: e.message || "Erreur chargement historique scénarios" });
     }
+  },
+
+  /* ===================== MJML RENDER / SAVE ===================== */
+  renderMjml: async (tenantId, campaignId, groupName, mjmlSource) => {
+    const res = await api.renderMjml(tenantId, campaignId, {
+      groupName,
+      mjmlSource,
+    });
+    return res; // { html, errors }
+  },
+
+  saveMjml: async (tenantId, campaignId, groupName, mjmlSource, htmlRendered) => {
+    const res = await api.saveMjml(tenantId, campaignId, {
+      groupName,
+      mjmlSource,
+      htmlRendered,
+    });
+    // merge retour
+    const all = get().emailTemplatesByCampaign || {};
+    set({
+      emailTemplatesByCampaign: {
+        ...all,
+        [campaignId]: res.emailTemplates || all[campaignId] || {},
+      },
+    });
+    return res;
   },
 }));

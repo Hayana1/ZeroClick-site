@@ -87,6 +87,9 @@ export default function CampaignsPage() {
     fetchTrackingLinks,
     scenarioUsageByEmployee,
     fetchScenarioUsage,
+    emailTemplatesByCampaign = {},
+    renderMjml,
+    saveMjml,
   } = useCampaignsStore();
 
   const [q, setQ] = useState("");
@@ -102,6 +105,12 @@ export default function CampaignsPage() {
   const [themeDrafts, setThemeDrafts] = useState({});
   const [scenarioDrafts, setScenarioDrafts] = useState({}); // { [groupName]: { id, category } }
   const [themeSaving, setThemeSaving] = useState({});
+  // MJML UI state
+  const [mjmlDrafts, setMjmlDrafts] = useState({}); // { [groupName]: string }
+  const [previewHtml, setPreviewHtml] = useState({}); // { [groupName]: string }
+  const [activeView, setActiveView] = useState({}); // { [groupName]: 'editor' | 'preview' }
+  const [mjmlErrors, setMjmlErrors] = useState({}); // { [groupName]: array|string }
+  const [mjmlOpen, setMjmlOpen] = useState({}); // { [groupName]: boolean }
 
   // ✅ compute activeCampaign BEFORE any effect that uses it
   const activeCampaign = useMemo(
@@ -156,6 +165,11 @@ export default function CampaignsPage() {
     return (groupConfigs && groupConfigs[activeCampaign._id]) || {};
   }, [groupConfigs, activeCampaign]);
 
+  const emailTemplatesForCampaign = useMemo(() => {
+    if (!activeCampaign) return {};
+    return emailTemplatesByCampaign?.[activeCampaign._id] || {};
+  }, [activeCampaign, emailTemplatesByCampaign]);
+
   // quand on change de campagne, on recharge le buffer local avec les valeurs persistées
   useEffect(() => {
     if (!activeCampaign) return;
@@ -169,6 +183,21 @@ export default function CampaignsPage() {
     }
     setScenarioDrafts(sc);
     setThemeSaving({}); // reset des états de sauvegarde
+    // Précharger brouillons MJML et previews depuis le store
+    const tpls =
+      useCampaignsStore.getState().emailTemplatesByCampaign?.[
+        activeCampaign._id
+      ] || {};
+    const nextMjml = {};
+    const nextHtml = {};
+    for (const k of Object.keys(tpls)) {
+      nextMjml[k] = tpls[k]?.mjmlSource || "";
+      nextHtml[k] = tpls[k]?.htmlRendered || "";
+    }
+    setMjmlDrafts(nextMjml);
+    setPreviewHtml(nextHtml);
+    setActiveView({});
+    setMjmlErrors({});
   }, [activeCampaign, campaignThemes, campaignGroupConfigs]);
 
   const toggleSelectBatch = (id) => {
@@ -418,6 +447,9 @@ export default function CampaignsPage() {
                 (sentCount / Math.max(rows.length, 1)) * 100
               );
               const isPreviewing = showLinkPreviews[groupName];
+              const tpl = emailTemplatesForCampaign[groupName] || {};
+              const tplSavedAt = tpl.updatedAt ? new Date(tpl.updatedAt) : null;
+              const hasTpl = !!tpl.htmlRendered;
 
               return (
                 <section
@@ -448,100 +480,27 @@ export default function CampaignsPage() {
                           <h3 className="font-medium text-gray-900">
                             {groupName}
                           </h3>
-                          <div className="flex items-center gap-3 mt-1">
-                            <span className="text-sm text-gray-500">
-                              {rows.length} employé(s)
+                          <div className="flex items-center gap-2 mt-1 flex-wrap">
+                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
+                              <FiUsers /> {rows.length} employé(s)
                             </span>
-                            <span className="text-sm text-green-600">
-                              {sentCount} envoyé(s)
+                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                              <FiMail /> {sentCount} envoyé(s)
                             </span>
-                            <span className="text-sm text-blue-600">
-                              {progress}% complété
+                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">
+                              <FiCheckCircle /> {progress}% complété
                             </span>
                           </div>
-                          <div className="w-32 mt-1">
+                          <div className="w-40 mt-1">
                             <ProgressBar progress={progress} size="sm" />
                           </div>
                         </div>
                       </div>
 
                       <div
-                        className="flex items-start lg:items-center gap-3 flex-wrap justify-end max-w-full"
+                        className="flex items-center gap-3 flex-wrap justify-end max-w-full"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        {/* Champ de thème avec indicateur de statut */}
-                        <div className="flex flex-col items-stretch lg:items-end w-full lg:w-auto max-w-full">
-                          <div className="flex flex-wrap items-center gap-2 max-w-full">
-                            {(() => {
-                              // Construit l'ensemble des scénarios déjà envoyés aux employés de ce groupe
-                              const usedSet = new Set();
-                              for (const emp of rows) {
-                                const list =
-                                  scenarioUsageByEmployee?.[emp._id] || [];
-                                for (const sid of list) usedSet.add(sid);
-                              }
-                              return (
-                                <ScenarioDropdown
-                                  value={scenarioDrafts[groupName] || null}
-                                  onChange={(val) =>
-                                    handleScenarioChange(groupName, val)
-                                  }
-                                  usedScenarioIds={usedSet}
-                                />
-                              );
-                            })()}
-                          </div>
-                          {(() => {
-                            const selectedScenarioId =
-                              scenarioDrafts[groupName]?.id ||
-                              campaignGroupConfigs[groupName]?.scenarioId ||
-                              "";
-                            if (!selectedScenarioId) return null;
-                            const alreadyCount = rows.filter((emp) =>
-                              (
-                                scenarioUsageByEmployee?.[emp._id] || []
-                              ).includes(selectedScenarioId)
-                            ).length;
-                            return (
-                              <div
-                                className={`text-xs mt-1 self-end ${
-                                  alreadyCount > 0
-                                    ? "text-orange-600"
-                                    : "text-green-600"
-                                }`}
-                              >
-                                {alreadyCount > 0
-                                  ? `${alreadyCount}/${rows.length} ont déjà reçu ce scénario`
-                                  : `Nouveau scénario pour ce groupe`}
-                              </div>
-                            );
-                          })()}
-                          <div className="flex items-center gap-2 mt-2 max-w-full">
-                            <input
-                              className="w-auto max-w-full border border-gray-200 rounded-lg px-3 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                              placeholder="Thème…"
-                              value={draftValue}
-                              onChange={(e) =>
-                                handleThemeChange(groupName, e.target.value)
-                              }
-                              onBlur={() => persistGroupConfig(groupName)}
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                persistGroupConfig(groupName);
-                              }}
-                              className="p-2 text-gray-500 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors"
-                              title="Sauvegarder la configuration"
-                            >
-                              <FiSave size={16} />
-                            </button>
-                          </div>
-                          <StatusIndicator status={saveState} />
-                        </div>
-
-                        {/* Actions de groupe */}
                         <GroupActions
                           onSelectAll={() => {
                             bulkSetGroupSent(
@@ -569,6 +528,79 @@ export default function CampaignsPage() {
                     </div>
                   </div>
 
+                  {/* Bandeau configuration du groupe (affiché quand développé) */}
+                  {isExpanded && (
+                    <div className="px-4 pt-3 pb-2 bg-gray-50 border-b" onClick={(e) => e.stopPropagation()}>
+                      <div className="grid gap-3 md:grid-cols-2 items-start">
+                        {/* Choix du scénario */}
+                        <div className="min-w-0">
+                          {(() => {
+                            const usedSet = new Set();
+                            for (const emp of rows) {
+                              const list = scenarioUsageByEmployee?.[emp._id] || [];
+                              for (const sid of list) usedSet.add(sid);
+                            }
+                            return (
+                              <ScenarioDropdown
+                                value={scenarioDrafts[groupName] || null}
+                                onChange={(val) => handleScenarioChange(groupName, val)}
+                                usedScenarioIds={usedSet}
+                              />
+                            );
+                          })()}
+                          {(() => {
+                            const selectedScenarioId =
+                              scenarioDrafts[groupName]?.id ||
+                              campaignGroupConfigs[groupName]?.scenarioId || "";
+                            if (!selectedScenarioId) return null;
+                            const alreadyCount = rows.filter((emp) =>
+                              (scenarioUsageByEmployee?.[emp._id] || []).includes(selectedScenarioId)
+                            ).length;
+                            const text =
+                              alreadyCount > 0
+                                ? `${alreadyCount}/${rows.length} ont déjà reçu ce scénario`
+                                : `Nouveau scénario pour ce groupe`;
+                            return (
+                              <div className="mt-2 space-y-2">
+                                <div
+                                  className={`text-xs inline-flex items-center px-2 py-0.5 rounded-full ${
+                                    alreadyCount > 0 ? 'bg-orange-100 text-orange-700' : 'bg-green-100 text-green-700'
+                                  }`}
+                                >
+                                  {text}
+                                </div>
+                                <div className="text-xs text-blue-700">
+                                  Template MJML : {hasTpl ? '✓ enregistré' : '—'}
+                                  {tplSavedAt && hasTpl ? ` (maj: ${tplSavedAt.toLocaleDateString()} ${tplSavedAt.toLocaleTimeString()})` : ''}
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+
+                        {/* Thème + sauvegarde */}
+                        <div className="flex items-center gap-2 flex-wrap md:justify-end">
+                          <input
+                            className="w-full md:w-auto border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            placeholder="Thème…"
+                            value={draftValue}
+                            onChange={(e) => handleThemeChange(groupName, e.target.value)}
+                            onBlur={() => persistGroupConfig(groupName)}
+                          />
+                          <button
+                            onClick={() => persistGroupConfig(groupName)}
+                            className="px-3 py-1.5 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
+                            title="Sauvegarder la configuration"
+                          >
+                            <span className="inline-flex items-center gap-1"><FiSave /> Sauver</span>
+                          </button>
+                          <StatusIndicator status={saveState} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* MJML panel moved below recap banner */}
                   {/* Liste des employés (contenu expandable) */}
                   {isExpanded && (
                     <>
@@ -697,28 +729,148 @@ export default function CampaignsPage() {
                         </table>
                       </div>
 
-                      {(draftValue ||
-                        scenarioDrafts[groupName]?.id ||
-                        campaignGroupConfigs[groupName]?.scenarioId) && (
-                        <div className="p-3 text-sm bg-blue-50 text-blue-800 border-t">
-                          {draftValue && (
-                            <>
-                              <span className="font-medium">
-                                Thème appliqué :
-                              </span>{" "}
-                              {draftValue}
-                            </>
+                      {(() => {
+                        const selectedScenarioId =
+                          scenarioDrafts[groupName]?.id ||
+                          campaignGroupConfigs[groupName]?.scenarioId || "";
+                        const hasTheme = Boolean(draftValue && draftValue.trim());
+                        const hasScenario = Boolean(selectedScenarioId);
+                        if (!hasTheme && !hasScenario) return null;
+                        return (
+                          <div
+                            className="p-3 text-sm bg-blue-50 text-blue-800 border-t flex items-center justify-between cursor-pointer"
+                            role="button"
+                            aria-expanded={!!mjmlOpen[groupName]}
+                            onClick={() => setMjmlOpen((s) => ({ ...s, [groupName]: !s[groupName] }))}
+                            title="Afficher/Masquer le panneau MJML"
+                          >
+                            <div className="truncate">
+                              {hasScenario && (
+                                <>
+                                  <span className="font-medium">Scénario:</span>{' '}
+                                  <span className="font-mono">{selectedScenarioId}</span>
+                                </>
+                              )}
+                              {hasScenario && hasTheme && (
+                                <span className="mx-2 text-blue-400">•</span>
+                              )}
+                              {hasTheme && (
+                                <>
+                                  <span className="font-medium">Thème:</span>{' '}
+                                  <span>{draftValue}</span>
+                                </>
+                              )}
+                            </div>
+                            <div className="ml-3 flex-shrink-0">
+                              {mjmlOpen[groupName] ? <FiChevronUp /> : <FiChevronDown />}
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                      {/* MJML panel rendered after recap banner */}
+                      {mjmlOpen[groupName] && (
+                        <div className="px-4 py-3 bg-gray-50 border-t" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center gap-3 mb-2">
+                            <button
+                              className={`px-3 py-1.5 text-xs rounded ${
+                                (activeView[groupName] || 'editor') === 'editor'
+                                  ? 'bg-blue-600 text-white'
+                                  : 'bg-white border text-gray-700'
+                              }`}
+                              onClick={() => setActiveView((s) => ({ ...s, [groupName]: 'editor' }))}
+                            >
+                              Édition MJML
+                            </button>
+                            <button
+                              className={`px-3 py-1.5 text-xs rounded ${
+                                (activeView[groupName] || 'editor') === 'preview'
+                                  ? 'bg-blue-600 text-white'
+                                  : 'bg-white border text-gray-700'
+                              }`}
+                              onClick={() => setActiveView((s) => ({ ...s, [groupName]: 'preview' }))}
+                            >
+                              Aperçu
+                            </button>
+                            <div className="ml-auto flex items-center gap-2">
+                              <button
+                                className="px-3 py-1.5 text-xs rounded bg-blue-100 text-blue-800 hover:bg-blue-200"
+                                onClick={async () => {
+                                  try {
+                                    const src = mjmlDrafts[groupName] ?? (tpl.mjmlSource || '');
+                                    const out = await renderMjml(
+                                      tenantId,
+                                      activeCampaign._id,
+                                      groupName,
+                                      src
+                                    );
+                                    setPreviewHtml((p) => ({ ...p, [groupName]: out.html || '' }));
+                                    setMjmlErrors((e) => ({ ...e, [groupName]: out.errors || [] }));
+                                    setActiveView((s) => ({ ...s, [groupName]: 'preview' }));
+                                  } catch (e) {
+                                    setMjmlErrors((m) => ({ ...m, [groupName]: [e.message || 'Erreur rendu MJML'] }));
+                                  }
+                                }}
+                              >
+                                Prévisualiser
+                              </button>
+                              <button
+                                className="px-3 py-1.5 text-xs rounded bg-blue-600 text-white hover:bg-blue-700"
+                                onClick={async () => {
+                                  try {
+                                    let html = previewHtml[groupName] || '';
+                                    const src = mjmlDrafts[groupName] ?? (tpl.mjmlSource || '');
+                                    if (!html) {
+                                      const out = await renderMjml(
+                                        tenantId,
+                                        activeCampaign._id,
+                                        groupName,
+                                        src
+                                      );
+                                      html = out.html || '';
+                                      setPreviewHtml((p) => ({ ...p, [groupName]: html }));
+                                      setMjmlErrors((e) => ({ ...e, [groupName]: out.errors || [] }));
+                                    }
+                                    await saveMjml(tenantId, activeCampaign._id, groupName, src, html);
+                                    alert('Template MJML enregistré');
+                                  } catch (e) {
+                                    alert(e.message || 'Erreur enregistrement MJML');
+                                  }
+                                }}
+                              >
+                                Enregistrer
+                              </button>
+                            </div>
+                          </div>
+                          {(activeView[groupName] || 'editor') === 'editor' && (
+                            <div>
+                              <textarea
+                                className="w-full h-48 border rounded-lg p-3 font-mono text-xs"
+                                placeholder="Collez ici votre MJML…"
+                                value={mjmlDrafts[groupName] ?? (tpl.mjmlSource || '')}
+                                onChange={(e) => setMjmlDrafts((s) => ({ ...s, [groupName]: e.target.value }))}
+                              />
+                              {Array.isArray(mjmlErrors[groupName]) && mjmlErrors[groupName].length > 0 && (
+                                <div className="mt-2 p-2 bg-orange-50 text-orange-800 text-xs rounded">
+                                  <div className="font-medium mb-1">Erreurs MJML:</div>
+                                  <ul className="list-disc pl-5">
+                                    {mjmlErrors[groupName].map((er, idx) => (
+                                      <li key={idx}>{typeof er === 'string' ? er : JSON.stringify(er)}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              )}
+                            </div>
                           )}
-                          {(scenarioDrafts[groupName]?.id ||
-                            campaignGroupConfigs[groupName]?.scenarioId) && (
-                            <>
-                              {draftValue ? " · " : ""}
-                              <span className="font-medium">
-                                Scénario :
-                              </span>{" "}
-                              {scenarioDrafts[groupName]?.id ||
-                                campaignGroupConfigs[groupName]?.scenarioId}
-                            </>
+                          {(activeView[groupName] || 'editor') === 'preview' && (
+                            <div className="border rounded-lg overflow-hidden">
+                              <iframe
+                                title={`preview-${groupName}`}
+                                className="w-full min-h-[360px] bg-white"
+                                sandbox="allow-same-origin allow-scripts"
+                                srcDoc={previewHtml[groupName] || '<p style="padding:16px;color:#666">Aucune prévisualisation encore…</p>'}
+                              />
+                            </div>
                           )}
                         </div>
                       )}

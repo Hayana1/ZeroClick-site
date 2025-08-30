@@ -46,7 +46,7 @@ console.log("CORS self origin:", SELF_ORIGIN);
 
 /* -------------------- MIDDLEWARE -------------------- */
 app.set("trust proxy", 1);
-app.use(express.json());
+app.use(express.json({ limit: '512kb' }));
 
 // CORS: autorise dynamiquement l'origine du serveur (même domaine)
 // pour éviter des 403 en prod si BASE_URL est manquant/mal configuré.
@@ -83,12 +83,20 @@ app.use((err, _req, res, next) => {
 
 /* -------------------- DB + ROUTES -------------------- */
 async function start() {
+  // Étape 1: connexion DB
   try {
     await mongoose.connect(MONGODB_URI, { dbName: MONGODB_DB });
     console.log(
       `✅ MongoDB Connected: ${mongoose.connection.host}/${mongoose.connection.name}`
     );
+  } catch (err) {
+    console.error("❌ MongoDB connection error:", err?.message || err);
+    console.error(err?.stack || "");
+    process.exit(1);
+  }
 
+  // Étape 2: initialisation des routes + server
+  try {
     // --- ROUTES ---
     app.use("/api/tenants", require("./routes/tenants"));
     app.use("/api/tenants", require("./routes/tenants.employees"));
@@ -110,7 +118,8 @@ async function start() {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   } catch (err) {
-    console.error("❌ Could not connect to MongoDB", err.message);
+    console.error("❌ Server startup error:", err?.message || err);
+    console.error(err?.stack || "");
     process.exit(1);
   }
 }

@@ -128,7 +128,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden px-6 py-24 md:py-32 text-center bg-gradient-to-b from-[#0F0F19] via-[#151221] to-[#1A1428] min-h-screen flex items-center justify-center">
+    <section className="relative overflow-hidden px-6 py-24 sm text-center bg-gradient-to-b from-[#0F0F19] via-[#151221] to-[#1A1428] min-h-screen flex items-center justify-center">
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
 
       <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#8A4FFF] rounded-full filter blur-[90px] opacity-10 animate-pulse-slow" />

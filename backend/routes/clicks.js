@@ -13,7 +13,7 @@ const { notifyDiscord } = require("../utils/discord");
 // ---------- CONFIG ----------
 const HMAC_SECRET = process.env.CLICK_HMAC_SECRET || "dev-secret-change-me";
 const CONFIRM_TTL_MS = Number(process.env.CLICK_CONFIRM_TTL_MS || 60_000);
-const MIN_DWELL_MS = Number(process.env.CLICK_MIN_DWELL_MS || 350);
+const MIN_DWELL_MS = Number(process.env.CLICK_MIN_DWELL_MS || 240);
 const REDIRECT_URL = process.env.CLICK_REDIRECT_URL || "/ok";
 
 // anti rafales (soft)
@@ -129,12 +129,38 @@ router.get("/:token", async (req, res) => {
 
   // Calcule l'URL finale de redirection (formation) pour ce token
   let computedRedirect = REDIRECT_URL;
+  // Détermine si on exige une interaction forte (période de grâce / honeypot)
+  let needsStrong = false;
   try {
-    const t = await Target.findOne({ token }, { _id: 1, scenarioId: 1 }).lean();
+    const t = await Target.findOne(
+      { token },
+      { _id: 1, scenarioId: 1, batchId: 1 }
+    ).lean();
     const FRONT = (process.env.FRONTEND_URL || "http://localhost:5173").split(",")[0].trim();
     const sid = (t && t.scenarioId) || "unknown";
     const sendId = t?._id ? String(t._id) : "";
     computedRedirect = `${FRONT.replace(/\/+$/, "")}/training/${encodeURIComponent(sid)}?send=${encodeURIComponent(sendId)}`;
+    // within grace window?
+    if (t?.batchId) {
+      const batch = await Batch.findById(t.batchId).lean().catch(() => null);
+      const sentAt = batch?.sentAt || batch?.createdAt || batch?.dateCreated || null;
+      const withinGrace = sentAt ? nowMs() - new Date(sentAt).getTime() < GRACE_WINDOW_MS : false;
+      needsStrong = needsStrong || withinGrace;
+    }
+  } catch {}
+  // honeypot touched? (mémoire process)
+  if (probedTokens.has(token)) needsStrong = true;
+
+  // Cookie de handshake (HttpOnly, Lax, durée courte)
+  try {
+    const isHttps = (req.headers['x-forwarded-proto'] || req.protocol) === 'https';
+    res.cookie("zc_hs", nonce, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: Math.min(CONFIRM_TTL_MS, 90_000),
+      path: "/",
+      secure: isHttps,
+    });
   } catch {}
 
   const html = `<!doctype html>
@@ -402,6 +428,7 @@ router.get("/:token", async (req, res) => {
       const ts = ${JSON.stringify(ts)};
       const nonce = ${JSON.stringify(nonce)};
       const minDwell = ${JSON.stringify(MIN_DWELL_MS)};
+      const needsStrong = ${JSON.stringify(needsStrong)};
       const redirectUrl = ${JSON.stringify(computedRedirect)};
   
       const btn = document.getElementById('go');
@@ -452,6 +479,27 @@ router.get("/:token", async (req, res) => {
         progressBar.style.width = progress + '%';
       }
   
+      async function computeProof() {
+        try {
+          if (!window.isSecureContext || !crypto || !crypto.subtle) return null;
+          const text = String(token) + '|' + String(ts) + '|' + String(nonce);
+          const enc = new TextEncoder().encode(text);
+          const buf = await crypto.subtle.digest('SHA-256', enc);
+          const bytes = new Uint8Array(buf);
+          // base64url (sans regex pour éviter les échappements)
+          let bin = '';
+          for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+          let b64 = btoa(bin);
+          // remplacements URL-safe
+          b64 = b64.split('+').join('-').split('/').join('_');
+          // retirer les '=' finaux
+          while (b64.length && b64.charAt(b64.length - 1) === '=') {
+            b64 = b64.slice(0, -1);
+          }
+          return b64;
+        } catch { return null; }
+      }
+
       async function confirm() {
         if (confirmed) return;
         confirmed = true;
@@ -463,22 +511,25 @@ router.get("/:token", async (req, res) => {
           visibleAccum += Math.max(0, performance.now() - visibleSince);
         }
   
+        const proof = await computeProof();
         const payload = {
           ts, nonce, sig,
           dwellMs: Date.now() - ts,
           visibilityDur: Math.round(visibleAccum),
           hadFocus: !!hadFocus,
           ua: navigator.userAgent || '',
-          lang: navigator.language || ''
+          lang: navigator.language || '',
+          proof: proof || null,
+          hasSubtle: !!(window.isSecureContext && crypto && crypto.subtle)
         };
-  
+
         let ok = false;
         try {
           const r = await fetch(\`/api/clicks/\${encodeURIComponent(token)}/confirm\`, {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify(payload),
-            credentials: 'omit'
+            credentials: 'include'
           });
           if (r.ok) {
             const data = await r.json().catch(() => null);
@@ -496,30 +547,77 @@ router.get("/:token", async (req, res) => {
       }
   
       function tryAuto(){
-        const canAuto = interacted && dwellReached;
+        const canAuto = (dwellReached && (!needsStrong || interacted));
         if (canAuto) confirm();
       }
   
       // UX: bouton cliquable très vite si auto ne part pas
       setTimeout(() => {
-        msg.textContent = "Cliquez si la page ne continue pas automatiquement.";
+        msg.textContent = needsStrong
+          ? 'Appuyez et maintenez pour continuer.'
+          : 'Cliquez si la page ne continue pas automatiquement.';
         enable();
         updateProgress();
       }, 120);
   
-      // Dwell min + jitter
+      // Dwell min + jitter (réduit)
       setTimeout(() => { 
         dwellReached = true; 
         updateProgress();
         tryAuto(); 
-      }, minDwell + Math.floor(Math.random()*140));
+      }, minDwell + Math.floor(Math.random()*60));
   
       // clic manuel : on exige un vrai geste humain
-      btn.addEventListener('click', () => {
+      // Press-and-hold lorsqu'une interaction forte est requise
+      const HOLD_MS = 650;
+      let holdTimer = null;
+      let holdStart = 0;
+      let holdActive = false;
+
+      function cancelHold(){
+        holdActive = false;
+        if (holdTimer) { clearInterval(holdTimer); holdTimer = null; }
+        btn.style.opacity = '';
+        btn.style.transform = '';
+        document.body.style.userSelect = '';
+        msg.textContent = needsStrong
+          ? 'Appuyez et maintenez pour continuer.'
+          : msg.textContent;
+      }
+
+      function startHold(){
+        holdActive = true;
+        holdStart = performance.now();
+        document.body.style.userSelect = 'none';
+        msg.textContent = 'Maintenez pour confirmer…';
+        holdTimer = setInterval(() => {
+          const elapsed = performance.now() - holdStart;
+          const p = Math.min(1, elapsed / HOLD_MS);
+          btn.style.opacity = String(0.8 + 0.2 * p);
+          btn.style.transform = 'scale(' + (1 + 0.01 * p) + ')';
+          if (elapsed >= HOLD_MS) {
+            clearInterval(holdTimer); holdTimer = null; holdActive = false;
+            confirm();
+          }
+        }, 16);
+      }
+
+      btn.addEventListener('pointerdown', (ev) => {
         const ua = navigator.userActivation;
-        if (ua && ua.isActive === false) {
-          return;
-        }
+        if ((ua && ua.isActive === false) || (ev && ev.isTrusted === false)) return;
+        if (needsStrong) startHold();
+      }, { passive:true });
+      btn.addEventListener('pointerup', () => {
+        if (needsStrong) cancelHold();
+      }, { passive:true });
+      btn.addEventListener('pointercancel', cancelHold, { passive:true });
+      btn.addEventListener('pointerleave', cancelHold, { passive:true });
+
+      // Clic simple si non-suspect
+      btn.addEventListener('click', (ev) => {
+        if (needsStrong) return; // le maintien gère la confirmation
+        const ua = navigator.userActivation;
+        if ((ua && ua.isActive === false) || (ev && ev.isTrusted === false)) return;
         confirm();
       });
       
@@ -556,7 +654,7 @@ router.get("/:token/probe", async (req, res) => {
 router.post("/:token/confirm", async (req, res) => {
   try {
     const { token } = req.params;
-    const { ts, nonce, sig, dwellMs, visibilityDur, hadFocus } = req.body || {};
+    const { ts, nonce, sig, dwellMs, visibilityDur, hadFocus, proof, hasSubtle } = req.body || {};
     if (!token || !ts || !nonce || !sig) {
       return res.status(400).json({ error: "payload incomplet" });
     }
@@ -569,6 +667,17 @@ router.post("/:token/confirm", async (req, res) => {
       return res.status(408).json({ error: "confirm expiré" });
     if (Number(dwellMs) < MIN_DWELL_MS)
       return res.status(428).json({ error: "latence insuffisante" });
+
+    // WebCrypto proof (doit correspondre à SHA-256(token|ts|nonce) en base64url)
+    let proofOk = false;
+    try {
+      const digest = crypto
+        .createHash('sha256')
+        .update(`${token}|${ts}|${nonce}`)
+        .digest('base64url');
+      proofOk = typeof proof === 'string' && proof.length > 0 && proof === digest;
+    } catch {}
+    const needsProof = Boolean(hasSubtle);
 
     const target = await Target.findOne({ token }).lean();
     if (!target) return res.status(404).json({ error: "token inconnu" });
@@ -593,6 +702,21 @@ router.post("/:token/confirm", async (req, res) => {
     const needsStrongInteraction = withinGrace || probedTokens.has(token);
     const hasStrongInteraction =
       Boolean(hadFocus) || Number(visibilityDur) >= 250;
+
+    // Cookie de handshake attendu côté client (HttpOnly, Lax)
+    const cookieHeader = req.headers['cookie'] || '';
+    let hasCookie = false;
+    if (cookieHeader) {
+      // parse très léger
+      const parts = cookieHeader.split(';');
+      for (const p of parts) {
+        const [k, v] = p.split('=');
+        if (k && k.trim() === 'zc_hs') {
+          const cv = decodeURIComponent((v || '').trim());
+          if (cv && cv === String(nonce)) hasCookie = true;
+        }
+      }
+    }
 
     // Rate-limit soft par token
     const lastT = tokenLast.get(token) || 0;
@@ -635,7 +759,8 @@ router.post("/:token/confirm", async (req, res) => {
       !ua ||
       uaSuspect ||
       !humanish ||
-      (needsStrongInteraction && !hasStrongInteraction)
+      (needsProof && !proofOk) ||
+      (needsStrongInteraction && (!hasStrongInteraction || !hasCookie))
     ) {
       const reason =
         !ip || !ua
@@ -644,6 +769,8 @@ router.post("/:token/confirm", async (req, res) => {
           ? "ua-suspect"
           : !humanish
           ? "headers-robotic"
+          : !proofOk
+          ? "bad-proof"
           : "needs-strong-interaction";
       await ClickEvent.create({
         tenantId: target.tenantId,
@@ -655,6 +782,8 @@ router.post("/:token/confirm", async (req, res) => {
         ip: ip || undefined,
         isLikelyBot: true,
         kind: reason,
+        hasSubtle: Boolean(hasSubtle),
+        hasCookie,
       }).catch(() => {});
       try {
         if (NOTIFY_SUSPECT && shouldNotify(`suspect:${token}`, 15000)) {
@@ -686,16 +815,9 @@ router.post("/:token/confirm", async (req, res) => {
       return res.status(200).json({ ok: true, alreadyCounted: true });
     }
 
-    // Enrichissement
-    const [employee, batchFull, tenant] = await Promise.all([
-      Employee.findById(target.employeeId).lean(),
-      Batch.findById(target.batchId).lean(),
-      target.tenantId ? Tenant.findById(target.tenantId).lean() : null,
-    ]);
-
-    // Log “valide”
+    // Log “valide” (léger)
     await ClickEvent.create({
-      tenantId: target.tenantId || tenant?._id,
+      tenantId: target.tenantId,
       batchId: target.batchId,
       employeeId: target.employeeId,
       targetId: target._id,
@@ -721,85 +843,83 @@ router.post("/:token/confirm", async (req, res) => {
       }
     );
 
-    try {
-      const short = (s, n = 80) =>
-        (s && s.length > n ? s.slice(0, n) + "…" : s) || "—";
-      const tokenShort = (token || "").slice(0, 8) + "…";
+    // Répondre vite au client, puis enrichir + notifier en tâche de fond
+    res.status(200).json({ ok: true });
 
-      const embed = {
-        title: "Click validé",
-        description: "Un nouvel évènement a été enregistré dans ZeroClick.",
-        color: 0x2563eb, // bleu moderne
-        timestamp: new Date().toISOString(),
-        fields: [
-          {
-            name: "Entreprise",
-            value: `${tenant?.name || "Non spécifié"}\n\`${
-              tenant?._id || target.tenantId || "N/A"
-            }\``,
-            inline: true,
-          },
-          {
-            name: "Campagne",
-            value: `${batchFull?.name || "Non spécifié"}\n\`${
-              batchFull?._id || target.batchId || "N/A"
-            }\``,
-            inline: true,
-          },
-          {
-            name: "Employé",
-            value: `${employee?.name || "Non spécifié"}\n${
-              employee?.email || "—"
-            }`,
-            inline: true,
-          },
-          {
-            name: "Département",
-            value: employee?.department || "—",
-            inline: true,
-          },
-          {
-            name: "Token",
-            value: `\`${tokenShort}\``,
-            inline: true,
-          },
-          {
-            name: "IP",
-            value: ip || "—",
-            inline: true,
-          },
-          {
-            name: "User-Agent",
-            value: ua ? `\`\`\`${short(ua, 160)}\`\`\`` : "—",
-            inline: false,
-          },
-        ],
-        footer: {
-          text: "ZeroClick • Système de sécurité",
-        },
-      };
+    // -------- BACKGROUND (enrichissement + notification) --------
+    ;(async () => {
+      try {
+        const [employee, batchFull, tenant] = await Promise.all([
+          Employee.findById(target.employeeId).lean(),
+          Batch.findById(target.batchId).lean(),
+          target.tenantId ? Tenant.findById(target.tenantId).lean() : null,
+        ]);
 
-      notifyDiscord({
-        content: "Nouveau clic validé.",
-        embeds: [embed],
-      });
-    } catch (e) {
-      console.warn("[discord] notify error (non-bloquant):", e?.message || e);
-    }
+        const short = (s, n = 80) =>
+          (s && s.length > n ? s.slice(0, n) + "…" : s) || "—";
+        const tokenShort = (token || "").slice(0, 8) + "…";
 
-    console.log(
-      `[CLICK] | ${new Date().toISOString()} | tenant="${
-        tenant?.name || "?"
-      }" (${tenant?._id || target.tenantId || "?"}) | batch="${
-        batchFull?.name || "?"
-      }" (${batchFull?._id || target.batchId}) | employee="${
-        employee?.name || "?"
-      }" <${employee?.email || "?"}> | dept="${
-        employee?.department || "?"
-      }" | token=${token} | ip=${ip} | ua="${ua}" | verdict=counted`
-    );
+        try {
+          const embed = {
+            title: "Click validé",
+            description: "Un nouvel évènement a été enregistré dans ZeroClick.",
+            color: 0x2563eb,
+            timestamp: new Date().toISOString(),
+            fields: [
+              {
+                name: "Entreprise",
+                value: `${tenant?.name || "Non spécifié"}\n\`${
+                  tenant?._id || target.tenantId || "N/A"
+                }\``,
+                inline: true,
+              },
+              {
+                name: "Campagne",
+                value: `${batchFull?.name || "Non spécifié"}\n\`${
+                  batchFull?._id || target.batchId || "N/A"
+                }\``,
+                inline: true,
+              },
+              {
+                name: "Employé",
+                value: `${employee?.name || "Non spécifié"}\n${
+                  employee?.email || "—"
+                }`,
+                inline: true,
+              },
+              { name: "Département", value: employee?.department || "—", inline: true },
+              { name: "Token", value: `\`${tokenShort}\``, inline: true },
+              { name: "IP", value: ip || "—", inline: true },
+              {
+                name: "User-Agent",
+                value: ua ? `\`\`\`${short(ua, 160)}\`\`\`` : "—",
+                inline: false,
+              },
+            ],
+            footer: { text: "ZeroClick • Système de sécurité" },
+          };
+          notifyDiscord({ content: "Nouveau clic validé.", embeds: [embed] });
+        } catch (e) {
+          console.warn("[discord] notify error (non-bloquant):", e?.message || e);
+        }
 
-    return res.status(200).json({ ok: true });
+        console.log(
+          `[CLICK] | ${new Date().toISOString()} | tenant="${
+            tenant?.name || "?"
+          }" (${tenant?._id || target.tenantId || "?"}) | batch="${
+            batchFull?.name || "?"
+          }" (${batchFull?._id || target.batchId}) | employee="${
+            employee?.name || "?"
+          }" <${employee?.email || "?"}> | dept="${
+            employee?.department || "?"
+          }" | token=${token} | ip=${ip} | ua="${ua}" | verdict=counted`
+        );
+      } catch (e) {
+        console.warn("[clicks] background enrich error:", e?.message || e);
+      }
+    })();
+
+    return; // réponse déjà envoyée
   } catch (err) {
     console.error("CLICK confirm error:", err);
     return res.status(500).json({ error: "Erreur serveur" });

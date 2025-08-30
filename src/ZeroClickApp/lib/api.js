@@ -68,6 +68,17 @@ export const api = {
     }),
 
   getTargets: (tid, bid) => req(`/tenants/${tid}/batches/${bid}/targets`),
+  // MJML
+  renderMjml: (tid, bid, body) =>
+    req(`/tenants/${tid}/batches/${bid}/mjml/render`, {
+      method: 'POST',
+      body: JSON.stringify(body || {}),
+    }),
+  saveMjml: (tid, bid, body) =>
+    req(`/tenants/${tid}/batches/${bid}/mjml/save`, {
+      method: 'PATCH',
+      body: JSON.stringify(body || {}),
+    }),
   // Usage de scénarios par employé (pour marquage UI)
   getScenarioUsage: (tid, employeeIds = []) => {
     const q = Array.isArray(employeeIds) && employeeIds.length

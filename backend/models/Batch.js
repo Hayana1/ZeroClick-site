@@ -1,7 +1,7 @@
 // models/Batch.js
 const mongoose = require("mongoose");
 
-const BatchSchema = new mongoose.Schema(
+  const BatchSchema = new mongoose.Schema(
   {
     tenantId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -36,6 +36,13 @@ const BatchSchema = new mongoose.Schema(
     // Nouvel objet de configuration par groupe (compat thème + scenario)
     groupConfigs: {
       // groupName -> { theme?: string, scenarioId?: string, category?: string }
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
+    // Templates email par groupe (MJML/HTML)
+    emailTemplates: {
+      // groupName -> { mjmlSource?, htmlRendered?, textRendered?, updatedAt? }
       type: Map,
       of: mongoose.Schema.Types.Mixed,
       default: {},
