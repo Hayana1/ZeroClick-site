@@ -10,3 +10,27 @@ Currently, two official plugins are available:
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+## ZeroClick backend helpers
+
+- Start backend: `cd backend && npm run start`
+- Dev backend: `cd backend && npm run dev`
+
+### Scénarios (qualité et validation)
+
+- Source: `backend/data/scenarios.json`
+- Valider: `cd backend && npm run validate:scenarios`
+- API:
+  - `GET /api/scenarios` — liste
+  - `GET /api/scenarios/validate` — rapport { ok, count, report[] }
+  - `GET /api/scenarios/:id` — détail
+  - `POST /api/scenarios/:id/preview` — rendu simple avec variables. Body: `{ trackingUrl?, employee?, brand? }`
+
+Placeholders utilisables dans `email.subject`, `email.preheader`, `email.html`:
+
+- `{{trackingUrl}}` — lien de suivi
+- `{{employee.name}}`, `{{employee.email}}`
+- `{{brand.name}}`
+- `{{today}}` — AAAA-MM-JJ
+
+La validation recommande d’utiliser `{{trackingUrl}}` et un `preheader`.

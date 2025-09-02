@@ -47,6 +47,13 @@ const mongoose = require("mongoose");
       of: mongoose.Schema.Types.Mixed,
       default: {},
     },
+    // Pièces jointes par groupe (liste d'objets)
+    attachmentsByGroup: {
+      // groupName -> [{ filename, originalName, mimeType, size, url, uploadedAt }]
+      type: Map,
+      of: mongoose.Schema.Types.Mixed,
+      default: {},
+    },
   },
   { timestamps: { createdAt: "dateCreated", updatedAt: "dateUpdated" } }
 );

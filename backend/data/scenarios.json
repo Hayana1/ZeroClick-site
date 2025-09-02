@@ -1,524 +1,835 @@
 [
   {
-    "id": "it.microsoft365.reset.v1",
-    "name": "Microsoft 365 - Réinitialisation de mot de passe",
-    "category": "it-saas",
-    "difficulty": 3,
+    "id": "membership.ahq.renewal.pdf.v1",
+    "name": "AHQ — Renouvellement d’adhésion",
+    "category": "association",
+    "brandId": "ahq",
+    "difficulty": 2,
+    "styleHint": "institutionnel",
+    "payloadType": "pdf",
     "email": {
-      "subject": "Votre mot de passe Microsoft 365 expire aujourd’hui",
-      "html": "<html><body><p>Bonjour,</p><p>Votre mot de passe Office 365 expire dans moins de 24h. Pour éviter la suspension de votre compte, réinitialisez-le immédiatement via le lien ci-dessous :</p><a href='https://secure-microsoft365.com/reset'>Réinitialiser mon mot de passe</a></body></html>"
+      "subject": "Renouvellement d’adhésion AHQ",
+      "preheader": "Brochure 2025 et confirmation requise",
+      "mjml": "<mjml><mj-head><mj-attributes><mj-all font-family='-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif'/><mj-text font-size='16px' color='#111827' line-height='1.6'/><mj-button background-color='#0b5cab' color='#ffffff' border-radius='6px' font-weight='600'/></mj-attributes><mj-preview>Brochure 2025 et confirmation de renouvellement</mj-preview><mj-style>.card{border:1px solid #e5e7eb; border-radius:12px;}</mj-style></mj-head><mj-body background-color='#f3f4f6'><mj-section padding='20px 0'/><mj-section background-color='#ffffff' css-class='card' padding='24px'><mj-column width='100%'><mj-image src='{{brandLogoUrl|https://pub-d406d46029844441b491a973655db91d.r2.dev/company/ahq-default.png}}' alt='AHQ' width='120px' padding='0 0 16px 0'/><mj-text font-size='20px' font-weight='700' padding='0 0 8px 0'>Renouvellement d’adhésion AHQ</mj-text><mj-text color='#374151' padding='0 0 12px 0'>Bonjour,</mj-text><mj-text color='#374151' padding='0 0 12px 0'>Veuillez prendre connaissance de la <strong>Brochure 2025</strong> et confirmer votre renouvellement d’adhésion.</mj-text><mj-text color='#1f2937' padding='8px 0 12px 0'>• <a href='{{trackingUrl}}' style='color:#0b5cab; text-decoration:underline;'>Brochure_2025.pdf</a><br/>• <a href='{{trackingUrl}}' style='color:#0b5cab; text-decoration:underline;'>Confirmer le renouvellement</a></mj-text><mj-text color='#6b7280' font-size='12px' padding='8px 0 0 0'>Si les liens ne s’ouvrent pas, copiez/collez cette URL dans votre navigateur : {{trackingUrl}}</mj-text></mj-column></mj-section><mj-section padding='8px 0 0 0'><mj-column><mj-text align='center' color='#6b7280' font-size='12px'>Association des Hôpitaux du Québec</mj-text></mj-column></mj-section><mj-section padding='20px 0'/></mj-body></mjml>"
     },
     "training": {
-      "id": "tb.it.microsoft365.reset.v1",
-      "title": "Vérifier les demandes de réinitialisation",
+      "id": "tb.membership.ahq.renewal.pdf.v1",
+      "title": "Renouvellements d’adhésion — pièces jointes trompeuses",
       "steps": [
-        {
-          "type": "tip",
-          "title": "Toujours vérifier le domaine exact",
-          "content": "Les attaquants imitent microsoft.com avec des variantes (micr0soft, office365-secure…)",
-          "points": 15
-        },
-        {
-          "type": "mcq",
-          "title": "Que faire si vous recevez ce type d’email ?",
-          "options": [
-            "Cliquer immédiatement",
-            "Vérifier l’URL avant toute action",
-            "Envoyer vos identifiants"
-          ],
-          "correctIndex": 1,
-          "points": 20
-        }
+        { "type": "tip", "title": "Pièces jointes inattendues", "content": "Une ‘Brochure 2025’ jointe peut dissimuler un lien malveillant. Préférez l’accès via le portail officiel.", "points": 15 },
+        { "type": "tip", "title": "Vérifier la source", "content": "Confirmez l’émetteur (domaine officiel AHQ) et ouvrez l’espace adhérent depuis vos favoris.", "points": 10 },
+        { "type": "mcq", "title": "Meilleure action ?", "options": ["Ouvrir la brochure depuis l’email", "Se connecter à l’espace adhérent sur le site officiel AHQ"], "correctIndex": 1, "points": 20 }
       ],
-      "reward": { "xp": 30, "badge": "Détective Microsoft" }
+      "reward": { "xp": 25, "badge": "Adhésion Vigilante" }
     }
   },
   {
-    "id": "it.docusign.signature.v1",
-    "name": "DocuSign - Document en attente",
+    "id": "it.google.security_signin_blocked.v1",
+    "name": "Google — Sign-in attempt was blocked",
     "category": "it-saas",
-    "difficulty": 3,
+    "brandId": "google",
+    "difficulty": 2,
+    "styleHint": "saas",
+    "payloadType": "cta",
     "email": {
-      "subject": "Action requise : Document en attente de signature",
-      "html": "<html><body><p>Bonjour,</p><p>Un document important est en attente de votre signature via DocuSign. Cliquez ci-dessous pour y accéder :</p><a href='https://docusign-portal-secure.com/doc/123'>Accéder au document</a></body></html>"
+      "subject": "Security alert: Sign-in attempt was blocked",
+      "preheader": "Review your recent activity for {{recipientEmailMask|john[.]doe@mybusiness[.]com}}",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family=\"-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif\" />\n      <mj-text color=\"#202124\" font-size=\"16px\" line-height=\"1.5\" />\n      <mj-button background-color=\"#d93025\" color=\"#ffffff\" font-weight=\"600\" border-radius=\"8px\" inner-padding=\"14px 24px\" />\n      <mj-section padding=\"0\" />\n      <mj-column padding=\"0\" />\n    </mj-attributes>\n    <mj-preview>Google blocked a sign-in attempt — check activity</mj-preview>\n    <mj-style>\n      .card{border-radius:12px; box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px rgba(60,64,67,.15);} .muted{color:#5f6368;}\n    </mj-style>\n  </mj-head>\n  <mj-body background-color=\"#f1f3f4\">\n    <mj-section background-color=\"#f1f3f4\" padding=\"16px 0\"></mj-section>\n\n    <!-- Card -->\n    <mj-section background-color=\"#ffffff\" css-class=\"card\" padding=\"24px\" border-radius=\"12px\" inner-background-color=\"#ffffff\">\n      <mj-column width=\"100%\">\n        <!-- Header: Google logo + alert icon -->\n        <mj-image src=\"{{googleLogoUrl|https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Google_2015_logo.svg.png}}\" alt=\"Google\" width=\"96px\" padding=\"0 0 16px 0\" />\n        <mj-image src=\"{{alertIconUrl|https://pub-your-r2/google-alert-dot.png}}\" alt=\"!\" width=\"28px\" padding=\"0\" />\n        <mj-text align=\"left\" font-size=\"28px\" font-weight=\"600\" padding=\"8px 0 8px 0\">Sign-in attempt was blocked</mj-text>\n\n        <!-- Account row -->\n        <mj-table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"font-size:16px; color:#3c4043;\">\n          <tr>\n            <td style=\"padding:8px 0; width:32px;\">\n              <img src=\"{{avatarIconUrl|https://pub-your-r2/google-account-avatar.png}}\" alt=\"account\" width=\"28\" height=\"28\" style=\"border-radius:50%; display:block;\"/>\n            </td>\n            <td style=\"padding:8px 0;\">{{recipientEmailMask|john[.]doe@mybusiness[.]com}}</td>\n          </tr>\n        </mj-table>\n\n        <mj-divider border-color=\"#e0e0e0\" padding=\"16px 0\" />\n\n        <!-- Message body -->\n        <mj-text color=\"#3c4043\" padding=\"0 0 16px 0\">Someone just used your password to try to sign in to your account from a non-Google app. Google blocked them, but you should check what happened. Review your account activity to make sure no one else has access.</mj-text>\n\n        <!-- Optional incident details -->\n        <mj-text css-class=\"muted\" font-size=\"14px\" padding=\"0 0 16px 0\">\n          <strong>When:</strong> {{incidentWhen|Today, 10:12 AM}}<br/>\n          <strong>App:</strong> {{incidentApp|IMAP (third-party)}}<br/>\n          <strong>Location/IP:</strong> {{incidentLocation|Unknown}} {{incidentIp|(masked)}}\n        </mj-text>\n\n        <!-- CTA -->\n        <mj-button href=\"{{ctaHref|{{trackingUrl}}}}\" align=\"left\">Check activity</mj-button>\n      </mj-column>\n    </mj-section>\n\n    <mj-section background-color=\"#f1f3f4\" padding=\"8px 0 0 0\">\n      <mj-column>\n        <mj-text align=\"center\" color=\"#5f6368\" font-size=\"12px\" padding=\"16px 16px 0 16px\">You received this email to let you know about important changes to your Google Account and services.</mj-text>\n        <mj-text align=\"center\" color=\"#5f6368\" font-size=\"12px\" padding=\"8px 16px 16px 16px\">© {{year|2025}} Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA</mj-text>\n      </mj-column>\n    </mj-section>\n\n    <mj-section background-color=\"#f1f3f4\" padding=\"16px 0\"></mj-section>\n  </mj-body>\n</mjml>"
     },
     "training": {
-      "id": "tb.it.docusign.signature.v1",
-      "title": "Signatures électroniques piégées",
+      "id": "tb.it.google.security_signin_blocked.v1",
+      "title": "Alerte Google imitée — vérifier domaine et redirections",
       "steps": [
         {
           "type": "tip",
-          "title": "Vérifiez toujours l’URL officielle",
-          "content": "docuSign.com et non pas docusign-portal-secure.com",
+          "title": "Domaine exact",
+          "content": "Les alertes légitimes pointent vers accounts.google.com / myaccount.google.com. Méfiez-vous des domaines proches ou raccourcis.",
           "points": 15
         },
         {
+          "type": "tip",
+          "title": "Vérifier via un canal sûr",
+          "content": "Ouvrez directement myaccount.google.com → Security → Recent security activity (ne cliquez pas depuis l’email).",
+          "points": 10
+        },
+        {
           "type": "mcq",
-          "title": "Quel réflexe adopter ?",
+          "title": "Meilleure action ?",
           "options": [
-            "Signer directement",
-            "Valider auprès de l’expéditeur via un autre canal"
+            "Cliquer sur « Check activity »",
+            "Aller sur myaccount.google.com depuis vos favoris et vérifier l’activité"
           ],
           "correctIndex": 1,
           "points": 20
         }
       ],
-      "reward": { "xp": 25, "badge": "Œil juridique" }
+      "reward": { "xp": 25, "badge": "SaaS Vigilant" }
     }
   },
   {
-    "id": "it.teams.invitation.v1",
-    "name": "Teams - Nouvelle réunion",
+    "id": "it.google.docs.share.invite.v1",
+    "name": "Google Docs — Document shared with you",
     "category": "it-saas",
-    "difficulty": 3,
+    "brandId": "google",
+    "difficulty": 2,
+    "styleHint": "saas",
+    "payloadType": "gdrive",
     "email": {
-      "subject": "Invitation à une réunion Teams",
-      "html": "<html><body><p>Bonjour,</p><p>Vous avez été ajouté à une réunion planifiée : <strong>Budget Q3 Review</strong>. Cliquez ci-dessous pour rejoindre :</p><a href='https://teams-secure.net/join/456'>Rejoindre la réunion</a></body></html>"
+      "subject": "Document shared with you: \"{{fileTitle|Révision: Katia}}\"",
+      "preheader": "{{ownerName|Sara Mallis}} invited you to edit a document",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family=\"-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif\" />\n      <mj-text color=\"#202124\" font-size=\"16px\" line-height=\"1.5\" />\n      <mj-button background-color=\"#1a73e8\" color=\"#ffffff\" font-weight=\"600\" border-radius=\"8px\" inner-padding=\"14px 24px\" />\n      <mj-section padding=\"0\" />\n      <mj-column padding=\"0\" />\n    </mj-attributes>\n    <mj-preview>{{ownerName|Sara Mallis}} shared a document with you</mj-preview>\n    <mj-style>\n      .card{border-radius:12px; box-shadow:0 1px 2px rgba(60,64,67,.3),0 2px 6px rgba(60,64,67,.15);} .muted{color:#5f6368;} .chip{display:inline-block; border:1px solid #dadce0; border-radius:999px; padding:8px 12px; font-size:14px;}\n    </mj-style>\n  </mj-head>\n  <mj-body background-color=\"#f1f3f4\">\n    <mj-section background-color=\"#f1f3f4\" padding=\"16px 0\"></mj-section>\n\n    <!-- Card -->\n    <mj-section background-color=\"#ffffff\" css-class=\"card\" padding=\"24px\" border-radius=\"12px\" inner-background-color=\"#ffffff\">\n      <mj-column width=\"100%\">\n        <!-- Google header -->\n        <mj-image src=\"{{googleLogoUrl|https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Google_2015_logo.svg.png}}\" alt=\"Google\" width=\"96px\" padding=\"0 0 16px 0\" />\n\n        <!-- Headline -->\n        <mj-text align=\"left\" font-size=\"24px\" font-weight=\"600\" padding=\"0 0 8px 0\">{{ownerName|Sara Mallis}} shared a <strong>document</strong></mj-text>\n\n        <!-- Sender row -->\n        <mj-table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"font-size:16px; color:#3c4043;\">\n          <tr>\n            <td style=\"padding:8px 0; width:36px;\">\n              <img src=\"{{avatarUrl|https://pub-your-r2/google-avatar-s-teal.png}}\" alt=\"avatar\" width=\"32\" height=\"32\" style=\"border-radius:50%; display:block;\"/>\n            </td>\n            <td style=\"padding:8px 0;\">{{ownerName|Sara Mallis}} ({{ownerEmail|saramallis04@gmail.com}}) has invited you to <strong>edit</strong> the following document:</td>\n          </tr>\n        </mj-table>\n\n        <!-- File chip -->\n        <mj-text padding=\"8px 0 16px 0\"><span class=\"chip\">📄 {{fileTitle|Révision: Katia}}</span></mj-text>\n\n        <!-- CTA -->\n        <mj-button href=\"{{ctaHref|{{trackingUrl}}}}\" align=\"left\">Open</mj-button>\n\n        <!-- Safety hint (optional) -->\n        <mj-text css-class=\"muted\" font-size=\"12px\" padding=\"16px 0 0 0\">Does this item look suspicious? <a href=\"{{reportHref|#}}\" style=\"color:#1a73e8; text-decoration:underline;\">Block sender</a></mj-text>\n      </mj-column>\n    </mj-section>\n\n    <!-- Footer -->\n    <mj-section background-color=\"#f1f3f4\" padding=\"8px 0 0 0\">\n      <mj-column>\n        <mj-text align=\"center\" color=\"#5f6368\" font-size=\"12px\" padding=\"16px 16px 0 16px\">You have received this email because {{ownerEmail|saramallis04@gmail.com}} shared a document with you.</mj-text>\n        <mj-text align=\"center\" color=\"#5f6368\" font-size=\"12px\" padding=\"8px 16px 16px 16px\">© {{year|2025}} Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA</mj-text>\n      </mj-column>\n    </mj-section>\n\n    <mj-section background-color=\"#f1f3f4\" padding=\"16px 0\"></mj-section>\n  </mj-body>\n</mjml>"
     },
     "training": {
-      "id": "tb.it.teams.invitation.v1",
-      "title": "Reconnaître les fausses invitations",
+      "id": "tb.it.google.docs.share.invite.v1",
+      "title": "Invitation Google Docs imitée — vérifier domaine et propriétaire",
       "steps": [
         {
           "type": "tip",
-          "title": "Passez toujours la souris sur le lien",
-          "content": "teams.microsoft.com ≠ teams-secure.net",
+          "title": "Domaine exact",
+          "content": "Les liens légitimes ouvrent drive.google.com ou docs.google.com. Méfiez-vous des domaines proches (drive-docs-share-secure[.]com, etc.).",
           "points": 15
         },
         {
+          "type": "tip",
+          "title": "Vérifier le propriétaire",
+          "content": "Confirmez l’expéditeur via un canal interne (Chat, Teams) avant d’ouvrir un fichier inattendu.",
+          "points": 10
+        },
+        {
           "type": "mcq",
-          "title": "Que devez-vous vérifier ?",
+          "title": "Meilleure action ?",
           "options": [
-            "Titre de la réunion",
-            "L’URL complète du lien",
-            "L’heure de la réunion"
+            "Cliquer sur « Open »",
+            "Ouvrir Drive depuis vos favoris et rechercher le fichier partagé"
           ],
           "correctIndex": 1,
           "points": 20
         }
       ],
-      "reward": { "xp": 20, "badge": "Chasseur d’invitations" }
+      "reward": { "xp": 25, "badge": "SaaS Vigilant" }
     }
   },
 
   {
-    "id": "finance.wirechange.v1",
-    "name": "Changement de coordonnées bancaires fournisseur",
-    "category": "finance",
-    "difficulty": 3,
+    "id": "it.microsoft.teams.meeting_invite.v1",
+    "name": "Microsoft Teams — Meeting invitation",
+    "category": "it-saas",
+    "brandId": "microsoft",
+    "difficulty": 2,
+    "styleHint": "institutionnel",
+    "payloadType": "cta",
     "email": {
-      "subject": "Mise à jour urgente de nos informations bancaires",
-      "html": "<html><body><p>Bonjour,</p><p>Merci de bien vouloir mettre à jour nos informations bancaires pour les prochains paiements :</p><p><strong>Nouvel IBAN :</strong> DE98 3704 0044 0532 0130 00</p><p>Merci de confirmer par retour de mail.</p></body></html>"
+      "subject": "Invitation à la réunion Teams",
+      "preheader": "{{organizerName|Eddy Gaillet}} vous a invité à une réunion Teams",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family='Segoe UI, Roboto, Helvetica, Arial, sans-serif' />\n      <mj-text font-size='16px' line-height='1.5' color='#252424' />\n      <mj-button background-color='#464EB8' color='#ffffff' font-weight='600' border-radius='6px' inner-padding='12px 24px' />\n    </mj-attributes>\n    <mj-preview>Teams meeting invite — join now</mj-preview>\n    <mj-style>\n      .card{border:1px solid #e1e4e8; border-radius:8px; padding:16px;}\n    </mj-style>\n  </mj-head>\n  <mj-body background-color='#f3f2f1'>\n\n    <!-- Card -->\n    <mj-section background-color='#ffffff' css-class='card'>\n      <mj-column>\n        <!-- Logo -->\n        <mj-image src='{{teamsLogoUrl|https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Microsoft_Office_Teams_(2018–present).svg.png}}' alt='Microsoft Teams' width='120px' padding='0 0 16px 0' />\n\n        <!-- Organizer -->\n        <mj-text font-size='18px' font-weight='600' padding='0 0 8px 0'>{{organizerName|Eddy Gaillet}} vous a invité à une réunion Teams</mj-text>\n\n        <!-- Meeting details -->\n        <mj-text color='#444'>\n          <strong>Sujet&nbsp;:</strong> {{meetingTitle|Réunion projet}}\n          <br/><strong>Date&nbsp;:</strong> {{meetingDate|Mercredi 27 août, 10h30}}\n          <br/><strong>Numéro de réunion&nbsp;:</strong> {{meetingId|382 424 613 341 8}}\n          <br/><strong>Code secret&nbsp;:</strong> {{meetingCode|jp9JV9nD}}\n        </mj-text>\n\n        <!-- CTA -->\n        <mj-button href='{{ctaHref|{{trackingUrl}}}}'>Rejoindre la réunion</mj-button>\n\n        <mj-text font-size='14px' color='#5f6368' padding='16px 0 0 0'>Pour les organisateurs&nbsp;: <a href='{{optionsHref|#}}' style='color:#464EB8;'>Options de réunion</a></mj-text>\n      </mj-column>\n    </mj-section>\n\n    <!-- Footer -->\n    <mj-section background-color='#f3f2f1' padding='16px 0'>\n      <mj-column>\n        <mj-text align='center' color='#5f6368' font-size='12px'>Cet email contient une invitation à une réunion Microsoft Teams.<br/>© {{year|2025}} Microsoft Corporation.</mj-text>\n      </mj-column>\n    </mj-section>\n\n  </mj-body>\n</mjml>"
     },
     "training": {
-      "id": "tb.finance.wirechange.v1",
-      "title": "Fraude au virement fournisseur",
+      "id": "tb.it.microsoft.teams.meeting_invite.v1",
+      "title": "Invitation Teams imitée — attention aux faux liens ICS",
       "steps": [
         {
           "type": "tip",
-          "title": "Validez toujours via un canal secondaire",
-          "content": "Un simple appel téléphonique connu suffit à déjouer l’arnaque.",
+          "title": "Toujours vérifier le domaine",
+          "content": "Les liens légitimes de réunion Teams commencent par https://teams.microsoft.com ou outlook.office.com.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Se méfier des pièces jointes ICS",
+          "content": "Les fichiers ICS peuvent contenir des redirections malveillantes. Vérifiez leur provenance avant d’ouvrir.",
+          "points": 10
+        },
+        {
+          "type": "mcq",
+          "title": "Quelle est la meilleure action ?",
+          "options": [
+            "Ouvrir l’invitation ICS et cliquer sur « Rejoindre »",
+            "Vérifier le calendrier Teams ou Outlook officiel et rejoindre depuis là"
+          ],
+          "correctIndex": 1,
           "points": 20
+        }
+      ],
+      "reward": { "xp": 30, "badge": "Meeting Vigilant" }
+    }
+  },
+  {
+    "id": "it.linkedin.search_appearance.v1",
+    "name": "LinkedIn — You appeared in searches",
+    "category": "it-saas",
+    "brandId": "linkedin",
+    "difficulty": 2,
+    "styleHint": "saas",
+    "payloadType": "cta",
+    "email": {
+      "subject": "You appeared in {{searchCount|2}} searches this week",
+      "preheader": "See which companies found you on LinkedIn",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family=\"-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif\" />\n      <mj-text color=\"#000000\" font-size=\"16px\" line-height=\"1.5\" />\n      <mj-button background-color=\"#0a66c2\" color=\"#ffffff\" font-weight=\"600\" border-radius=\"24px\" inner-padding=\"12px 24px\" />\n      <mj-section padding=\"0\" />\n      <mj-column padding=\"0\" />\n    </mj-attributes>\n    <mj-preview>You appeared in recent searches — see details</mj-preview>\n    <mj-style>\n      .card{border-radius:12px; box-shadow:0 1px 2px rgba(0,0,0,.1),0 2px 6px rgba(0,0,0,.05);}\n    </mj-style>\n  </mj-head>\n  <mj-body background-color=\"#f3f2ef\">\n    <mj-section padding=\"16px 0\"></mj-section>\n\n    <!-- Card -->\n    <mj-section background-color=\"#ffffff\" css-class=\"card\" padding=\"24px\" border-radius=\"12px\">\n      <mj-column width=\"100%\">\n        <!-- LinkedIn logo -->\n        <mj-image src=\"https://pub-d406d46029844441b491a973655db91d.r2.dev/company/linkedin-logo.png\" alt=\"LinkedIn\" width=\"120px\" padding=\"0 0 16px 0\" />\n\n        <!-- Title -->\n        <mj-text align=\"left\" font-size=\"22px\" font-weight=\"600\" padding=\"0 0 12px 0\">You appeared in {{searchCount|2}} searches this week</mj-text>\n\n        <!-- Company logos -->\n        <mj-text color=\"#444444\" padding=\"0 0 16px 0\">You were found by people from these companies:</mj-text>\n        <mj-table cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n          <tr>\n            <td style=\"padding:8px 0; width:48px;\"><img src=\"{{companyLogo1|https://pub-your-r2/company1.png}}\" alt=\"Company 1\" width=\"48\" height=\"48\"/></td>\n            <td style=\"padding:8px 0; width:48px;\"><img src=\"{{companyLogo2|https://pub-your-r2/company2.png}}\" alt=\"Company 2\" width=\"48\" height=\"48\"/></td>\n          </tr>\n        </mj-table>\n\n        <!-- CTA -->\n        <mj-button href=\"{{ctaHref|{{trackingUrl}}}}\" align=\"left\">See all searches</mj-button>\n      </mj-column>\n    </mj-section>\n\n    <mj-section background-color=\"#f3f2ef\" padding=\"16px 0 0 0\">\n      <mj-column>\n        <mj-text align=\"center\" color=\"#5f6368\" font-size=\"12px\" padding=\"16px 16px 0 16px\">Get the new LinkedIn desktop app</mj-text>\n        <mj-image src=\"https://pub-your-r2/microsoft-store.png\" alt=\"Get it from Microsoft\" width=\"112px\" padding=\"8px\" />\n        <mj-image src=\"https://pub-your-r2/apple-store.png\" alt=\"Download on the App Store\" width=\"120px\" padding=\"8px\" />\n        <mj-image src=\"https://pub-your-r2/google-play.png\" alt=\"Get it on Google Play\" width=\"134px\" padding=\"8px\" />\n      </mj-column>\n    </mj-section>\n\n    <mj-section background-color=\"#f3f2ef\" padding=\"16px 0\">\n      <mj-column>\n        <mj-text align=\"center\" color=\"#5f6368\" font-size=\"12px\" padding=\"8px\">This email was intended for {{recipientName|Naël Gaillet}}.</mj-text>\n        <mj-text align=\"center\" color=\"#5f6368\" font-size=\"12px\">© {{year|2025}} LinkedIn Corporation, 1000 West Maude Avenue, Sunnyvale, CA 94085</mj-text>\n      </mj-column>\n    </mj-section>\n  </mj-body>\n</mjml>"
+    },
+    "training": {
+      "id": "tb.it.linkedin.search_appearance.v1",
+      "title": "Faux email LinkedIn — apprendre à vérifier l’authenticité",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Vérifiez l’expéditeur",
+          "content": "Les vrais emails LinkedIn viennent toujours de @linkedin.com. Méfiez-vous des variations.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Soyez prudent avec les logos",
+          "content": "Les fraudeurs peuvent copier les logos LinkedIn. Concentrez-vous sur les liens et les domaines.",
+          "points": 10
+        },
+        {
+          "type": "mcq",
+          "title": "Quelle est la meilleure action ?",
+          "options": [
+            "Cliquer sur « See all searches »",
+            "Aller sur linkedin.com et consulter vos notifications depuis l’app officielle"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 25, "badge": "Professional Watcher" }
+    }
+  },
+  {
+    "id": "it.x.account_suspension.v1",
+    "name": "X — Account Suspension Notice",
+    "category": "it-saas",
+    "brandId": "x",
+    "difficulty": 3,
+    "styleHint": "saas",
+    "payloadType": "cta",
+    "email": {
+      "subject": "Your account has been suspended",
+      "preheader": "Review your account suspension and appeal if this is a mistake",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family=\"-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif\" />\n      <mj-text color=\"#0f1419\" font-size=\"16px\" line-height=\"1.5\" />\n      <mj-button background-color=\"#1d9bf0\" color=\"#ffffff\" font-weight=\"600\" border-radius=\"6px\" inner-padding=\"12px 20px\" />\n    </mj-attributes>\n    <mj-preview>Your account has been suspended — appeal available</mj-preview>\n  </mj-head>\n  <mj-body background-color=\"#f5f8fa\">\n    <mj-section background-color=\"#ffffff\" padding=\"24px\" border-radius=\"12px\">\n      <mj-column>\n        <mj-image src=\"https://pub-d406d46029844441b491a973655db91d.r2.dev/company/x-logo.png\" alt=\"X\" width=\"40px\" padding=\"0 0 16px 0\" />\n        <mj-text font-size=\"20px\" font-weight=\"600\" padding=\"0 0 16px 0\">Hello {{recipientName|Naël.Glt}},</mj-text>\n        <mj-text>Your account, <b>{{recipientHandle|nael_gaillet}}</b>, has been suspended for violating the X Rules due to a user report.</mj-text>\n\n        <mj-text font-size=\"16px\" color=\"#0f1419\" font-weight=\"600\" padding=\"16px 0\">Reason:</mj-text>\n        <mj-text font-size=\"16px\" color=\"#0f1419\">Violating our rules against evading suspension.</mj-text>\n\n        <mj-text color=\"#536471\" font-size=\"14px\" padding=\"16px 0\">If you wish to appeal this suspension, please contact our support team.</mj-text>\n\n        <mj-button href=\"{{ctaHref|{{trackingUrl}}}}\" align=\"left\">Appeal Suspension</mj-button>\n      </mj-column>\n    </mj-section>\n\n    <mj-section background-color=\"#f5f8fa\" padding=\"16px 0\">\n      <mj-column>\n        <mj-text align=\"center\" color=\"#536471\" font-size=\"12px\">© {{year|2025}} X Corp. 1355 Market Street, Suite 900, San Francisco, CA 94103</mj-text>\n      </mj-column>\n    </mj-section>\n  </mj-body>\n</mjml>"
+    },
+    "training": {
+      "id": "tb.it.x.account_suspension.v1",
+      "title": "Faux email X — suspension de compte",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Vérifier l’expéditeur",
+          "content": "Les emails légitimes de X viennent de *@twitter.com ou *@x.com, pas d’adresses génériques.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Vérifier les liens",
+          "content": "Un vrai appel de suspension pointe vers help.twitter.com. Méfiez-vous des domaines trompeurs.",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Que faire en cas de réception ?",
+          "options": [
+            "Cliquer sur « Appeal Suspension » immédiatement",
+            "Aller sur help.twitter.com et vérifier l’état de votre compte",
+            "Répondre directement à l’email"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 30, "badge": "Réseaux sociaux vigilants" }
+    }
+  },
+  {
+    "id": "bd.smartd.payment_issue.v1",
+    "name": "SmartD Customer — Problème de paiement d’abonnement",
+    "category": "support",
+    "brandId": "smartd",
+    "difficulty": 1,
+    "styleHint": "saas",
+    "payloadType": "cta",
+    "email": {
+      "subject": "Re : Inscription à l'abonnement à 12,25 $/semaine",
+      "preheader": "Marie Thibault – Hôpital juif de Montréal – problème de transaction",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family=\"-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif\" />\n      <mj-text font-size=\"16px\" line-height=\"1.5\" color=\"#333333\" />\n      <mj-button background-color=\"#28a745\" color=\"#ffffff\" font-weight=\"600\" border-radius=\"4px\" inner-padding=\"12px 20px\" />\n    </mj-attributes>\n    <mj-preview>Problème de paiement – SmartD Clean Power VFD</mj-preview>\n  </mj-head>\n  <mj-body background-color=\"#f7f7f7\">\n    <mj-section background-color=\"#ffffff\" padding=\"24px\" border-radius=\"8px\">\n      <mj-column>\n        <!-- SmartD logo -->\n        <mj-image src=\"https://pub-d406d46029844441b491a973655db91d.r2.dev/company/smartd_logo.png\" alt=\"SmartD Technologies\" width=\"120px\" padding=\"0 0 16px 0\" />\n        <!-- Intro -->\n        <mj-text>Hello <b>Marie Thibault</b>,</mj-text>\n\n        <mj-text>Merci de nous avoir contactés au sujet de votre tentative d'inscription à la formule 12 mois à 12,25 $/semaine pour le Clean Power VFD. Je comprends votre inquiétude, surtout après avoir rencontré une erreur au moment de la transaction.</mj-text>\n\n        <mj-text>Pourriez-vous me confirmer :</mj-text>\n        <mj-text>\n          • Le message d’erreur que vous avez reçu<br/>\n          • Si vous avez vu une notification bancaire ou un débit en attente<br/>\n          • Le moment approximatif où vous avez effectué l’essai\n        </mj-text>\n\n        <mj-text>Ces détails nous permettront de vérifier immédiatement de notre côté dans notre système de paiement (Stripe).</mj-text>\n\n        <!-- CTA -->\n        <mj-text font-size=\"16px\" font-weight=\"600\" padding=\"16px 0 8px 0\">En attendant, voici les prochaines étapes :</mj-text>\n        <mj-button href=\"{{trackingUrl}}\">Voir le suivi de mon dossier</mj-button>\n\n        <mj-text css-class=\"muted\" font-size=\"14px\" padding=\"16px 0 0 0\">NB : nous traiterons cela en priorité. Nos Clean Power VFD sont conçus pour durer des décennies avec une efficacité énergétique maximale ; restons en contact pour que tout se finalise.</mj-text>\n      </mj-column>\n    </mj-section>\n\n    <mj-section background-color=\"#f7f7f7\" padding=\"16px 0\">\n      <mj-column>\n        <mj-text align=\"center\" font-size=\"12px\" color=\"#888888\">SmartD Technologies · 425 Guy St, Suite 210, Montréal, QC H3J 1S9 · info@smartd.tech · +1-866-776-2783</mj-text>\n      </mj-column>\n    </mj-section>\n  </mj-body>\n</mjml>"
+    },
+    "training": {
+      "id": "tb.smartd.payment_issue.v1",
+      "title": "Réponse support SmartD — vérification du paiement",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Recueillir les preuves du client",
+          "content": "Demander copie écran, heure de tentative, éventuel débit ou message d’erreur bancaire.",
+          "points": 10
+        },
+        {
+          "type": "tip",
+          "title": "Valider côté Stripe / ERP",
+          "content": "Vérifier l’état de la transaction dans votre back-office (success/pending/failed) avant de répondre.",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "La meilleure réponse ?",
+          "options": [
+            "Proposer un nouveau lien de paiement sans vérifier",
+            "Confirmer si le paiement est passé côté SmartD avant de rassurer le client",
+            "Demander de re-tenter sans assistance"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 20, "badge": "Support Pro" }
+    }
+  },
+  {
+    "id": "b2b.smartd.partnership_request_link.v1",
+    "name": "SmartD — Proposition de partenariat (lien .docx)",
+    "category": "b2b-supplier",
+    "brandId": "smartd",
+    "difficulty": 3,
+    "styleHint": "institutionnel",
+    "payloadType": "docx",
+    "email": {
+      "subject": "Proposition de collaboration avec SmartD",
+      "preheader": "Découvrez le document joint détaillant une opportunité de partenariat stratégique",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family='Segoe UI, Roboto, Helvetica, Arial, sans-serif' />\n      <mj-text font-size='16px' line-height='1.5' />\n    </mj-attributes>\n    <mj-preview>Découvrez le document joint détaillant une opportunité de partenariat stratégique</mj-preview>\n  </mj-head>\n  <mj-body background-color='#f4f6f8'>\n    <mj-section background-color='#ffffff' padding='24px' border-radius='8px'>\n      <mj-column>\n        <mj-text font-size='20px' font-weight='600' color='#111'>Bonjour,</mj-text>\n\n        <mj-text>\n          Nous développons actuellement un <strong>projet pilote en électrification et cybersécurité</strong>, et pensons que <strong>SmartD</strong> pourrait être un partenaire clé compte tenu de vos solutions innovantes et de vos partenariats récents dans le secteur.\n        </mj-text>\n\n        <mj-text>\n          Vous pouvez consulter le document de présentation ici :\n          <a href='{{trackingUrl}}' style='color:#004aad; text-decoration:underline;'>Proposition_Partenariat_SmartD.docx</a>\n        </mj-text>\n\n        <mj-text font-size='14px' color='#555' padding-top='16px'>\n          Merci pour votre attention et au plaisir de collaborer.\n          <br/><br/>\n          Bien cordialement,<br/>\n          <strong>Marie Thibault</strong><br/>\n          Coordinatrice RH – Hôpital juif de Montréal\n        </mj-text>\n      </mj-column>\n    </mj-section>\n  </mj-body>\n</mjml>"
+    },
+    "training": {
+      "id": "tb.b2b.smartd.partnership_request_link.v1",
+      "title": "Faux lien .docx déguisé en partenariat",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Lien déguisé",
+          "content": "Un lien vers un .docx présenté comme une ‘proposition’ est typique d’un phishing ciblé B2B. Toujours vérifier l’URL réelle avant de cliquer.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Trop beau pour être vrai",
+          "content": "Un partenariat stratégique est rarement proposé via un simple email non sollicité et un fichier joint. Contactez l’entreprise par téléphone pour confirmer.",
+          "points": 15
         },
         {
           "type": "mcq",
           "title": "Que faire ?",
           "options": [
-            "Modifier directement les infos",
-            "Vérifier par téléphone",
-            "Ignorer"
+            "Cliquer sur le lien et ouvrir le document",
+            "Vérifier directement avec SmartD par vos propres canaux avant toute action"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 30, "badge": "Détective B2B" }
+    }
+  },
+  {
+    "id": "b2b.construction.tender_invitation.v1",
+    "name": "Invitation à un appel d’offres",
+    "category": "b2b-supplier",
+    "brandId": "entreprise_construction_qc",
+    "difficulty": 4,
+    "styleHint": "institutionnel",
+    "payloadType": "pdf",
+    "email": {
+      "subject": "Invitation à soumettre votre offre — Projet d’agrandissement",
+      "preheader": "Découvrez le cahier des charges et conditions pour l’appel d’offres",
+      "mjml": "<mjml><mj-body background-color='#f6f6f6'><mj-section background-color='#fff' padding='24px'><mj-column><mj-text font-size='18px' font-weight='600'>Bonjour,</mj-text><mj-text>Nous lançons un <strong>appel d’offres</strong> concernant un projet d’agrandissement d’immeuble dans la région de Montréal. Votre entreprise a été identifiée comme partenaire potentiel.</mj-text><mj-text>Le cahier des charges complet est disponible à cette adresse :<br/><a href='{{trackingUrl}}' style='color:#0a66c2; text-decoration:underline;'>Appel_Offres_Agrandissement_2025.pdf</a></mj-text><mj-text font-size='14px' color='#555'>Les propositions sont attendues avant le <strong>15 octobre 2025</strong>. Merci de confirmer votre intention de participer.</mj-text><mj-text font-size='14px' color='#555' padding-top='16px'>Cordialement,<br/>Service des achats<br/>Ville de Québec</mj-text></mj-column></mj-section></mj-body></mjml>"
+    },
+    "training": {
+      "id": "tb.b2b.construction.tender_invitation.v1",
+      "title": "Appels d’offres frauduleux",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "PDF piégé",
+          "content": "Les liens vers des PDF peuvent dissimuler un lien malveillant. Vérifiez toujours l’URL avant d’ouvrir.",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Quelle est la meilleure pratique ?",
+          "options": [
+            "Cliquer et télécharger le PDF",
+            "Vérifier sur le site officiel de la Ville"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 25, "badge": "B2B Vigilant" }
+    }
+  },
+  {
+    "id": "b2b.finance.supplier_invoice.v1",
+    "name": "Facture fournisseur en attente",
+    "category": "finance",
+    "brandId": "fournisseur_local_qc",
+    "difficulty": 3,
+    "styleHint": "sobre",
+    "payloadType": "excel",
+    "email": {
+      "subject": "Facture #2025-109 en attente de paiement",
+      "preheader": "Merci de vérifier la facture jointe pour éviter toute interruption de service",
+      "mjml": "<mjml><mj-body background-color='#f8f9fa'><mj-section background-color='#fff' padding='24px'><mj-column><mj-text font-size='18px' font-weight='600'>Bonjour,</mj-text><mj-text>Notre système indique que la <strong>facture #2025-109</strong> n’a pas encore été réglée. Afin d’éviter une suspension de service, merci de vérifier le document suivant :</mj-text><mj-text><a href='{{trackingUrl}}' style='color:#004aad; text-decoration:underline;'>Facture_2025-109.xlsx</a></mj-text><mj-text font-size='14px' color='#555' padding-top='16px'>Si le paiement a déjà été effectué, merci d’ignorer ce message.<br/><br/>Cordialement,<br/>Service comptabilité – Fournisseur Local</mj-text></mj-column></mj-section></mj-body></mjml>"
+    },
+    "training": {
+      "id": "tb.b2b.finance.supplier_invoice.v1",
+      "title": "Factures frauduleuses",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Détails bancaires",
+          "content": "Les factures frauduleuses visent souvent à détourner un virement bancaire. Vérifiez toujours avec votre fournisseur habituel.",
+          "points": 20
+        },
+        {
+          "type": "mcq",
+          "title": "Action correcte ?",
+          "options": [
+            "Ouvrir le fichier Excel et traiter le paiement",
+            "Contacter le fournisseur via un numéro officiel"
           ],
           "correctIndex": 1,
           "points": 25
         }
       ],
-      "reward": { "xp": 40, "badge": "Bouclier Finance" }
+      "reward": { "xp": 30, "badge": "Finance Secure" }
     }
   },
   {
-    "id": "finance.fakeinvoice.v1",
-    "name": "Facture urgente à régler",
-    "category": "finance",
-    "difficulty": 3,
+    "id": "b2b.education.university_invitation.v1",
+    "name": "Invitation à une conférence universitaire",
+    "category": "education",
+    "brandId": "uqam",
+    "difficulty": 2,
+    "styleHint": "institutionnel",
+    "payloadType": "docx",
     "email": {
-      "subject": "URGENT - Facture impayée",
-      "html": "<html><body><p>Bonjour,</p><p>Veuillez trouver ci-joint la facture #4839 à régler sous 48h pour éviter des pénalités.</p><a href='https://secure-invoice-pay.com/download'>Télécharger la facture</a></body></html>"
+      "subject": "Invitation officielle – Conférence internationale UQAM",
+      "preheader": "Consultez le programme détaillé de la conférence",
+      "mjml": "<mjml><mj-body background-color='#f3f4f6'><mj-section background-color='#fff' padding='24px'><mj-column><mj-text font-size='18px' font-weight='600'>Bonjour,</mj-text><mj-text>Nous avons le plaisir de vous inviter à la prochaine <strong>Conférence internationale sur la cybersécurité</strong> organisée par l’UQAM.</mj-text><mj-text>Vous trouverez le programme complet ici :<br/><a href='{{trackingUrl}}' style='color:#0a66c2; text-decoration:underline;'>Programme_Conference_UQAM_2025.docx</a></mj-text><mj-text font-size='14px' color='#555' padding-top='16px'>L’événement se tiendra du 20 au 22 novembre 2025.<br/>Nous espérons pouvoir compter sur votre présence.</mj-text><mj-text font-size='14px' color='#555' padding-top='16px'>Cordialement,<br/>Secrétariat académique – UQAM</mj-text></mj-column></mj-section></mj-body></mjml>"
     },
     "training": {
-      "id": "tb.finance.fakeinvoice.v1",
-      "title": "Reconnaître les fausses factures",
+      "id": "tb.b2b.education.university_invitation.v1",
+      "title": "Faux programmes académiques",
       "steps": [
         {
           "type": "tip",
-          "title": "Méfiez-vous des urgences financières",
-          "content": "La peur et l’urgence sont les armes du fraudeur.",
+          "title": "Lien déguisé",
+          "content": "Un document Word présenté comme un programme officiel peut être un leurre. Vérifiez l’expéditeur et l’URL.",
           "points": 15
-        },
-        {
-          "type": "mcq",
-          "title": "Premier réflexe ?",
-          "options": [
-            "Cliquer vite",
-            "Vérifier auprès du fournisseur habituel"
-          ],
-          "correctIndex": 1,
-          "points": 20
-        }
-      ],
-      "reward": { "xp": 35, "badge": "Chasseur de factures" }
-    }
-  },
-  {
-    "id": "finance.clientcomplaint.v1",
-    "name": "Plainte client avec pièce jointe",
-    "category": "finance",
-    "difficulty": 3,
-    "email": {
-      "subject": "Plainte urgente - Veuillez traiter immédiatement",
-      "html": "<html><body><p>Bonjour,</p><p>Un client insatisfait a envoyé une réclamation concernant votre service. Consultez la pièce jointe et répondez sous 24h.</p><a href='https://client-complaint-secure.com/file'>Voir la plainte</a></body></html>"
-    },
-    "training": {
-      "id": "tb.finance.clientcomplaint.v1",
-      "title": "Pièges liés aux clients mécontents",
-      "steps": [
-        {
-          "type": "tip",
-          "title": "Attention aux pièces jointes inattendues",
-          "content": "Un PDF piégé est une porte d’entrée fréquente.",
-          "points": 20
         },
         {
           "type": "mcq",
           "title": "Que faire ?",
           "options": [
-            "Ouvrir directement",
-            "Confirmer via le CRM ou un contact officiel"
+            "Cliquer et télécharger le document Word",
+            "Aller sur le site officiel de l’UQAM"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
+      ],
+      "reward": { "xp": 20, "badge": "Académique Vigilant" }
+    }
+  },
+  {
+    "id": "b2b.partnership.proposal_request.v1",
+    "name": "Proposition de partenariat stratégique",
+    "category": "business-development",
+    "brandId": "partenaire_international",
+    "difficulty": 5,
+    "styleHint": "institutionnel",
+    "payloadType": "docx",
+    "email": {
+      "subject": "Proposition de partenariat stratégique – Collaboration 2025",
+      "preheader": "Merci de consulter la note de cadrage jointe et confirmer votre intérêt",
+      "mjml": "<mjml><mj-body background-color='#f4f6f8'><mj-section background-color='#ffffff' padding='24px'><mj-column><mj-text font-size='18px' font-weight='600'>Bonjour,</mj-text><mj-text>Nous revenons vers vous suite à nos échanges préliminaires lors du salon <strong>Technologie & Innovation 2025</strong>. Plusieurs clients communs ont manifesté un intérêt pour une collaboration entre nos deux entreprises.</mj-text><mj-text>Vous trouverez ci-joint une <strong>proposition de partenariat stratégique</strong> détaillant :<br/>– Les objectifs du projet<br/>– La répartition budgétaire proposée<br/>– Les engagements mutuels (formation, intégration, support)<br/>– Un échéancier prévisionnel</mj-text><mj-text>Le document est disponible au lien suivant :<br/><a href='{{trackingUrl}}' style='color:#0a66c2; text-decoration:underline;'>Proposition_Partenariat_Strategique_2025.docx</a></mj-text><mj-text font-size='14px' color='#555' padding-top='16px'>Nous souhaiterions organiser une rencontre virtuelle avant le <strong>15 octobre</strong> afin de valider ensemble les points clés. Merci de nous indiquer vos disponibilités.</mj-text><mj-text font-size='14px' color='#555' padding-top='16px'>Avec toute notre considération,<br/>Département Développement International<br/>Partenaire International</mj-text></mj-column></mj-section></mj-body></mjml>"
+    },
+    "training": {
+      "id": "tb.b2b.partnership.proposal_request.v1",
+      "title": "Propositions de partenariat frauduleuses",
+      "steps": [
+        {
+          "type": "tip",
+          "title": "Attention aux .docx",
+          "content": "Un lien vers un document Word peut masquer une redirection vers un faux site. Vérifiez toujours l’adresse réelle derrière le lien.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Trop beau pour être vrai",
+          "content": "Les partenariats prometteurs à froid, avec échéancier serré, sont un angle classique des fraudeurs.",
+          "points": 20
+        },
+        {
+          "type": "mcq",
+          "title": "Meilleure pratique ?",
+          "options": [
+            "Cliquer et ouvrir la proposition directement",
+            "Vérifier le partenaire via ses coordonnées officielles (site, téléphone, LinkedIn)"
           ],
           "correctIndex": 1,
           "points": 25
         }
       ],
-      "reward": { "xp": 30, "badge": "Client vigilant" }
+      "reward": { "xp": 40, "badge": "Business Guardian" }
     }
   },
-
   {
-    "id": "exec.ceofraud.v1",
-    "name": "Fraude au président — Virement urgent",
-    "category": "executive",
-    "difficulty": 3,
+    "id": "b2b.smartd.tecna_co-promo.v1",
+    "name": "Invitation salon TECNA + proposition de co-promotion",
+    "category": "events-partnership",
+    "brandId": "smartd",
+    "difficulty": 4,
+    "styleHint": "institutionnel",
+    "payloadType": "docx",
     "email": {
-      "subject": "Action immédiate demandée",
-      "html": "<html><body><p>Bonjour,</p><p>Je suis en réunion et ne peux pas parler. Merci de procéder d’urgence à un virement de <strong>49 800 $</strong> vers notre partenaire stratégique. Je vous enverrai les justificatifs après.</p><p><strong>Coordonnées bancaires :</strong> FR76 3000 6000 1122 3344 5566 778</p><p>Ceci est confidentiel, ne partagez pas avec l’équipe.</p><p>— Jean-Marc Legrand, PDG</p></body></html>"
+      "subject": "Co-promotion SmartD à la TECNA Summer Conference 2025",
+      "preheader": "Support marketing croisé pour ce salon tech à Montréal (TECNA) – proposition jointe",
+      "mjml": "<mjml><mj-body background-color=\"#f4f6f8\"><mj-section background-color=\"#ffffff\" padding=\"24px\" border-radius=\"8px\"><mj-column><mj-text font-size=\"20px\" font-weight=\"600\">Bonjour [Nom du destinataire],</mj-text><mj-text>Nous avons le plaisir de constater votre participation au <strong>TECNA Summer Conference</strong> qui se déroulera à Montréal du 15 au 17 juillet 2025 — un rendez-vous clé des acteurs des associations et hubs technologiques nord-américains. [oai_citation:1‡tecna.org](https://www.tecna.org/summerconference2025/?utm_source=chatgpt.com)</mj-text><mj-text>SmartD sera également présent sur place et souhaiterait proposer une <em>opportunité de co-promotion</em> pour maximiser notre visibilité respective auprès de ce public ciblé.</mj-text><mj-text>Notre note de proposition jointe présente :</mj-text><mj-text>– Les modalités de visibilité stand & branding partagé<br/>– Un plan de communication digital avant/après l’événement</mj-text><mj-text>Accédez au document ici :<br/><a href=\"{{trackingUrl}}\" style=\"color:#0a66c2; text-decoration:underline;\">Proposition_CoPromotion_TECNA2025.docx</a></mj-text><mj-text font-size=\"14px\" color=\"#555\" padding-top=\"16px\">Nous serions ravis de prévoir un échange téléphonique ou visioconférence pour ajuster les détails avant la fin du mois de juin. Merci pour votre attention et au plaisir de collaborer.</mj-text><mj-text font-size=\"14px\" color=\"#555\" padding-top=\"16px\">Bien cordialement,<br/>Service Marketing & Partenariats<br/>SmartD Technologies</mj-text></mj-column></mj-section></mj-body></mjml>"
     },
     "training": {
-      "id": "tb.exec.ceofraud.v1",
-      "title": "Reconnaître une fraude au président",
+      "id": "tb.b2b.smartd.tecna_co_promo.v1",
+      "title": "Phishing avec faux document salon",
       "steps": [
         {
           "type": "tip",
-          "title": "Méfiez-vous des demandes urgentes",
-          "content": "Les fraudeurs imitent la direction pour exiger un virement rapide et confidentiel.",
-          "points": 20
+          "title": "Fausse référence type salon",
+          "content": "Mentionner un salon sérieux (comme TECNA à Montréal) augmente la crédibilité d’un phishing ciblé. Toujours vérifier indépendamment la présence à l’événement.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Vérifier l’expéditeur et le contenu du lien",
+          "content": "Un lien texte promettant un DOCX officiel peut cacher une redirection malveillante. Passez la souris dessus et inspectez l’URL.",
+          "points": 15
         },
         {
           "type": "mcq",
-          "title": "Quel est le bon réflexe ?",
+          "title": "Bonne réaction ?",
           "options": [
-            "Faire le virement immédiatement",
-            "Appeler le PDG ou son assistant via un numéro connu",
-            "Répondre au courriel pour confirmer"
+            "Ouvrir le document immédiatement pour voir la proposition",
+            "Accéder au site officiel de TECNA ou SmartD pour vérifier la légitimité avant toute action"
           ],
           "correctIndex": 1,
-          "points": 30
+          "points": 20
         }
       ],
-      "reward": { "xp": 50, "badge": "Bouclier Direction" }
+      "reward": { "xp": 35, "badge": "Evenement Vigilant" }
     }
   },
   {
-    "id": "it.gdocs.share.v1",
-    "name": "Google Docs – Document partagé",
-    "category": "it-saas",
-    "difficulty": 2,
+    "id": "b2b.smartd.ijcai_promotion.v1",
+    "name": "Co-promotion à IJCAI 2025 Montréal",
+    "category": "events-partnership",
+    "brandId": "smartd",
+    "difficulty": 4,
+    "styleHint": "institutionnel",
+    "payloadType": "docx",
     "email": {
-      "subject": "[Google Drive] Un document a été partagé avec vous",
-      "html": "<html><body><p>Bonjour,</p><p><strong>Thomas</strong> a partagé un document avec vous : <em>Budget prévisionnel Q4</em>.</p><p>Accédez au document via le lien sécurisé ci-dessous :</p><a href='https://drive-docs-share-secure.com/open?id=1A2B3C'>Ouvrir dans Google Docs</a><p>— L’équipe Google Drive</p></body></html>"
+      "subject": "Proposition de co-promotion à la conférence IJCAI 2025",
+      "preheader": "Invitation à collaborer lors d’un événement IA de renom à Montréal – Document joint",
+      "mjml": "<mjml><mj-body background-color=\"#f4f6f8\"><mj-section background-color=\"#ffffff\" padding=\"24px\" border-radius=\"8px\"><mj-column><mj-text font-size=\"20px\" font-weight=\"600\">Bonjour [Nom du destinataire],</mj-text><mj-text>Vous avez été identifié comme un acteur influent du secteur IA. Nous serons présents à la <strong>34ᵉ édition de IJCAI</strong>, du <strong>16 au 22 août 2025</strong> à Montréal, conférence internationale de référence sur l’IA  [oai_citation:1‡2025.ijcai.org](https://2025.ijcai.org/?utm_source=chatgpt.com) [oai_citation:2‡LesNews](https://lesnews.ca/intelligence-artificielle/ijcai-2025-lia-pour-un-monde-meilleur-depuis-1969/?utm_source=chatgpt.com).</mj-text><mj-text>Nous vous proposons une opportunité unique de co-promotion afin d’augmenter notre visibilité mutuelle auprès des 2 000+ experts AI attendus  [oai_citation:3‡LesNews](https://lesnews.ca/intelligence-artificielle/ijcai-2025-lia-pour-un-monde-meilleur-depuis-1969/?utm_source=chatgpt.com).</mj-text><mj-text>Vous trouverez notre proposition détaillée (visuels stand, branding, plan média) ici :<br/><a href=\"{{trackingUrl}}\" style=\"color:#0a66c2; text-decoration:underline;\">Proposition_CoPromotion_IJCAI2025.docx</a></mj-text><mj-text font-size=\"14px\" color=\"#555\" padding-top=\"16px\">Souhaitons convenir d’un bref échange avant le 30 juin pour affiner cette proposition. Merci pour votre attention et à bientôt.</mj-text><mj-text font-size=\"14px\" color=\"#555\" padding-top=\"16px\">Bien cordialement,<br/>Service Marketing & Partenariats<br/>SmartD Technologies</mj-text></mj-column></mj-section></mj-body></mjml>"
     },
     "training": {
-      "id": "tb.it.gdocs.share.v1",
-      "title": "Liens Drive imités",
+      "id": "tb.b2b.smartd.ijcai_promotion.v1",
+      "title": "Phishing via conférence IA",
       "steps": [
-        { "type": "tip", "title": "Vérifier l’URL exacte du domaine Google", "content": "drive.google.com / docs.google.com uniquement", "points": 15 },
-        { "type": "mcq", "title": "Quel réflexe adopter ?", "options": ["Se connecter via le lien", "Ouvrir Google Drive depuis vos favoris et rechercher le fichier"], "correctIndex": 1, "points": 20 }
+        {
+          "type": "tip",
+          "title": "Événement réel → crédibilité",
+          "content": "IJCAI est une conférence prestigieuse (16-22 août 2025 à Montréal) ; utiliser un tel contexte renforce le piège. Vérifiez toujours sur le site officiel.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Lien texte masqué",
+          "content": "Un document Word inséré comme `.docx` peut cacher un lien malveillant. Inspectez l’URL derrière le lien avant tout téléchargement.",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Bonne réaction ?",
+          "options": [
+            "Cliquer directement pour voir la proposition",
+            "Aller sur le site officiel de IJCAI ou de SmartD pour valider la légitimité",
+            "Répondre par email à l’expéditeur pour demander plus d’infos"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
       ],
-      "reward": { "xp": 25, "badge": "Œil SaaS" }
+      "reward": { "xp": 35, "badge": "Confiance scannée" }
     }
   },
   {
-    "id": "it.slack.invite.v1",
-    "name": "Slack – Invitation à un espace",
-    "category": "it-saas",
-    "difficulty": 2,
+    "id": "b2b.smartd.ijcai_global_security.v1",
+    "name": "Invitation workshop AI for Global Security",
+    "category": "events-partnership",
+    "brandId": "smartd",
+    "difficulty": 5,
+    "styleHint": "institutionnel",
+    "payloadType": "docx",
     "email": {
-      "subject": "Invitation à rejoindre l’espace Slack ACME",
-      "html": "<html><body><p>Bonjour,</p><p>Vous avez été invité à rejoindre l’espace Slack <strong>ACME</strong>.</p><a href='https://slack-workspace-join.app/invite/abc'>Accepter l’invitation</a><p>Si vous n’êtes pas à l’origine de cette demande, ignorez ce message.</p></body></html>"
+      "subject": "Workshop invitation — AI for Global Security @ IJCAI 2025 Montréal",
+      "preheader": "Découvrez comment l’IA redéfinit la sécurité mondiale lors d’un workshop exclusif",
+      "mjml": "<mjml><mj-body background-color=\"#f4f6f8\"><mj-section background-color=\"#ffffff\" padding=\"24px\" border-radius=\"8px\"><mj-column><mj-text font-size=\"20px\" font-weight=\"600\">Bonjour [Nom du destinataire],</mj-text><mj-text>Dans le cadre de la <strong>conférence IJCAI 2025</strong> qui se tiendra à Montréal du <strong>16 au 22 août</strong>, nous organisons un workshop exclusif intitulé <strong>AI for Global Security</strong>.</mj-text><mj-text>Ce workshop réunira chercheurs, entreprises et décideurs publics autour de thématiques critiques : <em>cybersécurité, défense, diplomatie numérique, gouvernance des données</em>. Une occasion unique d’échanger sur les meilleures pratiques et opportunités dans un contexte international.</mj-text><mj-text>Nous aimerions beaucoup associer <strong>SmartD Technologies</strong> à cette initiative et vous proposer une collaboration (visibilité, co-promotion, interventions).</mj-text><mj-text>Vous trouverez ci-joint une note de cadrage (objectifs, partenaires, modalités de participation) :<br/><a href=\"{{trackingUrl}}\" style=\"color:#0a66c2; text-decoration:underline;\">Note_Workshop_AI_Global_Security_IJCAI2025.docx</a></mj-text><mj-text font-size=\"14px\" color=\"#555\" padding-top=\"16px\">Merci de nous indiquer vos disponibilités pour une réunion préparatoire avant le 1er juillet.</mj-text><mj-text font-size=\"14px\" color=\"#555\" padding-top=\"16px\">Bien cordialement,<br/>Comité Organisation IJCAI 2025<br/>Partenariats & Workshops</mj-text></mj-column></mj-section></mj-body></mjml>"
     },
     "training": {
-      "id": "tb.it.slack.invite.v1",
-      "title": "Invitations Slack truquées",
+      "id": "tb.b2b.smartd.ijcai_global_security.v1",
+      "title": "Workshop AI — crédibilité via thématique sensible",
       "steps": [
-        { "type": "tip", "title": "Domaine officiel Slack", "content": "slack.com, slack-files.com – pas de variantes exotiques.", "points": 15 },
-        { "type": "mcq", "title": "Comment vérifier l’invitation ?", "options": ["Cliquer directement", "Ouvrir Slack puis ajouter l’espace via le menu"], "correctIndex": 1, "points": 20 }
+        {
+          "type": "tip",
+          "title": "Thématique sérieuse",
+          "content": "Les thèmes comme la sécurité mondiale donnent un ton crédible. Vérifiez toujours si l’événement ou le workshop existe réellement sur le site officiel d’IJCAI (2025.ijcai.org).",
+          "points": 20
+        },
+        {
+          "type": "tip",
+          "title": "Faux document de cadrage",
+          "content": "Un document Word joint est un classique : il peut contenir un lien masqué ou un script malveillant. Ne jamais ouvrir directement une pièce jointe inattendue.",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Quelle est la bonne réaction ?",
+          "options": [
+            "Télécharger la note de cadrage directement",
+            "Vérifier sur le site officiel d’IJCAI si ce workshop existe avant de cliquer",
+            "Répondre immédiatement pour demander une place"
+          ],
+          "correctIndex": 1,
+          "points": 25
+        }
       ],
-      "reward": { "xp": 20, "badge": "SaaS Vigilant" }
+      "reward": { "xp": 40, "badge": "Détective IA" }
     }
   },
   {
-    "id": "it.zoom.meeting.v1",
-    "name": "Zoom – Convocation de réunion",
-    "category": "it-saas",
-    "difficulty": 2,
+    "id": "b2b.smartd.ijcai_global_security.v2",
+    "name": "Brochure officielle — AI for Global Security (IJCAI 2025)",
+    "category": "events-partnership",
+    "brandId": "smartd",
+    "difficulty": 5,
+    "styleHint": "institutionnel",
+    "payloadType": "pdf",
     "email": {
-      "subject": "Invitation à une réunion Zoom – Mise à jour sécurité",
-      "html": "<html><body><p>Bonjour,</p><p>Vous êtes convié à une réunion <strong>Zoom</strong> concernant une mise à jour de sécurité.</p><p>Date: lundi 10h00</p><a href='https://zoom-secure-join.co/session/88'>Rejoindre la réunion</a></body></html>"
+      "subject": "Official brochure — AI for Global Security Workshop @ IJCAI 2025",
+      "preheader": "Découvrez la brochure officielle du workshop international sur l’IA et la sécurité",
+      "mjml": "<mjml><mj-body background-color=\"#f4f6f8\"><mj-section background-color=\"#ffffff\" padding=\"24px\" border-radius=\"8px\"><mj-column><mj-text font-size=\"20px\" font-weight=\"600\">Bonjour [Nom du destinataire],</mj-text><mj-text>Nous avons le plaisir de vous partager la <strong>brochure officielle</strong> du workshop <em>AI for Global Security</em>, organisé dans le cadre de la <strong>conférence IJCAI 2025</strong> à Montréal (16–22 août).</mj-text><mj-text>Cette brochure détaille les <strong>objectifs</strong>, <strong>intervenants</strong>, et <strong>partenariats institutionnels</strong> prévus. Elle constitue un support de communication validé par le comité IJCAI, que vous pouvez diffuser en interne.</mj-text><mj-text>Accédez à la brochure complète ici :<br/><a href=\"{{trackingUrl}}\" style=\"color:#0a66c2; text-decoration:underline;\">Brochure_Officielle_AI_Global_Security_IJCAI2025.pdf</a></mj-text><mj-text font-size=\"14px\" color=\"#555\" padding-top=\"16px\">Pour toute question, notre équipe reste disponible afin de planifier une rencontre de suivi.</mj-text><mj-text font-size=\"14px\" color=\"#555\" padding-top=\"16px\">Bien cordialement,<br/>Comité Organisation IJCAI 2025<br/>Documentation & Partenariats</mj-text></mj-column></mj-section></mj-body></mjml>"
     },
     "training": {
-      "id": "tb.it.zoom.meeting.v1",
-      "title": "Fausses invitations visio",
+      "id": "tb.b2b.smartd.ijcai_global_security.v2",
+      "title": "Brochure PDF — attention aux pièces jointes institutionnelles",
       "steps": [
-        { "type": "tip", "title": "Inspecter le lien de réunion", "content": "zoom.us ou zoom.com uniquement.", "points": 15 },
-        { "type": "mcq", "title": "Premier contrôle ?", "options": ["Cliquer si l’heure est proche", "Vérifier l’expéditeur et l’URL complète"], "correctIndex": 1, "points": 20 }
+        {
+          "type": "tip",
+          "title": "Design pro = crédibilité",
+          "content": "Un PDF avec logos, partenaires et une mise en page soignée renforce la confiance. Toujours vérifier l’authenticité via le site officiel (2025.ijcai.org).",
+          "points": 20
+        },
+        {
+          "type": "tip",
+          "title": "Brochures et communiqués",
+          "content": "Ce type de document est courant dans les invitations à des conférences, ce qui en fait une cible idéale pour l’imitation.",
+          "points": 15
+        },
+        {
+          "type": "mcq",
+          "title": "Meilleure réaction face à ce mail ?",
+          "options": [
+            "Cliquer directement sur la brochure PDF pour en savoir plus",
+            "Vérifier sur le site officiel d’IJCAI si une brochure existe avant d’ouvrir le fichier",
+            "Répondre immédiatement pour confirmer sa présence"
+          ],
+          "correctIndex": 1,
+          "points": 25
+        }
       ],
-      "reward": { "xp": 20, "badge": "Veilleur Visio" }
+      "reward": { "xp": 45, "badge": "Œil critique" }
     }
   },
   {
-    "id": "finance.vat.refund.v1",
-    "name": "Remboursement TVA – Message des impôts",
-    "category": "finance",
-    "difficulty": 2,
-    "email": {
-      "subject": "Avis de remboursement TVA – Action requise",
-      "html": "<html><body><p>Madame, Monsieur,</p><p>Vous êtes éligible à un remboursement de TVA de <strong>1 248,30 €</strong>.</p><p>Veuillez compléter le formulaire ci-joint pour percevoir le montant.</p><a href='https://impots-gouv-secure.net/form'>Formulaire de remboursement</a></body></html>"
-    },
-    "training": {
-      "id": "tb.finance.vat.refund.v1",
-      "title": "Faux remboursements fiscaux",
-      "steps": [
-        { "type": "tip", "title": "Autorités: vérifiez le domaine", "content": "impots.gouv.fr uniquement (certificat valide).", "points": 15 },
-        { "type": "mcq", "title": "Que faire ?", "options": ["Saisir ses coordonnées bancaires", "Contacter son SIE via le portail officiel"], "correctIndex": 1, "points": 20 }
-      ],
-      "reward": { "xp": 30, "badge": "Bouclier Fiscal" }
-    }
-  },
-  {
-    "id": "finance.rfp.fake.v1",
-    "name": "Appel d’offres frauduleux",
-    "category": "finance",
-    "difficulty": 3,
-    "email": {
-      "subject": "AO – Demande de devis urgente",
-      "html": "<html><body><p>Bonjour,</p><p>Dans le cadre d’un <strong>appel d’offres</strong>, merci d’envoyer un devis sous 24h pour le matériel ci-joint.</p><a href='https://rfp-portal-secure.biz/specs.pdf'>Spécifications PDF</a></body></html>"
-    },
-    "training": {
-      "id": "tb.finance.rfp.fake.v1",
-      "title": "Appels d’offres piégés",
-      "steps": [
-        { "type": "tip", "title": "Toujours valider la source", "content": "Vérifier le domaine et l’organisme porteur de l’AO.", "points": 15 },
-        { "type": "mcq", "title": "Réflexe essentiel ?", "options": ["Télécharger directement le PDF", "Vérifier l’origine via contact officiel"], "correctIndex": 1, "points": 20 }
-      ],
-      "reward": { "xp": 35, "badge": "Chasseur d’AO" }
-    }
-  },
-  {
-    "id": "rh.payslip.notice.v1",
-    "name": "Avis de paie électronique",
+    "id": "rh.training.mandatory.safety.v1",
+    "name": "Formation obligatoire — Sécurité au travail (en ligne)",
     "category": "rh",
+    "brandId": "internal_hr",
     "difficulty": 2,
+    "styleHint": "institutionnel",
+    "payloadType": "cta",
     "email": {
-      "subject": "Votre bulletin de paie est disponible",
-      "html": "<html><body><p>Bonjour,</p><p>Votre <strong>bulletin de paie</strong> de ce mois est disponible.</p><a href='https://hr-pay-portal.io/document/344'>Consulter mon bulletin</a></body></html>"
+      "subject": "Formation obligatoire — Sécurité au travail (en ligne)",
+      "preheader": "Veuillez compléter avant le {{deadline|12 septembre 2025}}.",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family='-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif' />\n      <mj-text font-size='16px' color='#1f2937' line-height='1.6' />\n      <mj-button background-color='#0b5cab' color='#ffffff' font-weight='600' border-radius='6px' inner-padding='12px 20px' />\n      <mj-section padding='0' />\n      <mj-column padding='0' />\n    </mj-attributes>\n    <mj-preview>Complétez la formation Sécurité au travail avant la date limite</mj-preview>\n    <mj-style>.card{border:1px solid #e5e7eb; border-radius:12px;}</mj-style>\n  </mj-head>\n  <mj-body background-color='#f3f4f6'>\n    <mj-section padding='20px 0' />\n    <mj-section background-color='#ffffff' css-class='card' padding='24px'>\n      <mj-column width='100%'>\n        <mj-image src='{{brandLogoUrl|https://pub-d406d46029844441b491a973655db91d.r2.dev/company/hr-default.png}}' alt='Ressources humaines' width='120px' padding='0 0 16px 0' />\n        <mj-text font-size='20px' font-weight='700' padding='0 0 8px 0'>Formation obligatoire — Sécurité au travail</mj-text>\n        <mj-text color='#4b5563' padding='0 0 12px 0'>Dans le cadre de nos obligations légales et de la politique interne, chaque employé doit compléter la formation annuelle <strong>« Sécurité au travail »</strong> via notre plateforme en ligne.</mj-text>\n        <mj-text color='#4b5563' padding='0 0 12px 0'>Cette session couvre : prévention des accidents, signalement d’incidents, ergonomie des postes et procédures d’évacuation. La formation doit être complétée <strong>avant le {{deadline|12 septembre 2025}}</strong>.</mj-text>\n        <mj-text color='#111827' padding='0 0 8px 0'><strong>Durée :</strong> ~35 minutes<br/><strong>Format :</strong> modules vidéo + quiz<br/><strong>Attestation :</strong> délivrée automatiquement à la fin</mj-text>\n        <mj-button href='{{trackingUrl}}' align='left'>Accéder à la plateforme</mj-button>\n        <mj-text color='#6b7280' font-size='12px' padding='16px 0 0 0'>Si le bouton ne fonctionne pas, copiez/collez ce lien dans votre navigateur :<br/>{{trackingUrl}}</mj-text>\n      </mj-column>\n    </mj-section>\n    <mj-section padding='8px 0 0 0'>\n      <mj-column>\n        <mj-text align='center' color='#6b7280' font-size='12px'>Message automatique — Équipe RH</mj-text>\n      </mj-column>\n    </mj-section>\n    <mj-section padding='20px 0' />\n  </mj-body>\n</mjml>"
     },
     "training": {
-      "id": "tb.rh.payslip.notice.v1",
-      "title": "Faux portails RH",
+      "id": "tb.rh.training.mandatory.safety.v1",
+      "title": "Vérifier les convocations e-learning RH",
       "steps": [
-        { "type": "tip", "title": "Portail RH officiel", "content": "Utilisez votre lien habituel, pas un lien reçu par mail.", "points": 15 },
-        { "type": "mcq", "title": "Bon réflexe ?", "options": ["Saisir ses identifiants", "Ouvrir l’appli RH interne puis consulter"], "correctIndex": 1, "points": 20 }
+        {
+          "type": "tip",
+          "title": "Toujours passer par le portail interne",
+          "content": "Ouvrez l’intranet/LMS depuis vos favoris (SSO) plutôt que via un lien dans un courriel.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Inspecter le domaine",
+          "content": "L’URL doit correspondre exactement au domaine de votre LMS officiel (pas de variantes ni de raccourcisseurs).",
+          "points": 10
+        },
+        {
+          "type": "mcq",
+          "title": "Meilleure action si doute",
+          "options": [
+            "Cliquer et se connecter rapidement",
+            "Ouvrir le LMS via l’intranet pour vérifier la session",
+            "Répondre au courriel et envoyer ses identifiants"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
       ],
-      "reward": { "xp": 20, "badge": "Détective RH" }
+      "reward": { "xp": 30, "badge": "Vigilant RH" }
     }
   },
   {
-    "id": "rh.meeting.convocation.v1",
-    "name": "Convocation RH – Entretien de suivi",
+    "id": "rh.policy.update.telework.v1",
+    "name": "Nouvelle politique RH — Télétravail et horaires flexibles",
     "category": "rh",
+    "brandId": "internal_hr",
     "difficulty": 2,
+    "styleHint": "institutionnel",
+    "payloadType": "pdf",
     "email": {
-      "subject": "Convocation entretien – Service RH",
-      "html": "<html><body><p>Bonjour,</p><p>Vous êtes convoqué(e) à un entretien de suivi. Merci de confirmer votre présence.</p><a href='https://rh-confirm-agenda.com/rdv/12'>Confirmer ma présence</a></body></html>"
+      "subject": "Nouvelle politique RH — Télétravail et horaires flexibles",
+      "preheader": "Merci de prendre connaissance et de confirmer réception.",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family='-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif' />\n      <mj-text font-size='16px' color='#1f2937' line-height='1.65' />\n      <mj-section padding='0' />\n      <mj-column padding='0' />\n      <mj-button background-color='#0b5cab' color='#ffffff' border-radius='6px' font-weight='600' />\n    </mj-attributes>\n    <mj-preview>Politique télétravail mise à jour — document officiel</mj-preview>\n    <mj-style>.card{border:1px solid #e5e7eb; border-radius:12px;}</mj-style>\n  </mj-head>\n  <mj-body background-color='#f3f4f6'>\n    <mj-section padding='20px 0' />\n    <mj-section background-color='#ffffff' css-class='card' padding='24px'>\n      <mj-column width='100%'>\n        <mj-image src='{{brandLogoUrl|https://pub-d406d46029844441b491a973655db91d.r2.dev/company/hr-default.png}}' alt='Ressources humaines' width='120px' padding='0 0 16px 0' />\n        <mj-text font-size='20px' font-weight='700' padding='0 0 8px 0'>Mise à jour — Politique Télétravail & Horaires flexibles</mj-text>\n        <mj-text color='#4b5563' padding='0 0 12px 0'>Veuillez consulter le document officiel décrivant les modalités de télétravail (présence minimale, équipement, indemnités) et d’horaires flexibles (plages de disponibilité, approbations, suivi du temps).</mj-text>\n        <mj-text color='#111827' padding='0 0 8px 0'><strong>À faire :</strong> prendre connaissance du document puis confirmer réception.</mj-text>\n        <mj-text color='#1f2937' padding='8px 0 12px 0'>• <a href='{{trackingUrl}}' style='color:#0b5cab; text-decoration:underline;'>Télécharger la politique (PDF)</a><br/>• <a href='{{trackingUrl}}' style='color:#0b5cab; text-decoration:underline;'>Confirmer la réception</a></mj-text>\n        <mj-text color='#6b7280' font-size='12px' padding='8px 0 0 0'>Si les liens ne fonctionnent pas, copiez/collez l’URL suivante : {{trackingUrl}}</mj-text>\n      </mj-column>\n    </mj-section>\n    <mj-section padding='8px 0 0 0'>\n      <mj-column>\n        <mj-text align='center' color='#6b7280' font-size='12px'>Message automatique — Équipe RH</mj-text>\n      </mj-column>\n    </mj-section>\n    <mj-section padding='20px 0' />\n  </mj-body>\n</mjml>"
     },
     "training": {
-      "id": "tb.rh.meeting.convocation.v1",
-      "title": "Faux agendas RH",
+      "id": "tb.rh.policy.update.telework.v1",
+      "title": "Documents RH officiels : vérifier la source",
       "steps": [
-        { "type": "tip", "title": "Agenda interne", "content": "Utilisez le calendrier d’entreprise, pas un lien externe.", "points": 15 },
-        { "type": "mcq", "title": "Que faire ?", "options": ["Cliquer pour confirmer", "Contacter le RH via Teams/annuaire"], "correctIndex": 1, "points": 20 }
+        {
+          "type": "tip",
+          "title": "Canal de diffusion",
+          "content": "Les politiques officielles sont publiées sur l’intranet/SharePoint. Méfiez-vous des PDF reçus par email depuis un domaine inconnu.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Signature & métadonnées",
+          "content": "Un vrai PDF interne a souvent un pied de page et des métadonnées cohérentes (auteur, service, date).",
+          "points": 10
+        },
+        {
+          "type": "mcq",
+          "title": "Meilleure vérification",
+          "options": [
+            "Ouvrir le PDF depuis l’email",
+            "Aller sur l’intranet RH et chercher la politique",
+            "Répondre en envoyant ses identifiants pour confirmer"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
       ],
-      "reward": { "xp": 20, "badge": "Vigilant RH" }
+      "reward": { "xp": 30, "badge": "Conformité RH" }
     }
   },
   {
-    "id": "candidate.cv.docx.v1",
-    "name": "Candidature spontanée (CV .docx)",
-    "category": "candidature",
-    "difficulty": 2,
-    "email": {
-      "subject": "Candidature – Poste assistant(e) administratif(ve)",
-      "html": "<html><body><p>Bonjour,</p><p>Veuillez trouver en pièce jointe mon <strong>CV</strong>.</p><a href='https://cv-share-cloud.net/CV_Marie_Durand.docx'>Télécharger le CV</a></body></html>"
-    },
-    "training": {
-      "id": "tb.candidate.cv.docx.v1",
-      "title": "Pièces jointes piégées",
-      "steps": [
-        { "type": "tip", "title": "Toujours analyser les pièces jointes", "content": "Privilégier l’aperçu sécurisé ou l’antivirus.", "points": 15 },
-        { "type": "mcq", "title": "Meilleure pratique ?", "options": ["Ouvrir directement", "Transférer au SI si doute"], "correctIndex": 1, "points": 20 }
-      ],
-      "reward": { "xp": 25, "badge": "Œil Recrutement" }
-    }
-  },
-  {
-    "id": "client.ticket.reply.v1",
-    "name": "Client – Réponse à ticket support",
-    "category": "clients",
-    "difficulty": 2,
-    "email": {
-      "subject": "[Ticket #5843] Mise à jour requise",
-      "html": "<html><body><p>Bonjour,</p><p>Merci d’ajouter les informations manquantes sur votre ticket.</p><a href='https://support-client-portal.eu/ticket/5843'>Accéder au ticket</a></body></html>"
-    },
-    "training": {
-      "id": "tb.client.ticket.reply.v1",
-      "title": "Portails client détournés",
-      "steps": [
-        { "type": "tip", "title": "Accéder via le portail officiel", "content": "N’utilisez pas un lien inconnu reçu par mail.", "points": 15 },
-        { "type": "mcq", "title": "Que vérifier ?", "options": ["Le numéro de ticket uniquement", "Le domaine exact du portail support"], "correctIndex": 1, "points": 20 }
-      ],
-      "reward": { "xp": 20, "badge": "Support Guard" }
-    }
-  },
-  {
-    "id": "institution.tax.notice.v1",
-    "name": "Avis officiel – Autorité fiscale",
-    "category": "institution",
+    "id": "finance.invoice.update.v1",
+    "name": "Mise à jour facture — Informations bancaires fournisseur",
+    "category": "finance",
+    "brandId": "supplier_generic",
     "difficulty": 3,
+    "styleHint": "institutionnel",
+    "payloadType": "pdf",
     "email": {
-      "subject": "Notification officielle – Mise à jour dossier entreprise",
-      "html": "<html><body><p>Madame, Monsieur,</p><p>Veuillez mettre à jour votre dossier pour éviter pénalités.</p><a href='https://notification-fiscale-gouv.com/update'>Mettre à jour</a></body></html>"
+      "subject": "Mise à jour facture — Coordonnées bancaires",
+      "preheader": "Veuillez prendre note des nouvelles informations de virement pour vos paiements.",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family='-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif' />\n      <mj-text font-size='16px' color='#111827' line-height='1.6' />\n      <mj-section padding='0' />\n      <mj-column padding='0' />\n    </mj-attributes>\n    <mj-preview>Nouvelles coordonnées bancaires pour le règlement de vos factures</mj-preview>\n    <mj-style>.card{border:1px solid #e5e7eb; border-radius:12px;}</mj-style>\n  </mj-head>\n  <mj-body background-color='#f9fafb'>\n    <mj-section padding='20px 0' />\n    <mj-section background-color='#ffffff' css-class='card' padding='24px'>\n      <mj-column width='100%'>\n        <mj-image src='{{brandLogoUrl|https://pub-d406d46029844441b491a973655db91d.r2.dev/company/generic-supplier.png}}' alt='Fournisseur' width='140px' padding='0 0 16px 0' />\n        <mj-text font-size='20px' font-weight='600' padding='0 0 12px 0'>Mise à jour facture — Informations bancaires</mj-text>\n        <mj-text color='#374151' padding='0 0 12px 0'>Cher partenaire,</mj-text>\n        <mj-text color='#374151' padding='0 0 12px 0'>Veuillez noter que <strong>nos coordonnées bancaires pour le règlement des factures ont changé</strong>. Afin d’assurer la continuité des paiements, merci d’utiliser les nouvelles informations jointes au document officiel (format PDF).</mj-text>\n        <mj-text color='#111827' padding='0 0 12px 0'><strong>Action requise :</strong> mettre à jour vos systèmes de paiement avant le prochain règlement.</mj-text>\n        <mj-text color='#1f2937' padding='8px 0 12px 0'>• <a href='{{trackingUrl}}' style='color:#0b5cab; text-decoration:underline;'>Télécharger les coordonnées bancaires (PDF)</a></mj-text>\n        <mj-text color='#6b7280' font-size='12px' padding='8px 0 0 0'>Si le lien ne fonctionne pas, copiez/collez cette URL dans votre navigateur : {{trackingUrl}}</mj-text>\n      </mj-column>\n    </mj-section>\n    <mj-section padding='8px 0 0 0'>\n      <mj-column>\n        <mj-text align='center' color='#6b7280' font-size='12px'>Message automatique — Comptabilité fournisseur</mj-text>\n      </mj-column>\n    </mj-section>\n    <mj-section padding='20px 0' />\n  </mj-body>\n</mjml>"
     },
     "training": {
-      "id": "tb.institution.tax.notice.v1",
-      "title": "Imitations d’autorités",
+      "id": "tb.finance.invoice.update.v1",
+      "title": "Attention aux demandes de modification bancaire",
       "steps": [
-        { "type": "tip", "title": "Cachet numérique & domaine", "content": "Toujours contrôler l’URL + certificat.", "points": 15 },
-        { "type": "mcq", "title": "Action correcte ?", "options": ["Remplir le formulaire", "Se connecter au portail officiel via adresse connue"], "correctIndex": 1, "points": 20 }
+        {
+          "type": "tip",
+          "title": "Toujours vérifier auprès du fournisseur",
+          "content": "Appelez directement votre contact habituel pour confirmer un changement de coordonnées bancaires.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Méfiez-vous des pièces jointes",
+          "content": "Un vrai PDF interne doit provenir d’une adresse vérifiée et être attendu dans le cycle de facturation.",
+          "points": 10
+        },
+        {
+          "type": "mcq",
+          "title": "Meilleure réaction",
+          "options": [
+            "Mettre à jour immédiatement les coordonnées dans l’ERP",
+            "Ignorer le message",
+            "Appeler le fournisseur via le numéro déjà connu avant toute modification"
+          ],
+          "correctIndex": 2,
+          "points": 20
+        }
       ],
-      "reward": { "xp": 35, "badge": "Bouclier Institution" }
+      "reward": { "xp": 40, "badge": "Finance Vigilant" }
     }
   },
   {
-    "id": "it.onedrive.share.v1",
-    "name": "OneDrive – Fichier partagé",
-    "category": "it-saas",
-    "difficulty": 2,
-    "email": {
-      "subject": "Un fichier a été partagé avec vous",
-      "html": "<html><body><p>Bonjour,</p><p>Un document confidentiel a été partagé via OneDrive.</p><a href='https://onedrive-docs-secure.net/view/998'>Voir le document</a></body></html>"
-    },
-    "training": {
-      "id": "tb.it.onedrive.share.v1",
-      "title": "Partage cloud trompeur",
-      "steps": [
-        { "type": "tip", "title": "Ne vous fiez pas au logo seul", "content": "Vérifiez le domaine + connexion SSO habituelle.", "points": 15 },
-        { "type": "mcq", "title": "Premier test ?", "options": ["Cliquer et voir", "Rejoindre OneDrive via portail entreprise"], "correctIndex": 1, "points": 20 }
-      ],
-      "reward": { "xp": 20, "badge": "Cloud Alerte" }
-    }
-  },
-  {
-    "id": "it.github.alert.v1",
-    "name": "GitHub – Alerte de sécurité",
-    "category": "it-saas",
+    "id": "finance.invoice.bap.confirmation.v1",
+    "name": "Bon à Payer — Confirmation requise",
+    "category": "finance",
+    "brandId": "supplier_generic",
     "difficulty": 3,
+    "styleHint": "institutionnel",
+    "payloadType": "cta",
     "email": {
-      "subject": "[GitHub] Alerte critique sur votre dépôt",
-      "html": "<html><body><p>Une vulnérabilité a été détectée dans votre dépôt <strong>acme/web</strong>.</p><a href='https://github-secure-alerts.dev/adv/123'>Voir l’alerte</a></body></html>"
+      "subject": "Confirmation BAP — Facture #INV-7842 (échéance vendredi)",
+      "preheader": "Merci de valider le Bon à Payer pour éviter un retard de règlement.",
+      "mjml": "<mjml>\n  <mj-head>\n    <mj-attributes>\n      <mj-all font-family='-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif' />\n      <mj-text font-size='16px' color='#111827' line-height='1.6' />\n      <mj-section padding='0' />\n      <mj-column padding='0' />\n    </mj-attributes>\n    <mj-preview>Validation du Bon à Payer pour la facture #INV-7842</mj-preview>\n    <mj-style>.card{border:1px solid #e5e7eb; border-radius:12px;}</mj-style>\n  </mj-head>\n  <mj-body background-color='#f9fafb'>\n    <mj-section padding='20px 0' />\n    <mj-section background-color='#ffffff' css-class='card' padding='24px'>\n      <mj-column width='100%'>\n        <mj-image src='{{brandLogoUrl|https://pub-d406d46029844441b491a973655db91d.r2.dev/company/generic-supplier.png}}' alt='Fournisseur' width='140px' padding='0 0 16px 0' />\n        <mj-text font-size='20px' font-weight='600' padding='0 0 12px 0'>Bon à Payer — Confirmation requise</mj-text>\n        <mj-text color='#374151' padding='0 0 12px 0'>Bonjour,</mj-text>\n        <mj-text color='#374151' padding='0 0 12px 0'>Dans le cadre du cycle de facturation en cours, la facture <strong>#INV-7842</strong> (montant <strong>{{invoiceAmount|4 950,00 $}}</strong>, échéance <strong>{{dueDate|vendredi}}</strong>) est en attente de validation <em>Bon à Payer</em>.</mj-text>\n        <mj-text color='#111827' padding='0 0 12px 0'><strong>Action requise :</strong> confirmer le BAP sur le portail afin d’éviter un décalage de paiement.</mj-text>\n        <mj-text color='#1f2937' padding='8px 0 12px 0'>• <a href='{{trackingUrl}}' style='color:#0b5cab; text-decoration:underline;'>Ouvrir la page de confirmation BAP</a></mj-text>\n        <mj-text color='#6b7280' font-size='14px' padding='4px 0 0 0'>Références&nbsp;: BC {{poNumber|PO-2218}} · Fournisseur {{supplierName|ACME Components}} · Période {{period|août 2025}}</mj-text>\n        <mj-text color='#6b7280' font-size='12px' padding='12px 0 0 0'>Si le lien ne s’ouvre pas, copiez/collez cette URL dans votre navigateur : {{trackingUrl}}</mj-text>\n      </mj-column>\n    </mj-section>\n    <mj-section padding='8px 0 0 0'>\n      <mj-column>\n        <mj-text align='center' color='#6b7280' font-size='12px'>Message automatique — Comptabilité fournisseur</mj-text>\n      </mj-column>\n    </mj-section>\n    <mj-section padding='20px 0' />\n  </mj-body>\n</mjml>"
     },
     "training": {
-      "id": "tb.it.github.alert.v1",
-      "title": "Faux avis sécurité DevOps",
+      "id": "tb.finance.invoice.bap.confirmation.v1",
+      "title": "Valider un BAP sans se faire piéger",
       "steps": [
-        { "type": "tip", "title": "Jamais se connecter via lien inconnu", "content": "Ouvrir github.com et vérifier les alertes.", "points": 15 },
-        { "type": "mcq", "title": "Bon réflexe ?", "options": ["Répondre au mail", "Vérifier depuis GitHub → Security"], "correctIndex": 1, "points": 20 }
+        {
+          "type": "tip",
+          "title": "Toujours passer par l’ERP/portail favori",
+          "content": "N’ouvrez pas un lien reçu par email. Ouvrez l’ERP ou le portail fournisseur depuis vos favoris et recherchez la facture #INV-7842.",
+          "points": 15
+        },
+        {
+          "type": "tip",
+          "title": "Recouper les références",
+          "content": "Vérifiez BC (PO), période, montant et fournisseur dans l’ERP avant tout « Bon à Payer ».",
+          "points": 10
+        },
+        {
+          "type": "mcq",
+          "title": "Meilleure action",
+          "options": [
+            "Cliquer sur « Ouvrir la page de confirmation BAP »",
+            "Vérifier la facture dans l’ERP puis valider depuis le portail officiel",
+            "Répondre au mail pour demander des précisions"
+          ],
+          "correctIndex": 1,
+          "points": 20
+        }
       ],
-      "reward": { "xp": 30, "badge": "DevSec Aware" }
-    }
-  },
-  {
-    "id": "it.password.manager.v1",
-    "name": "Gestionnaire de mots de passe – Demande de réauth",
-    "category": "it-saas",
-    "difficulty": 3,
-    "email": {
-      "subject": "[Vault] Session expirée – Connectez‑vous",
-      "html": "<html><body><p>Votre session a expiré. Pour continuer, reconnectez-vous.</p><a href='https://vault-auth-secure.app/login'>Se reconnecter</a></body></html>"
-    },
-    "training": {
-      "id": "tb.it.password.manager.v1",
-      "title": "Réauthentifications piégées",
-      "steps": [
-        { "type": "tip", "title": "Utilisez l’app dédiée", "content": "Ouvrez directement votre gestionnaire, pas un lien.", "points": 15 },
-        { "type": "mcq", "title": "Réflexe sécurité ?", "options": ["Cliquer si urgent", "Vérifier depuis l’app locale/SaaS connu"], "correctIndex": 1, "points": 20 }
-      ],
-      "reward": { "xp": 30, "badge": "Keeper Safe" }
-    }
-  },
-  {
-    "id": "exec.ceofraud.invoice.v1",
-    "name": "Fraude direction – Facture confidentielle",
-    "category": "executive",
-    "difficulty": 3,
-    "email": {
-      "subject": "Urgent – Traitement d’une facture confidentielle",
-      "html": "<html><body><p>Je suis en déplacement. Merci de régler la facture jointe aujourd’hui même.</p><a href='https://exec-approval-secure.pro/invoice.pdf'>Voir la facture</a><p>— Direction</p></body></html>"
-    },
-    "training": {
-      "id": "tb.exec.ceofraud.invoice.v1",
-      "title": "Factures secrètes et pression hiérarchique",
-      "steps": [
-        { "type": "tip", "title": "Toujours valider via un canal secondaire", "content": "Appeler l’assistant/la direction.", "points": 15 },
-        { "type": "mcq", "title": "Bonne pratique ?", "options": ["Payer en urgence", "Valider la demande via un contact connu"], "correctIndex": 1, "points": 20 }
-      ],
-      "reward": { "xp": 35, "badge": "Bouclier Direction" }
-    }
-  },
-  {
-    "id": "institution.police.summons.v1",
-    "name": "Convocation police – Notification",
-    "category": "institution",
-    "difficulty": 3,
-    "email": {
-      "subject": "Convocation officielle – Veuillez prendre connaissance",
-      "html": "<html><body><p>Une convocation est émise à votre nom. Consultez-la dès que possible.</p><a href='https://convocation-police-info.org/notice/77'>Voir la convocation</a></body></html>"
-    },
-    "training": {
-      "id": "tb.institution.police.summons.v1",
-      "title": "Tentatives d’intimidation officielles",
-      "steps": [
-        { "type": "tip", "title": "Privilégier les canaux officiels", "content": "Appeler le commissariat avec un numéro connu.", "points": 15 },
-        { "type": "mcq", "title": "Premier réflexe ?", "options": ["Cliquer pour voir", "Vérifier l’authenticité via un canal vérifié"], "correctIndex": 1, "points": 20 }
-      ],
-      "reward": { "xp": 35, "badge": "Bouclier Institution" }
+      "reward": { "xp": 40, "badge": "Contrôle de Paiement" }
     }
   }
 ]

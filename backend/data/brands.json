@@ -1,0 +1,178 @@
+{
+  "pools": {
+    "global_it": [
+      {
+        "id": "microsoft",
+        "name": "Microsoft",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/Microsoft_logo_(2012).svg.png",
+        "category": "it-saas"
+      },
+      {
+        "id": "google",
+        "name": "Google",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Google_2015_logo.svg.png",
+        "category": "it-saas"
+      },
+      {
+        "id": "docusign",
+        "name": "DocuSign",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Docusign_Full_Color.svg.png",
+        "category": "signature"
+      },
+      {
+        "id": "zoom",
+        "name": "Zoom",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Zoom_Logo_2022.svg.png",
+        "category": "visioconference"
+      }
+    ],
+    "global_rh": [
+      {
+        "id": "adp",
+        "name": "ADP",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Automatic_Data_Processing_(logo).svg.png",
+        "category": "paie"
+      },
+
+      {
+        "id": "indeed",
+        "name": "Indeed",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Indeed_logo.svg.png",
+        "category": "recrutement"
+      }
+    ],
+    "global_finance": [
+      {
+        "id": "desjardins",
+        "name": "Desjardins",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Desjardins_Group_logo.svg.png",
+        "category": "banque"
+      },
+      {
+        "id": "banque-nationale",
+        "name": "Banque Nationale",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/National_Bank_of_Canada_logo.svg.png",
+        "category": "banque"
+      }
+    ],
+    "smartd_partners": [
+      {
+        "id": "eecol",
+        "name": "EECOL Electric",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/elecol-logo.svg",
+        "category": "distribution"
+      },
+      {
+        "id": "futech",
+        "name": "Futech",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/futech-logo-blanc.png",
+        "category": "automation"
+      },
+      {
+        "id": "graybar",
+        "name": "Graybar Canada",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Graybar_logo.svg.png",
+        "category": "distribution"
+      }
+    ],
+    "mairies_quebec": [
+      {
+        "id": "montreal",
+        "name": "Ville de Montréal",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Logo_Montre%CC%81al.svg.png",
+        "category": "public"
+      },
+      {
+        "id": "quebec",
+        "name": "Ville de Québec",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/villeQuebec.jpg",
+        "category": "public"
+      }
+    ],
+    "association_hoteliere_quebec": [
+      {
+        "id": "auberge-saint-antoine",
+        "name": "Auberge Saint-Antoine",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/auberge-st-antoine.png",
+        "category": "boutique"
+      },
+      {
+        "id": "monastere-augustines",
+        "name": "Le Monastère des Augustines",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/logo-monaste%CC%80re-des-augustines.png",
+        "category": "bien-etre"
+      },
+      {
+        "id": "le-germain-quebec",
+        "name": "Hôtel Le Germain Québec",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Logo_Le_Germain_FR_2018_Singulier_Black.png",
+        "category": "boutique-moderne"
+      },
+      {
+        "id": "hotel-71",
+        "name": "Hôtel 71 Quebec City",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/hotel71.png",
+        "category": "design"
+      },
+      {
+        "id": "clarendon-hotel",
+        "name": "Clarendon Hotel",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/clarendon-logo.webp",
+        "category": "historique-continu"
+      },
+      {
+        "id": "hotel-le-concorde",
+        "name": "Hôtel Le Concorde Québec",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/hotel-concorde.png",
+        "category": "panoramique"
+      },
+      {
+        "id": "fairmont-manoir-richelieu",
+        "name": "Fairmont Manoir Richelieu",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Fairmont-logo.png",
+        "category": "station-balneaire"
+      },
+      {
+        "id": "manoir-hovey",
+        "name": "Manoir Hovey",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Manoir-Hovey-logo.png",
+        "category": "luxury-bb"
+      }
+    ],
+    "universites_quebec": [
+      {
+        "id": "udem",
+        "name": "Université de Montréal",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Universite_de_Montreal_logo.svg.png",
+        "category": "education"
+      },
+      {
+        "id": "uqam",
+        "name": "Université du Québec à Montréal",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/Universite%CC%81_du_Que%CC%81bec_a%CC%80_Montre%CC%81al_Logo.svg.png",
+        "category": "education"
+      },
+      {
+        "id": "hec",
+        "name": "HEC Montréal",
+        "logoUrl": "https://pub-d406d46029844441b491a973655db91d.r2.dev/company/hec-montreal.png",
+        "category": "education"
+      }
+    ]
+  },
+  "identities": [
+    {
+      "firstName": "Philippe",
+      "lastName": "Dubois",
+      "role": "Responsable Comptabilité"
+    },
+    { "firstName": "Sophie", "lastName": "Tremblay", "role": "Directrice RH" },
+    { "firstName": "James", "lastName": "Coke", "role": "Account Manager" },
+    {
+      "firstName": "Marie",
+      "lastName": "Lefebvre",
+      "role": "Chargée de clientèle"
+    },
+    { "firstName": "David", "lastName": "Nguyen", "role": "Responsable IT" }
+  ]
+}

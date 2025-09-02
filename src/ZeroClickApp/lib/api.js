@@ -1,6 +1,9 @@
 // src/ZeroClickApp/lib/api.js
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:7300/api";
+  import.meta.env.VITE_API_BASE_URL ||
+  (typeof window !== 'undefined' && window.location && window.location.origin
+    ? `${window.location.origin.replace(/\/$/, '')}/api`
+    : 'http://localhost:7300/api');
 
 async function req(path, opts = {}) {
   const r = await fetch(`${API_BASE_URL}${path}`, {
@@ -84,6 +87,16 @@ export const api = {
       method: 'POST',
       body: JSON.stringify(body || {}),
     }),
+  // Attachments per group
+  listAttachments: (tid, bid, group) =>
+    req(`/tenants/${tid}/batches/${bid}/attachments/${encodeURIComponent(group)}`),
+  uploadAttachment: (tid, bid, group, { filename, mimeType, contentBase64 }) =>
+    req(`/tenants/${tid}/batches/${bid}/attachments/${encodeURIComponent(group)}`, {
+      method: 'POST',
+      body: JSON.stringify({ filename, mimeType, contentBase64 }),
+    }),
+  deleteAttachment: (tid, bid, group, filename) =>
+    req(`/tenants/${tid}/batches/${bid}/attachments/${encodeURIComponent(group)}/${encodeURIComponent(filename)}`, { method: 'DELETE' }),
   // Usage de scénarios par employé (pour marquage UI)
   getScenarioUsage: (tid, employeeIds = []) => {
     const q = Array.isArray(employeeIds) && employeeIds.length
@@ -114,6 +127,20 @@ export const api = {
   resultsOverview: (tid) => req(`/tenants/${tid}/results/overview`),
   // Détails d’un batch (groupé par département + employés cliquants)
   resultsForBatch: (tid, bid) => req(`/tenants/${tid}/batches/${bid}/results`),
+  resultsWeekly: (tid, start, end) => {
+    const q = new URLSearchParams();
+    if (start) q.set('start', start);
+    if (end) q.set('end', end);
+    const qs = q.toString() ? `?${q.toString()}` : '';
+    return req(`/tenants/${tid}/results/weekly${qs}`);
+  },
+  resultsWeeklyCsvUrl: (tid, start, end) => {
+    const q = new URLSearchParams();
+    if (start) q.set('start', start);
+    if (end) q.set('end', end);
+    const qs = q.toString() ? `?${q.toString()}` : '';
+    return `${API_BASE_URL}/tenants/${tid}/results/weekly.csv${qs}`;
+  },
 
   getResultsSummary: (tid) => req(`/tenants/${tid}/results`),
 
@@ -129,4 +156,7 @@ export const api = {
 
   // Training: infos employé par sendId (pour header gamifié)
   getTrainingSend: (sendId) => req(`/training/send/${encodeURIComponent(sendId)}`),
+
+  // Brands
+  getBrands: () => req(`/brands`),
 };

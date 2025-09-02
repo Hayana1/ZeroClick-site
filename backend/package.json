@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "backfill:targets": "node scripts/backfill-target-tenantId.js"
+    "backfill:targets": "node scripts/backfill-target-tenantId.js",
+    "migrate:templates:html": "node scripts/migrate-email-templates-to-html.js",
+    "migrate:scenarios:html": "node scripts/migrate-scenarios-mjml-to-html.js",
+    "validate:scenarios": "node scripts/validate-scenarios.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

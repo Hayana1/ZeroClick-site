@@ -15,12 +15,18 @@ export default function TenantPicker() {
         value={tenantId || ""}
         onChange={(e) => setTenant(e.target.value)}
       >
+        <option value="" disabled>
+          Sélectionner…
+        </option>
         {tenants.map((t) => (
           <option key={t._id} value={t._id}>
             {t.name}
           </option>
         ))}
       </select>
+      {!tenants.length && (
+        <span className="text-xs text-red-600">Aucune entreprise. Créez-en une d'abord.</span>
+      )}
     </div>
   );
 }

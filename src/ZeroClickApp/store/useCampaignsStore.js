@@ -20,6 +20,9 @@ export const useCampaignsStore = create((set, get) => ({
   trackingLinks: {},
   scenarioUsageByEmployee: {}, // { [employeeId]: [scenarioId, ...] }
   emailTemplatesByCampaign: {}, // { [campaignId]: { [groupName]: { mjmlSource, htmlRendered, updatedAt } } }
+  attachmentsByCampaign: {}, // { [campaignId]: { [groupName]: [ { filename, url, size, ... } ] } }
+  brands: [],
+  identities: [],
 
   /* ===================== LOAD LIST ===================== */
   fetch: async (tenantId) => {
@@ -31,11 +34,13 @@ export const useCampaignsStore = create((set, get) => ({
       const themes = {};
       const configs = {};
       const emailTpls = {};
+      const attachments = {};
       for (const c of rows) {
         sent[c._id] = c.selections || {};
         themes[c._id] = c.themesByGroup || {};
         configs[c._id] = c.groupConfigs || {};
         emailTpls[c._id] = c.emailTemplates || {};
+        attachments[c._id] = c.attachmentsByGroup || {};
       }
 
       set({
@@ -46,6 +51,7 @@ export const useCampaignsStore = create((set, get) => ({
         loading: false,
         groupConfigs: configs,
         emailTemplatesByCampaign: emailTpls,
+        attachmentsByCampaign: attachments,
       });
     } catch (e) {
       set({
@@ -55,10 +61,53 @@ export const useCampaignsStore = create((set, get) => ({
     }
   },
 
+  /* ===================== ATTACHMENTS ===================== */
+  fetchAttachments: async (tenantId, campaignId, groupName) => {
+    const list = await api.listAttachments(tenantId, campaignId, groupName);
+    const all = get().attachmentsByCampaign || {};
+    const perCamp = all[campaignId] || {};
+    set({ attachmentsByCampaign: { ...all, [campaignId]: { ...perCamp, [groupName]: list } } });
+    return list;
+  },
+  uploadAttachment: async (tenantId, campaignId, groupName, file) => {
+    // file: { name, type, dataUrl }
+    const { name, type, dataUrl } = file;
+    const entry = await api.uploadAttachment(tenantId, campaignId, groupName, {
+      filename: name,
+      mimeType: type,
+      contentBase64: dataUrl,
+    });
+    const all = get().attachmentsByCampaign || {};
+    const perCamp = all[campaignId] || {};
+    const list = perCamp[groupName] || [];
+    set({ attachmentsByCampaign: { ...all, [campaignId]: { ...perCamp, [groupName]: [...list, entry] } } });
+    return entry;
+  },
+  deleteAttachment: async (tenantId, campaignId, groupName, filename) => {
+    await api.deleteAttachment(tenantId, campaignId, groupName, filename);
+    const all = get().attachmentsByCampaign || {};
+    const perCamp = all[campaignId] || {};
+    const next = (perCamp[groupName] || []).filter((x) => x.filename !== filename);
+    set({ attachmentsByCampaign: { ...all, [campaignId]: { ...perCamp, [groupName]: next } } });
+    return true;
+  },
+
+  /* ===================== BRANDS ===================== */
+  fetchBrands: async () => {
+    try {
+      const data = await api.getBrands();
+      const list = Array.isArray(data) ? data : (data.items || []);
+      const identities = Array.isArray(data?.identities) ? data.identities : [];
+      set({ brands: list, identities });
+    } catch (e) {
+      set({ error: e.message || 'Erreur chargement brands', brands: [], identities: [] });
+    }
+  },
+
   /* ===================== SET ACTIVE ===================== */
   setActive: async (tenantId, campaignId) => {
     set({ activeId: campaignId });
-    const { sentMap, themesByGroup, groupConfigs, copiedMap, trackingLinks } = get();
+    const { sentMap, themesByGroup, groupConfigs, copiedMap, trackingLinks, attachmentsByCampaign } = get();
 
     // hydrate selections si manquant
     if (!sentMap[campaignId]) {
@@ -85,6 +134,9 @@ export const useCampaignsStore = create((set, get) => ({
     }
     if (!get().emailTemplatesByCampaign[campaignId]) {
       set({ emailTemplatesByCampaign: { ...get().emailTemplatesByCampaign, [campaignId]: {} } });
+    }
+    if (!attachmentsByCampaign[campaignId]) {
+      set({ attachmentsByCampaign: { ...attachmentsByCampaign, [campaignId]: {} } });
     }
   },
 
@@ -139,7 +191,7 @@ export const useCampaignsStore = create((set, get) => ({
     tenantId,
     campaignId,
     groupName,
-    { theme, scenarioId, category } = {}
+    { theme, scenarioId, category, brandId, identity } = {}
   ) => {
     const prevConfigsAll = get().groupConfigs;
     const prevConfigs = prevConfigsAll[campaignId] || {};
@@ -148,6 +200,8 @@ export const useCampaignsStore = create((set, get) => ({
       ...(theme !== undefined ? { theme } : {}),
       ...(scenarioId !== undefined ? { scenarioId } : {}),
       ...(category !== undefined ? { category } : {}),
+      ...(brandId !== undefined ? { brandId } : {}),
+      ...(identity !== undefined ? { identity } : {}),
     };
     const nextConfigsAll = {
       ...prevConfigsAll,
@@ -169,7 +223,7 @@ export const useCampaignsStore = create((set, get) => ({
         tenantId,
         campaignId,
         groupName,
-        { theme, scenarioId, category },
+        { theme, scenarioId, category, brandId, identity },
         true
       );
       // normaliser retour
@@ -325,11 +379,12 @@ export const useCampaignsStore = create((set, get) => ({
     return res; // { html, errors }
   },
 
-  saveMjml: async (tenantId, campaignId, groupName, mjmlSource, htmlRendered) => {
+  saveMjml: async (tenantId, campaignId, groupName, mjmlSource, htmlRendered, metadata) => {
     const res = await api.saveMjml(tenantId, campaignId, {
       groupName,
       mjmlSource,
       htmlRendered,
+      ...(metadata ? { metadata } : {}),
     });
     // merge retour
     const all = get().emailTemplatesByCampaign || {};

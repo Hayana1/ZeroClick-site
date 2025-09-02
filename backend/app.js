@@ -1,6 +1,8 @@
 // app.js (CommonJS)
 require("dotenv").config();
 const express = require("express");
+const path = require("path");
+const fs = require("fs");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
@@ -46,7 +48,19 @@ console.log("CORS self origin:", SELF_ORIGIN);
 
 /* -------------------- MIDDLEWARE -------------------- */
 app.set("trust proxy", 1);
-app.use(express.json({ limit: '512kb' }));
+// JSON limit increased to allow base64 uploads for small attachments
+app.use(express.json({ limit: '15mb' }));
+
+// Minimal request logging (production-friendly)
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    if (req.path === '/api/health') return;
+    const ms = Date.now() - start;
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl} -> ${res.statusCode} ${ms}ms`);
+  });
+  next();
+});
 
 // CORS: autorise dynamiquement l'origine du serveur (même domaine)
 // pour éviter des 403 en prod si BASE_URL est manquant/mal configuré.
@@ -97,6 +111,11 @@ async function start() {
 
   // Étape 2: initialisation des routes + server
   try {
+    // Static uploads (local-only helper)
+    const uploadsDir = path.join(__dirname, "uploads");
+    try { fs.mkdirSync(uploadsDir, { recursive: true }); } catch {}
+    app.use("/uploads", express.static(uploadsDir));
+
     // --- ROUTES ---
     app.use("/api/tenants", require("./routes/tenants"));
     app.use("/api/tenants", require("./routes/tenants.employees"));
@@ -108,10 +127,26 @@ async function start() {
     app.use("/api", require("./routes/results"));
     app.use("/api/tenants", require("./routes/tenants.scenarios"));
     app.use("/api/tracking", require("./routes/tracking.misc"));
+    app.use("/api", require("./routes/brands"));
+    app.use("/api", require("./routes/scenarios"));
     app.use(require("./routes/training"));
 
     // Health
     app.get("/api/health", (_req, res) => res.json({ ok: true }));
+    app.get("/api/ready", (_req, res) => {
+      const ready = mongoose.connection.readyState === 1;
+      return res.status(ready ? 200 : 503).json({ ok: ready });
+    });
+    app.get('/api/version', (_req, res) => {
+      try {
+        const fs = require('fs');
+        const path = require('path');
+        const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
+        res.json({ version: pkg.version || '0.0.0' });
+      } catch {
+        res.json({ version: 'unknown' });
+      }
+    });
     app.get("/", (_req, res) => res.send("ZeroClick API live"));
 
     app.listen(PORT, "0.0.0.0", () => {

@@ -82,6 +82,52 @@ export default function TrainingOups() {
     ? Math.round((answeredCount / totalMcq) * 100)
     : 0;
 
+  function getEnhancements(s) {
+    if (!s) return null;
+    const cat = String(s.category || '').toLowerCase();
+    const pt = String(s.payloadType || '').toLowerCase();
+    const style = String(s.styleHint || '').toLowerCase();
+    const blocks = [];
+    // Pourquoi ça marche
+    const why =
+      cat.includes('finance')
+        ? "Les attaquants exploitent l'urgence financière (factures, IBAN, TVA). Sous pression, on valide sans contrôle secondaire."
+        : cat.includes('it') || cat.includes('saas')
+        ? "Les faux portails et réauthentifications SSO jouent sur l'habitude: on clique vite sur un bouton familier."
+        : cat.includes('rh')
+        ? "Les candidatures et formulaires RH sont des vecteurs classiques: curiosité et routine administrative font baisser la vigilance."
+        : "Les demandes crédibles (contrats, partages cloud) ressemblent au quotidien business — c'est là leur force.";
+    blocks.push({ title: 'Pourquoi ça marche', body: why });
+    // Signaux d'alerte
+    const redFlagsList = [];
+    if (cat.includes('finance')) redFlagsList.push('Changement IBAN sans validation téléphonique', 'Urgence/échéance non prévue', 'Fichier ou lien “facture” depuis un domaine inconnu');
+    if (cat.includes('it') || cat.includes('saas')) redFlagsList.push('URL de connexion légèrement différente', 'Bouton “Se connecter” depuis un courriel inattendu', 'Demande MFA hors portail habituel');
+    if (cat.includes('rh')) redFlagsList.push('Pièces jointes Word/Excel demandant “Activer le contenu”', 'Formulaires externes non hébergés sur l’intranet');
+    if (redFlagsList.length === 0) redFlagsList.push('Demande inattendue mais crédible', 'Domaines ou adresses qui ne correspondent pas exactement');
+    blocks.push({ title: 'Signaux d’alerte', list: redFlagsList });
+    // Exemple concret
+    const example =
+      pt === 'pdf'
+        ? "Objet crédible + “Devis_#4827_2025-02-10.pdf”. Le lien ouvre un PDF factice hébergé hors domaine, puis redirige vers un portail."
+        : pt === 'login'
+        ? "Courriel SSO ‘session expirée’. Le bouton pointe vers un domaine qui imite le vrai. Le logo/bleu rassurent, mais l’URL trahit." 
+        : pt === 'form'
+        ? "Mise à jour d'informations via un formulaire web externe. Les champs demandent des détails sensibles (IBAN, données perso)."
+        : "Partage cloud (Drive/OneDrive): ‘Ouvrir dans …’. Le lien mène vers une page qui ressemble à l’outil, mais l’URL est différente.";
+    blocks.push({ title: 'Exemple concret', body: example });
+    // Fun fact pédagogique
+    const fun =
+      style.includes('institutionnel')
+        ? "Les messages ‘institutionnels’ avec bandeaux/refs rassurent. Les fraudeurs imitent ce formalisme pour baisser nos défenses."
+        : style.includes('saas')
+        ? "Les emails SaaS jouent sur la mémoire musculaire: on clique ‘Se connecter’ sans regarder l’URL après des centaines de fois légitimes."
+        : "Les délais et numéros de dossier crédibles augmentent de 30–50% les clics dans les tests d’ingénierie sociale.";
+    blocks.push({ title: 'Fun fact', body: fun });
+    return blocks;
+  }
+
+  const enhancements = useMemo(() => getEnhancements(scenario), [scenario]);
+
   // Charger infos employé (points + historique) via sendId
   useEffect(() => {
     let mounted = true;
@@ -266,6 +312,32 @@ export default function TrainingOups() {
           </div>
         </div>
       </section>
+
+      {/* Enhancements */}
+      {enhancements && (
+        <section className="mx-auto max-w-4xl px-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {enhancements.map((b, i) => (
+              <div key={i} className="rounded-2xl border border-gray-700 bg-gray-900/60 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <Badge className="text-sky-200 border-sky-500/30 bg-sky-900/20">Approfondir</Badge>
+                  <h3 className="text-base font-semibold text-white">{b.title}</h3>
+                </div>
+                {b.body && (
+                  <p className="text-gray-300 text-sm leading-relaxed">{b.body}</p>
+                )}
+                {Array.isArray(b.list) && (
+                  <ul className="mt-2 list-disc list-inside text-gray-300 text-sm space-y-1">
+                    {b.list.map((li, k) => (
+                      <li key={k}>{li}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Steps */}
       <section className="mx-auto max-w-4xl px-6 mt-6 pb-16">

@@ -13,6 +13,7 @@ import {
 import TenantPicker from "../../components/TenantPicker";
 import { useTenantStore } from "../../store/useTenantStore";
 import { useResultsStore } from "../../store/useResultsStore";
+import { api as apiClient } from "../../lib/api";
 
 const ProgressBar = ({ value }) => (
   <div className="w-full bg-gray-200 rounded-full h-2">
@@ -57,6 +58,8 @@ export default function ResultsPage() {
   const [dept, setDept] = useState("Tous");
   const [expandedDepts, setExpandedDepts] = useState({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [weekStart, setWeekStart] = useState(() => new Date(Date.now()-7*24*3600*1000).toISOString().slice(0,10));
+  const [weekEnd, setWeekEnd] = useState(() => new Date().toISOString().slice(0,10));
 
   // tenants + overview
   useEffect(() => {
@@ -104,6 +107,34 @@ export default function ResultsPage() {
       return { ...r, employees, clickCount: employees.length };
     });
   }, [batchResults, activeBatchId, q, dept]);
+
+  // Executive summary (active batch)
+  const executive = useMemo(() => {
+    const baseRows = batchResults[activeBatchId]?.rows || [];
+    const batch = batchResults[activeBatchId]?.batch || null;
+    const totalEmployees = Number(batch?.totalEmployees || 0);
+    const sentCount = (() => {
+      // Approx: if batch has no selections in payload, fallback on clicked unique count
+      return Number(batch?.sentCount || 0);
+    })();
+    let clicked = 0;
+    let trained = 0;
+    let lastClickAt = null;
+    for (const r of baseRows) {
+      const emps = r.employees || [];
+      clicked += emps.length;
+      for (const e of emps) {
+        if (e.trainingCompleted) trained += 1;
+        if (e.firstClickAt) {
+          const d = new Date(e.firstClickAt);
+          if (!lastClickAt || d > lastClickAt) lastClickAt = d;
+        }
+      }
+    }
+    const clickRate = totalEmployees > 0 ? Math.round((clicked / totalEmployees) * 100) : 0;
+    const trainRate = clicked > 0 ? Math.round((trained / clicked) * 100) : 0;
+    return { totalEmployees, sentCount, clicked, trained, clickRate, trainRate, lastClickAt };
+  }, [batchResults, activeBatchId]);
 
   return (
     <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6 bg-gray-50 min-h-screen">
@@ -182,10 +213,47 @@ export default function ResultsPage() {
             </div>
           )}
         </div>
+        <div className="mt-4 border-t pt-3">
+          <h4 className="font-semibold text-gray-800 text-sm mb-2">Export hebdo</h4>
+          <div className="flex gap-2 items-center">
+            <input type="date" className="border rounded px-2 py-1 text-sm" value={weekStart} onChange={(e) => setWeekStart(e.target.value)} />
+            <input type="date" className="border rounded px-2 py-1 text-sm" value={weekEnd} onChange={(e) => setWeekEnd(e.target.value)} />
+          </div>
+          <a
+            href={tenantId ? apiClient.resultsWeeklyCsvUrl(tenantId, weekStart, weekEnd) : '#'}
+            className={`mt-2 block text-center px-3 py-2 rounded text-white ${tenantId ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'}`}
+            download
+          >
+            Télécharger CSV (7 jours)
+          </a>
+        </div>
       </aside>
 
       {/* MAIN */}
       <main className="flex-1">
+        {/* Executive summary cards */}
+        {activeBatch && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+            <div className="bg-white rounded-xl p-3 shadow-sm">
+              <div className="text-xs text-gray-500">Employés</div>
+              <div className="text-xl font-semibold text-gray-900">{executive.totalEmployees}</div>
+            </div>
+            <div className="bg-white rounded-xl p-3 shadow-sm">
+              <div className="text-xs text-gray-500">Envoyés</div>
+              <div className="text-xl font-semibold text-gray-900">{executive.sentCount || 0}</div>
+            </div>
+            <div className="bg-white rounded-xl p-3 shadow-sm">
+              <div className="text-xs text-gray-500">Clics</div>
+              <div className="text-xl font-semibold text-gray-900">{executive.clicked}</div>
+              <div className="mt-1 text-xs text-blue-700">{executive.clickRate}% du total</div>
+            </div>
+            <div className="bg-white rounded-xl p-3 shadow-sm">
+              <div className="text-xs text-gray-500">Formation complétée</div>
+              <div className="text-xl font-semibold text-gray-900">{executive.trained}</div>
+              <div className="mt-1 text-xs text-emerald-700">{executive.trainRate}% des cliquants</div>
+            </div>
+          </div>
+        )}
         {/* Toolbar */}
         <div className="bg-white rounded-xl shadow-sm p-4 md:p-5 mb-4 md:mb-6">
           <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-start md:items-center">
@@ -336,6 +404,7 @@ export default function ResultsPage() {
                               Département
                             </Th>
                             <Th className="hidden lg:table-cell">1er clic</Th>
+                            <Th className="hidden md:table-cell">Formation</Th>
                             <Th className="hidden xl:table-cell">IP</Th>
                             <Th className="hidden xl:table-cell">UA</Th>
                             <Th>Bot ?</Th>
@@ -358,6 +427,9 @@ export default function ResultsPage() {
                                       "fr-FR"
                                     )
                                   : "—"}
+                              </Td>
+                              <Td className="text-gray-600 hidden md:table-cell">
+                                {e.trainingCompleted ? 'Oui' : 'Non'}
                               </Td>
                               <Td className="text-gray-600 hidden xl:table-cell">
                                 {e.ip || "—"}
