@@ -99,9 +99,9 @@ const ScenarioDropdown = ({ value = null, onChange, usedScenarioIds }) => {
 
   return (
     <div className="flex flex-wrap items-center gap-2 max-w-full">
-      <div className="relative min-w-0">
+      <div className="relative min-w-0 flex-1">
         <input
-          className="w-64 sm:w-72 max-w-full border border-gray-200 rounded-lg px-3 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="w-full sm:w-64 md:w-72 max-w-full border border-gray-200 rounded-lg px-3 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
           placeholder="Rechercher un scénario (id/nom/catégorie)"
           value={q}
           onChange={(e) => setQ(e.target.value)}
@@ -157,7 +157,7 @@ const ScenarioDropdown = ({ value = null, onChange, usedScenarioIds }) => {
       </select>
 
       <select
-        className="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 w-64 sm:w-80 md:w-[30rem] max-w-full min-w-0"
+        className="border border-gray-200 rounded-lg px-2 py-1 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 w-full sm:w-80 md:w-[24rem] max-w-full min-w-0"
         value={value?.id || ""}
         onChange={(e) => {
           const id = e.target.value || null;

@@ -831,5 +831,101 @@
       ],
       "reward": { "xp": 40, "badge": "Contrôle de Paiement" }
     }
+  },
+  {
+    "id": "ahq.qrcode.survey.v1",
+    "name": "Sondage AHQ — Menus QR Code",
+    "category": "association",
+    "brandId": "ahq",
+    "difficulty": 2,
+    "styleHint": "institutionnel",
+    "payloadType": "form",
+    "email": {
+      "subject": "Retour d’expérience – Menus QR Code",
+      "preheader": "Participez à un court questionnaire (QR code)",
+      "html": "<div style=\"background:#f7f7f7;padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #eee;border-radius:8px;overflow:hidden\"><div style=\"padding:20px 20px 0 20px\"><div style=\"font-size:14px;color:#888;margin-bottom:8px\">Logo Hôtel Plateau</div><h1 style=\"font-size:20px;line-height:1.4;margin:0 0 10px 0;color:#111\">Retour d’expérience – Menus QR Code</h1></div><div style=\"padding:0 20px 20px 20px;color:#222;font-size:14px;line-height:1.6\"><p>Bonjour,</p><p>Je représente l’<strong>Hôtel Plateau</strong>, à Montréal.</p><p>Depuis la pandémie, nous avons maintenu les <strong>menus QR Code</strong> dans notre restaurant. Or, de plus en plus de clients se plaignent de l’accessibilité et demandent un retour aux menus papier.</p><p>Est‑ce que l’AHQ prévoit prendre position ou lancer un sondage officiel sur ce sujet ? Afin de contribuer à la réflexion, pourriez‑vous compléter un court questionnaire&nbsp;?</p><div style=\"margin:16px 0\"><a href=\"{{trackingUrl}}\" style=\"display:inline-block;background:#0b5cab;color:#fff;text-decoration:none;border-radius:6px;padding:10px 16px;font-weight:600\">QR&nbsp;Code&nbsp;—&nbsp;Sondage&nbsp;AHQ</a></div><p>Merci d’avance pour votre retour, vos réponses aideront à orienter les bonnes pratiques dans notre industrie.</p><p>Bien cordialement,</p><p><strong>Amélie Dufresne</strong><br/>Directrice générale – Hôtel Plateau<br/>adufresne@hotelplateau.ca</p></div></div></div>"
+    },
+    "training": {
+      "id": "tb.ahq.qrcode.survey.v1",
+      "title": "QR codes imités — faux sondages AHQ",
+      "steps": [
+        { "type": "tip", "title": "Ne pas scanner un QR reçu par email", "content": "Un QR code dans un email peut rediriger vers un site piégé. Passez par le portail/URL officiel de l’AHQ.", "points": 15 },
+        { "type": "tip", "title": "Vérifier domaine & émetteur", "content": "Un domaine comme ‘Sondage_QRCode_AHQ.com’ n’est pas officiel. Confirmez via l’annuaire/portail AHQ.", "points": 10 },
+        { "type": "mcq", "title": "Meilleure action ?", "options": ["Scanner le QR code pour voir", "Ouvrir le site officiel de l’AHQ et vérifier s’il existe un sondage", "Répondre à l’email pour demander confirmation"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 30, "badge": "QR Vigilant" }
+    }
+  },
+  {
+    "id": "events.prceprec.forum.v1",
+    "name": "Invitation – Forum Environnement & Innovation (PRCE‑PREC)",
+    "category": "events",
+    "brandId": "prce-prec",
+    "difficulty": 2,
+    "styleHint": "marketing",
+    "payloadType": "cta",
+    "email": {
+      "subject": "Invitation — Forum Environnement & Innovation (Montréal)",
+      "preheader": "Confirmez votre présence au forum PRCE‑PREC (10 janv. 2026)",
+      "html": "<div style=\"background:#f6f7fb;padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden\"><div style=\"padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:12px;\"><div style=\"width:44px;height:44px;border-radius:8px;background:#0b5cab;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;\">PR</div><div><div style=\"font-size:12px;color:#64748b\">ONG internationale PRCE‑PREC</div><div style=\"font-size:18px;color:#0f172a;font-weight:700\">Environnement &amp; Innovation : Réconciliation du Progrès et de la Nature</div></div></div><div style=\"padding:20px 24px;color:#0f172a;font-size:14px;line-height:1.65\"><p>Bonjour Chanel,</p><p>Nous avons le plaisir de vous adresser une invitation personnelle à notre Forum <strong>« Environnement &amp; Innovation : Réconciliation du Progrès et de la Nature »</strong>, qui aura lieu le <strong>samedi 10 janvier 2026</strong> à <strong>Montréal</strong>. Cet événement mettra en lumière des initiatives concrètes pour concilier innovation et durabilité, avec des intervenants du milieu académique, entrepreneurial et associatif.</p><p>Nous serions particulièrement heureux de compter la participation de l’<strong>Association Hôtelière du Québec</strong>, car votre expertise en hôtellerie durable apporterait une valeur unique aux échanges. Vous trouverez ci‑joint une invitation visuelle (style Eventbrite) et un lien pour confirmer votre intérêt.</p><div style=\"margin:18px 0\"><a href=\"{{trackingUrl}}\" style=\"display:inline-block;background:#0b5cab;color:#fff;text-decoration:none;border-radius:8px;padding:12px 18px;font-weight:600\">🎟 Voir l’événement</a></div><div style=\"background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:12px;margin:14px 0;color:#334155\"><div><strong>Date &amp; heure :</strong> Samedi 10 janvier 2026 · 14h30 – 17h30 (EST)</div><div><strong>Lieu :</strong> 4388 Rue Saint‑Denis, Montréal, QC H2J 2L1</div><div><strong>Catégorie :</strong> Séminaire · En personne · 3 h</div><div><strong>Politique de remboursement :</strong> Jusqu’à 7 jours avant l’événement</div></div><p>Au programme : conférences inspirantes, discussions animées et réseautage.</p><p>Organisé par : <strong>ONG internationale PRCE‑PREC</strong>.</p><p>Nous serions ravis de compter des représentants de l’Association hôtelière parmi les participants pour partager retours d’expérience, enjeux RH et initiatives locales en hôtellerie durable.</p><p style=\"font-size:13px;color:#475569\">Pour toute question : <a href=\"mailto:info@PRCE-PRCE.org\">info@PRCE-PRCE.org</a></p></div><div style=\"padding:12px 24px;border-top:1px solid #f1f5f9;color:#64748b;font-size:12px\">© 2026 ONG internationale PRCE‑PREC · Tous droits réservés · <a href=\"{{trackingUrl}}\" style=\"color:#0b5cab;text-decoration:underline\">Afficher dans le navigateur</a></div></div></div>"
+    },
+    "training": {
+      "id": "tb.events.prceprec.forum.v1",
+      "title": "Invitations d’événements imitées — vérification de l’origine",
+      "steps": [
+        { "type": "tip", "title": "Toujours vérifier le domaine de l’événement", "content": "Les pages d’inscription doivent provenir d’un domaine officiel (Eventbrite/organisateur). Méfiez‑vous des variantes et des liens dans les emails non sollicités.", "points": 15 },
+        { "type": "tip", "title": "Confirmer via un canal connu", "content": "Validez l’authenticité auprès de l’organisateur ou via le site officiel avant de confirmer votre présence.", "points": 10 },
+        { "type": "mcq", "title": "Meilleure action ?", "options": ["Cliquer sur ‘Voir l’événement’ depuis l’email", "Rechercher l’événement sur le site officiel (ou Eventbrite) et s’inscrire depuis là", "Répondre à l’email pour demander confirmation"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 25, "badge": "Événement Vigilant" }
+    }
+  },
+  {
+    "id": "alliances.ca.hotel.award.v1",
+    "name": "Hotel of the Year Award – Application",
+    "category": "events",
+    "brandId": "canadian-hospitality-alliance",
+    "difficulty": 2,
+    "styleHint": "institutionnel",
+    "payloadType": "form",
+    "email": {
+      "subject": "Hotel of the Year Award – Application Now Open",
+      "preheader": "Submit your candidacy before October 15, 2025",
+      "html": "<div style=\"background:#f6f7fb;padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden\"><div style=\"padding:20px 24px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:12px;\"><div style=\"width:44px;height:44px;border-radius:8px;background:#0b5cab;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;\">CA</div><div><div style=\"font-size:12px;color:#64748b\">Canadian Hospitality Alliance</div><div style=\"font-size:18px;color:#0f172a;font-weight:700\">Hotel of the Year Award 2025</div></div></div><div style=\"padding:20px 24px;color:#0f172a;font-size:14px;line-height:1.65\"><p>Dear Member,</p><p>The Canadian Hospitality Alliance is proud to announce the <strong>Hotel of the Year Award 2025</strong>, celebrating outstanding achievements in guest services, sustainable practices, and operational innovation across the national hospitality sector.</p><p>Applications are now open to all member hotels. Submit your candidacy before <strong>October 15, 2025</strong> to be considered for national recognition at the annual gala.</p><div style=\"margin:18px 0\"><a href=\"{{trackingUrl}}\" style=\"display:inline-block;background:#0b5cab;color:#fff;text-decoration:none;border-radius:8px;padding:12px 18px;font-weight:600\">Submit Your Application</a></div><p style=\"font-size:13px;color:#475569\">Direct link (for reference): <span style=\"color:#0b5cab;text-decoration:underline\">https://canadian-hospitality.org/awards/application/submit</span></p><p style=\"font-size:13px;color:#475569\">For any questions, please contact our Awards Committee at <a href=\"mailto:awards@canadian-hospitality.org\">awards@canadian-hospitality.org</a>.</p></div><div style=\"padding:12px 24px;border-top:1px solid #f1f5f9;color:#64748b;font-size:12px\">© 2025 Canadian Hospitality Alliance · All rights reserved</div></div></div>"
+    },
+    "training": {
+      "id": "tb.events.hotel.award.v1",
+      "title": "Formulaires d’inscription — vérifier l’origine",
+      "steps": [
+        { "type": "tip", "title": "Domaine officiel uniquement", "content": "Accédez aux candidatures via le site officiel de l’alliance (favoris) plutôt que via un lien d’email.", "points": 15 },
+        { "type": "tip", "title": "Lien miroir ≠ valide", "content": "Même si un lien ‘direct’ est indiqué en texte, utilisez le portail officiel et votre SSO si applicable.", "points": 10 },
+        { "type": "mcq", "title": "Meilleure action ?", "options": ["Cliquer sur ‘Submit Your Application’ dans le mail", "Ouvrir le site officiel de l’alliance et déposer la candidature depuis la page Awards", "Répondre au mail pour demander la marche à suivre"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 25, "badge": "Inscription Sûre" }
+    }
+  },
+  {
+    "id": "tourisme.charlevoix.collab.docx.v1",
+    "name": "Proposition de collaboration – Tourisme Charlevoix",
+    "category": "business-development",
+    "brandId": "tourisme-charlevoix",
+    "difficulty": 3,
+    "styleHint": "institutionnel",
+    "payloadType": "docx",
+    "email": {
+      "subject": "Proposition de collaboration – Tourisme Charlevoix",
+      "preheader": "Programme 2025-2026 (brochure et partenariats)",
+      "html": "<div style=\"background:#f6f7fb;padding:16px;font-family:Arial,Helvetica,sans-serif;\"><div style=\"max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:12px;overflow:hidden\"><div style=\"padding:20px 24px;border-bottom:1px solid #f1f5f9;\"><div style=\"font-size:18px;color:#0f172a;font-weight:700\">Proposition de collaboration – Tourisme Charlevoix</div><div style=\"font-size:12px;color:#64748b\">Promotion régionale 2025–2026</div></div><div style=\"padding:20px 24px;color:#0f172a;font-size:14px;line-height:1.65\"><p>Bonjour,</p><p>Je représente <strong>Tourisme Charlevoix</strong>. Dans le cadre de nos initiatives de promotion régionale pour 2025–2026, nous souhaitons développer des partenariats privilégiés avec les hôteliers membres de l’AHQ.</p><p>Afin de vous présenter les détails de notre programme (visibilité web, événements conjoints, forfaits régionaux), nous avons préparé une courte brochure accessible ici :</p><p style=\"margin:12px 0\"><a href=\"{{trackingUrl}}\" style=\"color:#0b5cab;text-decoration:underline;font-weight:600\">Brochure – Partenariat_Offre2025.docx</a></p><p>Nous serions ravis d’échanger avec vous prochainement sur la meilleure façon de collaborer et de mettre en valeur votre établissement au sein de nos campagnes.</p><p>Bien cordialement,</p><p><strong>Marc‑André Lavoie</strong><br/>Chargé de développement – Tourisme Charlevoix<br/><a href=\"mailto:malavoie@tourismecharlevoix.ca\">malavoie@tourismecharlevoix.ca</a></p><p style=\"font-size:12px;color:#64748b\">—<br/>Ce message s’adresse aux membres et partenaires de l’AHQ. Si vous n’êtes pas concerné, merci d’ignorer ce courriel.</p></div></div></div>"
+    },
+    "training": {
+      "id": "tb.tourisme.charlevoix.collab.docx.v1",
+      "title": "Brochures DOCX — vérifier la légitimité",
+      "steps": [
+        { "type": "tip", "title": "Éviter l’ouverture directe", "content": "N’ouvrez pas un .docx reçu par email sans vérification; privilégiez le site officiel ou un aperçu sécurisé.", "points": 15 },
+        { "type": "tip", "title": "Valider via canal officiel", "content": "Confirmez l’initiative via le site de Tourisme Charlevoix ou un contact officiel avant de consulter la brochure.", "points": 10 },
+        { "type": "mcq", "title": "Meilleure action ?", "options": ["Ouvrir la brochure .docx depuis l’email", "Aller sur le site de Tourisme Charlevoix et vérifier l’offre de partenariat", "Répondre au mail pour demander confirmation"], "correctIndex": 1, "points": 20 }
+      ],
+      "reward": { "xp": 30, "badge": "Partenariat Sûr" }
+    }
   }
 ]

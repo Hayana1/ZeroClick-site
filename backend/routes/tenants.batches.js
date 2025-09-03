@@ -7,6 +7,7 @@ const Batch = require("../models/Batch");
 const Employee = require("../models/Employee");
 const Target = require("../models/Target");
 const crypto = require("crypto");
+const newToken = () => crypto.randomBytes(16).toString("base64url");
 const fs = require("fs");
 const path = require("path");
 
@@ -170,6 +171,14 @@ router.patch("/:tenantId/batches/:batchId/selection", async (req, res) => {
     ? { $set: { markedSent: true, sentAt: new Date() } }
     : { $set: { markedSent: false }, $unset: { sentAt: 1 } };
 
+  // Garantit les champs requis lors d'un upsert (token unique, ids)
+  update.$setOnInsert = {
+    token: newToken(),
+    tenantId,
+    batchId,
+    employeeId,
+  };
+
   const updated = await Target.findOneAndUpdate(
     { tenantId, batchId, employeeId },
     update,
@@ -217,6 +226,12 @@ router.put("/:tenantId/batches/:batchId/selections", async (req, res) => {
     const update = val
       ? { $set: { markedSent: true, sentAt: new Date() } }
       : { $set: { markedSent: false }, $unset: { sentAt: 1 } };
+    update.$setOnInsert = {
+      token: newToken(),
+      tenantId,
+      batchId,
+      employeeId,
+    };
     ops.push(
       Target.updateOne({ tenantId, batchId, employeeId }, update, {
         upsert: true,

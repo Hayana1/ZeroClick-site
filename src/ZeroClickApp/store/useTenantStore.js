@@ -4,7 +4,9 @@ import { api } from "../lib/api";
 
 export const useTenantStore = create((set, get) => ({
   tenants: [],
-  tenantId: null,
+  tenantId: (typeof window !== 'undefined' && window.localStorage)
+    ? (window.localStorage.getItem('zc_tenant') || null)
+    : null,
   loading: false,
   error: null,
 
@@ -12,11 +14,15 @@ export const useTenantStore = create((set, get) => ({
     try {
       set({ loading: true, error: null });
       const tenants = await api.listTenants();
-      // auto-sélection premier tenant si aucun
-      set((s) => ({
-        tenants,
-        tenantId: s.tenantId || tenants[0]?._id || null,
-      }));
+      // Préserve tenantId (localStorage) si présent et valide, sinon premier
+      set((s) => {
+        const saved = (typeof window !== 'undefined' && window.localStorage)
+          ? window.localStorage.getItem('zc_tenant')
+          : null;
+        const exists = tenants.find((t) => t._id === (saved || s.tenantId));
+        const tenantId = exists ? exists._id : (tenants[0]?._id || null);
+        return { tenants, tenantId };
+      });
     } catch (e) {
       set({ error: e.message || "Erreur tenants" });
     } finally {
@@ -24,7 +30,12 @@ export const useTenantStore = create((set, get) => ({
     }
   },
 
-  setTenant: (id) => set({ tenantId: id }),
+  setTenant: (id) => {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try { window.localStorage.setItem('zc_tenant', id || ''); } catch {}
+    }
+    set({ tenantId: id });
+  },
 
   createTenant: async (payload) => {
     const created = await api.createTenant(payload);

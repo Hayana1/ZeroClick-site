@@ -43,9 +43,18 @@ export const useCampaignsStore = create((set, get) => ({
         attachments[c._id] = c.attachmentsByGroup || {};
       }
 
+      // Active campaign: prefer persisted one for this tenant if valid
+      let activeId = rows[0]?._id || null;
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          const saved = window.localStorage.getItem(`zc_active_${tenantId}`);
+          if (saved && rows.find((r) => r._id === saved)) activeId = saved;
+        }
+      } catch {}
+
       set({
         campaigns: rows,
-        activeId: rows[0]?._id || null,
+        activeId,
         sentMap: sent,
         themesByGroup: themes,
         loading: false,
@@ -106,6 +115,12 @@ export const useCampaignsStore = create((set, get) => ({
 
   /* ===================== SET ACTIVE ===================== */
   setActive: async (tenantId, campaignId) => {
+    // persist selection per-tenant
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem(`zc_active_${tenantId}`, campaignId || '');
+      }
+    } catch {}
     set({ activeId: campaignId });
     const { sentMap, themesByGroup, groupConfigs, copiedMap, trackingLinks, attachmentsByCampaign } = get();
 

@@ -15,14 +15,51 @@ import { useTenantStore } from "../../store/useTenantStore";
 import { useResultsStore } from "../../store/useResultsStore";
 import { api as apiClient } from "../../lib/api";
 
-const ProgressBar = ({ value }) => (
+const ProgressBar = ({ value, color = "blue" }) => (
   <div className="w-full bg-gray-200 rounded-full h-2">
     <div
-      className="bg-blue-600 h-2 rounded-full"
+      className={`h-2 rounded-full bg-gradient-to-r from-${color}-500 to-${color}-600`}
       style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
     />
   </div>
 );
+
+const StatCard = ({ label, value, subtitle, tone = "blue" }) => (
+  <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+    <div className="text-xs text-gray-500">{label}</div>
+    <div className="mt-1 text-2xl font-semibold text-gray-900">{value}</div>
+    {subtitle ? (
+      <div className={`mt-1 text-xs text-${tone}-700`}>{subtitle}</div>
+    ) : null}
+  </div>
+);
+
+const Pill = ({ children, tone = "gray" }) => (
+  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-${tone}-100 text-${tone}-700`}>{children}</span>
+);
+
+const Funnel = ({ total = 0, sent = 0, clicked = 0, trained = 0 }) => {
+  const w = (n) => (total > 0 ? Math.round((n / total) * 100) : 0);
+  return (
+    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+      <div className="text-sm font-medium text-gray-900 mb-3">Entonnoir de conversion</div>
+      <div className="space-y-3">
+        <div>
+          <div className="flex justify-between text-xs text-gray-600 mb-1"><span>Envoyés</span><span>{sent} ({w(sent)}%)</span></div>
+          <ProgressBar value={w(sent)} color="blue" />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs text-gray-600 mb-1"><span>Clics</span><span>{clicked} ({w(clicked)}%)</span></div>
+          <ProgressBar value={w(clicked)} color="indigo" />
+        </div>
+        <div>
+          <div className="flex justify-between text-xs text-gray-600 mb-1"><span>Formations complétées</span><span>{trained} ({w(trained)}%)</span></div>
+          <ProgressBar value={w(trained)} color="emerald" />
+        </div>
+      </div>
+    </div>
+  );
+};
 
 function Th({ children }) {
   return (
@@ -230,32 +267,19 @@ export default function ResultsPage() {
       </aside>
 
       {/* MAIN */}
-      <main className="flex-1">
+      <main className="flex-1 min-w-0 overflow-x-hidden">
         {/* Executive summary cards */}
         {activeBatch && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
-            <div className="bg-white rounded-xl p-3 shadow-sm">
-              <div className="text-xs text-gray-500">Employés</div>
-              <div className="text-xl font-semibold text-gray-900">{executive.totalEmployees}</div>
-            </div>
-            <div className="bg-white rounded-xl p-3 shadow-sm">
-              <div className="text-xs text-gray-500">Envoyés</div>
-              <div className="text-xl font-semibold text-gray-900">{executive.sentCount || 0}</div>
-            </div>
-            <div className="bg-white rounded-xl p-3 shadow-sm">
-              <div className="text-xs text-gray-500">Clics</div>
-              <div className="text-xl font-semibold text-gray-900">{executive.clicked}</div>
-              <div className="mt-1 text-xs text-blue-700">{executive.clickRate}% du total</div>
-            </div>
-            <div className="bg-white rounded-xl p-3 shadow-sm">
-              <div className="text-xs text-gray-500">Formation complétée</div>
-              <div className="text-xl font-semibold text-gray-900">{executive.trained}</div>
-              <div className="mt-1 text-xs text-emerald-700">{executive.trainRate}% des cliquants</div>
-            </div>
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
+            <StatCard label="Employés" value={executive.totalEmployees} />
+            <StatCard label="Envoyés" value={executive.sentCount || 0} />
+            <StatCard label="Clics" value={executive.clicked} subtitle={`${executive.clickRate}% du total`} tone="blue" />
+            <StatCard label="Formations" value={executive.trained} subtitle={`${executive.trainRate}% des cliquants`} tone="emerald" />
+            <div className="hidden lg:block"><Funnel total={executive.totalEmployees} sent={executive.sentCount||0} clicked={executive.clicked} trained={executive.trained} /></div>
           </div>
         )}
         {/* Toolbar */}
-        <div className="bg-white rounded-xl shadow-sm p-4 md:p-5 mb-4 md:mb-6">
+        <div className="bg-white rounded-xl shadow-sm p-4 md:p-5 mb-4 md:mb-6 sticky top-4 z-10">
           <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-start md:items-center">
             <div className="w-full md:flex-1">
               <TenantPicker />
@@ -290,7 +314,7 @@ export default function ResultsPage() {
             </div>
 
             {activeBatch && (
-              <div className="ml-auto bg-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center w-full md:w-auto justify-center md:justify-start mt-2 md:mt-0">
+              <div className="ml-auto bg-blue-50 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center w-full md:w-auto justify-center md:justify-start mt-2 md:mt-0 shadow-sm">
                 <FiBarChart2 size={14} className="mr-1" />
                 <span className="font-medium truncate">
                   {activeBatch.name} — {activeBatch.clickCount ?? 0} clics
@@ -320,7 +344,7 @@ export default function ResultsPage() {
         )}
 
         {activeBatchId && !loadingBatch && !errorBatch && (
-          <div className="space-y-4">
+          <div className="space-y-4 min-w-0">
             {(filteredRows || []).map((d) => {
               const key = `${activeBatchId}:${d.department || "—"}`;
               const isOpen = expandedDepts[key] !== false;
@@ -328,7 +352,7 @@ export default function ResultsPage() {
               return (
                 <section
                   key={key}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden"
+                  className="bg-white rounded-xl shadow-sm overflow-hidden min-w-0"
                 >
                   <div
                     className="p-3 md:p-4 border-b cursor-pointer hover:bg-gray-50 transition-colors"
@@ -336,8 +360,8 @@ export default function ResultsPage() {
                       setExpandedDepts((p) => ({ ...p, [key]: !isOpen }))
                     }
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0">
                         <span
                           className={`p-1 md:p-2 rounded-lg ${
                             isOpen
@@ -351,26 +375,28 @@ export default function ResultsPage() {
                             <FiChevronDown size={16} className="md:w-[18px]" />
                           )}
                         </span>
-                        <div>
-                          <h3 className="font-medium text-gray-900 text-sm md:text-base">
+                        <div className="min-w-0">
+                          <h3 className="font-medium text-gray-900 text-sm md:text-base break-words">
                             {d.department || "—"}
                           </h3>
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 mt-1">
-                            <div className="text-xs md:text-sm text-blue-700">
-                              <FiCpu className="inline mr-1" />
-                              {d.clickCount ?? 0} clics
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-4 mt-1 break-words">
+                            <div className="text-xs md:text-sm text-blue-700 flex items-center gap-2">
+                              <FiCpu className="inline" />
+                              <span>{d.clickCount ?? 0} clics</span>
+                              <span className="hidden sm:inline">·</span>
+                              <div className="w-24"><ProgressBar value={(() => { const t = executive.totalEmployees || 0; return t>0 ? Math.round(((d.clickCount||0)/t)*100) : 0; })()} color="indigo"/></div>
                             </div>
                             {(d.config?.theme || d.config?.scenarioId) && (
-                              <div className="text-[11px] md:text-xs text-gray-600">
+                              <div className="text-[11px] md:text-xs text-gray-600 break-words">
                                 {d.config?.theme && (
                                   <>
-                                    <span className="font-medium">Thème:</span> {d.config.theme}
+                                    <span className="font-medium">Thème:</span> <Pill tone="blue">{d.config.theme}</Pill>
                                   </>
                                 )}
                                 {d.config?.scenarioId && (
                                   <>
                                     {d.config?.theme ? " · " : ""}
-                                    <span className="font-medium">Scénario:</span> {d.config?.category || "—"} · {d.config.scenarioId}
+                                    <span className="font-medium">Scénario:</span> <Pill tone="gray">{d.config?.category || "—"}</Pill> <span className="text-gray-400">·</span> <span className="font-mono break-all text-gray-700">{d.config.scenarioId}</span>
                                   </>
                                 )}
                               </div>
@@ -429,16 +455,16 @@ export default function ResultsPage() {
                                   : "—"}
                               </Td>
                               <Td className="text-gray-600 hidden md:table-cell">
-                                {e.trainingCompleted ? 'Oui' : 'Non'}
+                                {e.trainingCompleted ? <Pill tone="emerald">Oui</Pill> : <Pill tone="gray">Non</Pill>}
                               </Td>
                               <Td className="text-gray-600 hidden xl:table-cell">
                                 {e.ip || "—"}
                               </Td>
-                              <Td className="text-gray-500 truncate max-w-[120px] xl:max-w-[260px] hidden xl:table-cell">
+                              <Td className="text-gray-500 truncate max-w-[120px] xl:max-w-[260px] hidden xl:table-cell" title={e.userAgent || ''}>
                                 {e.userAgent || "—"}
                               </Td>
                               <Td className="text-gray-600">
-                                {e.isLikelyBot ? "Oui" : "Non"}
+                                {e.isLikelyBot ? <Pill tone="red">Oui</Pill> : <Pill tone="emerald">Non</Pill>}
                               </Td>
                             </tr>
                           ))}

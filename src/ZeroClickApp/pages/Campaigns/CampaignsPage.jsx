@@ -487,7 +487,7 @@ export default function CampaignsPage() {
       </aside>
 
       {/* MAIN */}
-      <main className="flex-1">
+      <main className="flex-1 min-w-0 overflow-x-hidden">
         <Toolbar
           dept={dept}
           setDept={setDept}
@@ -500,7 +500,7 @@ export default function CampaignsPage() {
         {!activeCampaign && <EmptyStateNoCampaign />}
 
         {activeCampaign && (
-          <div className="space-y-4">
+          <div className="space-y-4 min-w-0">
             {groups.map(([groupName, rows]) => {
               const isExpanded = expandedGroups[groupName] !== false;
               const draftValue =
@@ -521,7 +521,7 @@ export default function CampaignsPage() {
               return (
                 <section
                   key={groupName}
-                  className="bg-white rounded-xl shadow-sm overflow-hidden"
+                  className="bg-white rounded-xl shadow-sm overflow-hidden min-w-0"
                 >
                   {/* En-tête du groupe */}
                   <div
@@ -916,7 +916,7 @@ export default function CampaignsPage() {
                         if (!hasTheme && !hasScenario) return null;
                         return (
                           <div
-                            className="p-3 text-sm bg-blue-50 text-blue-800 border-t flex items-center justify-between cursor-pointer"
+                            className="p-3 text-sm bg-blue-50 text-blue-800 border-t flex items-center justify-between cursor-pointer flex-wrap gap-2 overflow-x-hidden"
                             role="button"
                             aria-expanded={!!mjmlOpen[groupName]}
                             onClick={() =>
@@ -927,11 +927,11 @@ export default function CampaignsPage() {
                             }
                             title="Afficher/Masquer le panneau MJML"
                           >
-                            <div className="truncate">
+                            <div className="flex-1 min-w-0 overflow-hidden break-words">
                               {hasScenario && (
                                 <>
                                   <span className="font-medium">Scénario:</span>{" "}
-                                  <span className="font-mono">
+                                  <span className="font-mono break-all">
                                     {selectedScenarioId}
                                   </span>
                                 </>
@@ -942,7 +942,7 @@ export default function CampaignsPage() {
                               {hasTheme && (
                                 <>
                                   <span className="font-medium">Thème:</span>{" "}
-                                  <span>{draftValue}</span>
+                                  <span className="break-words inline-block max-w-full align-middle">{draftValue}</span>
                                 </>
                               )}
                             </div>
@@ -960,10 +960,10 @@ export default function CampaignsPage() {
                       {/* MJML panel rendered after recap banner */}
                       {mjmlOpen[groupName] && (
                         <div
-                          className="px-4 py-3 bg-gray-50 border-t"
+                          className="px-4 py-3 bg-gray-50 border-t overflow-x-hidden break-words"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          <div className="flex items-center gap-3 mb-2">
+                          <div className="flex items-center gap-3 mb-2 flex-wrap">
                             <button
                               className={`px-3 py-1.5 text-xs rounded ${
                                 (activeView[groupName] || "editor") === "editor"
@@ -995,7 +995,7 @@ export default function CampaignsPage() {
                             >
                               Aperçu
                             </button>
-                            <div className="ml-auto flex items-center gap-2">
+                            <div className="ml-auto flex items-center gap-2 flex-wrap">
                               <button
                                 className="px-3 py-1.5 text-xs rounded bg-blue-100 text-blue-800 hover:bg-blue-200"
                                 onClick={async () => {
@@ -1285,8 +1285,8 @@ export default function CampaignsPage() {
                                 )}
                               </div>
                               <textarea
-                                className="w-full h-48 border rounded-lg p-3 font-mono text-xs"
-                                placeholder="Collez ici votre MJML…"
+                                className="w-full h-56 border rounded-lg p-3 font-mono text-xs leading-5"
+                                placeholder="Collez ici votre HTML (ou MJML)…"
                                 value={
                                   mjmlDrafts[groupName] ??
                                   (tpl.mjmlSource || "")
@@ -1321,7 +1321,7 @@ export default function CampaignsPage() {
                             <div className="border rounded-lg overflow-hidden">
                               {/* Attachments summary for preview (no inline rendering, just list) */}
                               {Array.isArray(attachmentsForCampaign[groupName]) && attachmentsForCampaign[groupName].length > 0 && (
-                                <div className="px-3 py-2 bg-amber-50 border-b text-sm text-amber-900 flex items-center gap-2">
+                                <div className="px-3 py-2 bg-amber-50 border-b text-sm text-amber-900 flex items-center gap-2 flex-wrap">
                                   <span>Pièces jointes liées au thème:</span>
                                   {attachmentsForCampaign[groupName].map((att) => (
                                     <a key={att.filename} className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-white border hover:bg-amber-100" href={att.url} target="_blank" rel="noreferrer" title="Ouvrir dans un nouvel onglet">
@@ -1350,7 +1350,7 @@ export default function CampaignsPage() {
                               <div className="text-xs text-gray-500">Max 10 Mo</div>
                             </div>
                             <div
-                              className={`mb-3 border-2 rounded-lg p-4 text-center cursor-pointer transition ${
+                              className={`mb-3 border-2 rounded-lg p-4 text-center cursor-pointer transition max-w-full ${
                                 dragOverGroup === groupName ? 'border-blue-500 bg-blue-50' : 'border-dashed border-gray-300 hover:border-blue-300'
                               }`}
                               onDragOver={(e) => { e.preventDefault(); setDragOverGroup(groupName); }}
