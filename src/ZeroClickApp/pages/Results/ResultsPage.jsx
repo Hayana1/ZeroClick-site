@@ -61,6 +61,58 @@ const Funnel = ({ total = 0, sent = 0, clicked = 0, trained = 0 }) => {
   );
 };
 
+// -------- Monthly chart (bars: sent, line: click rate) --------
+const MonthlyChart = ({ data = [] }) => {
+  const months = data.slice(-12); // last 12 months
+  const maxSent = Math.max(1, ...months.map((d) => d.sent || 0));
+  const w = 560;
+  const h = 200;
+  const padL = 36; const padR = 36; const padT = 16; const padB = 24;
+  const cw = w - padL - padR; const ch = h - padT - padB;
+  const bw = months.length ? cw / months.length : cw;
+  const x = (i) => padL + i * bw + bw * 0.15;
+  const barW = bw * 0.7;
+  const ySent = (v) => padT + ch * (1 - (v / maxSent));
+  const yRate = (r) => padT + ch * (1 - (Math.max(0, Math.min(100, r)) / 100));
+  const linePath = () => {
+    if (!months.length) return "";
+    return months
+      .map((d, i) => `${i === 0 ? 'M' : 'L'} ${x(i) + barW / 2} ${yRate(d.rate || 0)}`)
+      .join(' ');
+  };
+  return (
+    <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-sm font-medium text-gray-900">Tendances mensuelles (12 mois)</div>
+        <div className="flex items-center gap-3 text-xs">
+          <div className="inline-flex items-center gap-1 text-gray-600"><span className="inline-block w-3 h-3 bg-blue-500 rounded-sm"></span> Envoyés</div>
+          <div className="inline-flex items-center gap-1 text-gray-600"><span className="inline-block w-3 h-0.5 bg-indigo-600"></span> Taux de clic</div>
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <svg viewBox={`0 0 ${w} ${h}`} className="min-w-[560px] w-full h-[220px]">
+          {/* axes */}
+          <line x1={padL} y1={padT+ch} x2={w-padR} y2={padT+ch} stroke="#e5e7eb" />
+          <line x1={padL} y1={padT} x2={padL} y2={padT+ch} stroke="#e5e7eb" />
+          {/* bars sent */}
+          {months.map((d, i) => (
+            <rect key={`b-${i}`} x={x(i)} y={ySent(d.sent || 0)} width={barW} height={Math.max(2, padT+ch - ySent(d.sent || 0))} fill="#3b82f6" opacity="0.9" rx="3" />
+          ))}
+          {/* line rate */}
+          <path d={linePath()} fill="none" stroke="#4f46e5" strokeWidth="2" />
+          {months.map((d, i) => (
+            <circle key={`c-${i}`} cx={x(i)+barW/2} cy={yRate(d.rate||0)} r="3" fill="#4f46e5" />
+          ))}
+          {/* labels */}
+          {months.map((d, i) => (
+            <text key={`t-${i}`} x={x(i)+barW/2} y={padT+ch+14} textAnchor="middle" fontSize="10" fill="#6b7280">{d.label}</text>
+          ))}
+        </svg>
+      </div>
+    </div>
+  );
+};
+
 function Th({ children }) {
   return (
     <th className="text-left font-medium px-2 md:px-4 py-3 text-gray-700 whitespace-nowrap">
@@ -173,6 +225,33 @@ export default function ResultsPage() {
     return { totalEmployees, sentCount, clicked, trained, clickRate, trainRate, lastClickAt };
   }, [batchResults, activeBatchId]);
 
+  // Monthly aggregation (by batch date) from overview
+  const monthlyData = useMemo(() => {
+    const map = new Map();
+    const list = (overview || []).slice();
+    for (const b of list) {
+      const d = new Date(b.dateCreated || b.date || 0);
+      if (!d || isNaN(d)) continue;
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      const cur = map.get(key) || { sent: 0, clicks: 0 };
+      cur.sent += Number(b.sentCount || 0);
+      cur.clicks += Number(b.clickCount || 0);
+      map.set(key, cur);
+    }
+    // produce last 12 months timeline
+    const out = [];
+    const now = new Date();
+    for (let i=11;i>=0;i--) {
+      const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+      const e = map.get(key) || { sent: 0, clicks: 0 };
+      const rate = e.sent > 0 ? Math.round((e.clicks / e.sent) * 100) : 0;
+      const label = d.toLocaleDateString('fr-FR', { month: 'short' });
+      out.push({ key, label, sent: e.sent, rate });
+    }
+    return out;
+  }, [overview]);
+
   return (
     <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6 bg-gray-50 min-h-screen">
       {/* Bouton pour ouvrir/fermer la sidebar sur mobile */}
@@ -278,6 +357,10 @@ export default function ResultsPage() {
             <div className="hidden lg:block"><Funnel total={executive.totalEmployees} sent={executive.sentCount||0} clicked={executive.clicked} trained={executive.trained} /></div>
           </div>
         )}
+        {/* Monthly chart for the tenant (based on batches overview) */}
+        <div className="mb-4 md:mb-6">
+          <MonthlyChart data={monthlyData} />
+        </div>
         {/* Toolbar */}
         <div className="bg-white rounded-xl shadow-sm p-4 md:p-5 mb-4 md:mb-6 sticky top-4 z-10">
           <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-start md:items-center">
