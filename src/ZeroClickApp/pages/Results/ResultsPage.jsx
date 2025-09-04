@@ -85,7 +85,6 @@ const MonthlyChart = ({ data = [] }) => {
       <div className="flex items-center justify-between mb-3">
         <div className="text-sm font-medium text-gray-900">Tendances mensuelles (12 mois)</div>
         <div className="flex items-center gap-3 text-xs">
-          <div className="inline-flex items-center gap-1 text-gray-600"><span className="inline-block w-3 h-3 bg-blue-500 rounded-sm"></span> Envoyés</div>
           <div className="inline-flex items-center gap-1 text-gray-600"><span className="inline-block w-3 h-0.5 bg-indigo-600"></span> Taux de clic</div>
         </div>
       </div>
@@ -94,14 +93,14 @@ const MonthlyChart = ({ data = [] }) => {
           {/* axes */}
           <line x1={padL} y1={padT+ch} x2={w-padR} y2={padT+ch} stroke="#e5e7eb" />
           <line x1={padL} y1={padT} x2={padL} y2={padT+ch} stroke="#e5e7eb" />
-          {/* bars sent */}
-          {months.map((d, i) => (
-            <rect key={`b-${i}`} x={x(i)} y={ySent(d.sent || 0)} width={barW} height={Math.max(2, padT+ch - ySent(d.sent || 0))} fill="#3b82f6" opacity="0.9" rx="3" />
-          ))}
           {/* line rate */}
           <path d={linePath()} fill="none" stroke="#4f46e5" strokeWidth="2" />
           {months.map((d, i) => (
-            <circle key={`c-${i}`} cx={x(i)+barW/2} cy={yRate(d.rate||0)} r="3" fill="#4f46e5" />
+            <g key={`c-${i}`}>
+              <circle cx={x(i)+barW/2} cy={yRate(d.rate||0)} r="3" fill="#4f46e5" />
+              {/* rate label */}
+              <text x={x(i)+barW/2} y={yRate(d.rate||0) - 8} textAnchor="middle" fontSize="10" fill="#4f46e5">{(d.rate||0)}%</text>
+            </g>
           ))}
           {/* labels */}
           {months.map((d, i) => (
@@ -252,6 +251,17 @@ export default function ResultsPage() {
     return out;
   }, [overview]);
 
+  // --- Test-only override: simulate decreasing clicks Jun -> Sep ---
+  // TODO: remove or guard with env flag when not needed
+  const monthlyDataDisplay = useMemo(() => {
+    const mapRates = { 'juin': 22, 'juil.': 16, 'août': 11, 'sept.': 7 };
+    return (monthlyData || []).map((d) =>
+      Object.prototype.hasOwnProperty.call(mapRates, d.label)
+        ? { ...d, rate: mapRates[d.label] }
+        : d
+    );
+  }, [monthlyData]);
+
   return (
     <div className="flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6 bg-gray-50 min-h-screen">
       {/* Bouton pour ouvrir/fermer la sidebar sur mobile */}
@@ -359,7 +369,7 @@ export default function ResultsPage() {
         )}
         {/* Monthly chart for the tenant (based on batches overview) */}
         <div className="mb-4 md:mb-6">
-          <MonthlyChart data={monthlyData} />
+          <MonthlyChart data={monthlyDataDisplay} />
         </div>
         {/* Toolbar */}
         <div className="bg-white rounded-xl shadow-sm p-4 md:p-5 mb-4 md:mb-6 sticky top-4 z-10">
