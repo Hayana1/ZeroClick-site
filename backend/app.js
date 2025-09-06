@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const app = express();
 
 const { decideAntiBot } = require("./utils/antiBot");
+const { requireAuth } = require('./middleware/requireAuth');
 
 /* -------------------- CONFIG -------------------- */
 const PORT = process.env.PORT || 7300;
@@ -117,19 +118,24 @@ async function start() {
     app.use("/uploads", express.static(uploadsDir));
 
     // --- ROUTES ---
-    app.use("/api/tenants", require("./routes/tenants"));
-    app.use("/api/tenants", require("./routes/tenants.employees"));
-    app.use("/api/tenants", require("./routes/tenants.batches"));
+    // Auth routes first (public)
+    app.use(require('./routes/auth'));
 
-    app.use("/api/employees", require("./routes/employees"));
-    app.use("/api/batches", require("./routes/batches"));
+    // Public endpoints used by recipients / training
     app.use("/api/clicks", require("./routes/clicks"));
-    app.use("/api", require("./routes/results"));
-    app.use("/api/tenants", require("./routes/tenants.scenarios"));
     app.use("/api/tracking", require("./routes/tracking.misc"));
-    app.use("/api", require("./routes/brands"));
-    app.use("/api", require("./routes/scenarios"));
     app.use(require("./routes/training"));
+
+    // Protected API (owner only)
+    app.use("/api/tenants", requireAuth, require("./routes/tenants"));
+    app.use("/api/tenants", requireAuth, require("./routes/tenants.employees"));
+    app.use("/api/tenants", requireAuth, require("./routes/tenants.batches"));
+    app.use("/api/employees", requireAuth, require("./routes/employees"));
+    app.use("/api/batches", requireAuth, require("./routes/batches"));
+    app.use("/api", requireAuth, require("./routes/results"));
+    app.use("/api/tenants", requireAuth, require("./routes/tenants.scenarios"));
+    app.use("/api", requireAuth, require("./routes/brands"));
+    app.use("/api", requireAuth, require("./routes/scenarios"));
 
     // Health
     app.get("/api/health", (_req, res) => res.json({ ok: true }));

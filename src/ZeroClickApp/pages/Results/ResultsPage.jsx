@@ -359,9 +359,8 @@ export default function ResultsPage() {
       <main className="flex-1 min-w-0 overflow-x-hidden">
         {/* Executive summary cards */}
         {activeBatch && (
-          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
             <StatCard label="Employés" value={executive.totalEmployees} />
-            <StatCard label="Envoyés" value={executive.sentCount || 0} />
             <StatCard label="Clics" value={executive.clicked} subtitle={`${executive.clickRate}% du total`} tone="blue" />
             <StatCard label="Formations" value={executive.trained} subtitle={`${executive.trainRate}% des cliquants`} tone="emerald" />
             <div className="hidden lg:block"><Funnel total={executive.totalEmployees} sent={executive.sentCount||0} clicked={executive.clicked} trained={executive.trained} /></div>

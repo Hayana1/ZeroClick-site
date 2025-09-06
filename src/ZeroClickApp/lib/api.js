@@ -8,6 +8,7 @@ const API_BASE_URL =
 async function req(path, opts = {}) {
   const r = await fetch(`${API_BASE_URL}${path}`, {
     headers: { "Content-Type": "application/json" },
+    credentials: 'include',
     ...opts,
   });
   if (!r.ok) throw new Error((await r.text()) || `HTTP ${r.status}`);
@@ -15,6 +16,10 @@ async function req(path, opts = {}) {
 }
 
 export const api = {
+  // Auth
+  me: () => req(`/auth/me`),
+  login: (email, password) => req(`/auth/login`, { method: 'POST', body: JSON.stringify({ email, password }) }),
+  logout: () => req(`/auth/logout`, { method: 'POST' }),
   // Tenants
   listTenants: () => req(`/tenants`),
   createTenant: (body) =>

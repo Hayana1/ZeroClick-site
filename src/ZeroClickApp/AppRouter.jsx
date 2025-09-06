@@ -8,11 +8,14 @@ import DirectoryPage from "./pages/Directory/DirectoryPage";
 import TenantPicker from "./components/TenantPicker";
 import ResultsPage from "./pages/Results/ResultsPage";
 import TrainingOups from "./pages/Training/Oups";
+import { api } from "./lib/api";
 
 export default function AppRouter() {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
     // Déterminer l'onglet actif basé sur l'URL
@@ -23,6 +26,28 @@ export default function AppRouter() {
     else if (path.includes("tenants")) setActiveTab("tenants");
     else if (path.includes("employees")) setActiveTab("employees");
   }, [location]);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        await api.me();
+        if (mounted) {
+          setAuthed(true);
+        }
+      } catch {
+        if (mounted) setAuthed(false);
+      } finally {
+        if (mounted) setAuthChecked(true);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (!authChecked) return null;
+  if (!authed) return <Navigate to="/login" replace />;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -142,8 +167,14 @@ export default function AppRouter() {
                 </div>
               </nav>
 
-              <div className="hidden md:block">
+              <div className="hidden md:flex items-center gap-2">
                 <TenantPicker />
+                <button
+                  onClick={async () => { try { await api.logout(); } catch {} }}
+                  className="ml-2 px-3 py-2 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700"
+                >
+                  Déconnexion
+                </button>
               </div>
             </div>
           </div>
