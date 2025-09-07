@@ -25,10 +25,11 @@ router.post('/api/tenant-auth/create-link', requireAuth, async (req, res) => {
     const token = jwt.sign({ sub: 'tenant_viewer_link', tenantId }, secret, {
       expiresIn: `${expiresInHours}h`,
     });
-    // Build link on FRONTEND origin so cookies are scoped to the SPA domain (dev proxy supported)
-    const feCsv = String(process.env.FRONTEND_URL || '').split(',').map(s => s.trim()).filter(Boolean);
-    const feOrigin = feCsv[0] || `${isSecure(req) ? 'https' : 'http'}://${req.get('host')}`;
-    const url = `${feOrigin.replace(/\/$/, '')}/api/tenant-auth/consume?token=${encodeURIComponent(token)}`;
+    // Build link on BACKEND origin so the consume hit always reaches the API
+    const host = req.get('host');
+    const proto = isSecure(req) ? 'https' : 'http';
+    const beOrigin = (process.env.BASE_URL && process.env.BASE_URL.replace(/\/$/, '')) || `${proto}://${host}`;
+    const url = `${beOrigin}/api/tenant-auth/consume?token=${encodeURIComponent(token)}`;
     return res.json({ ok: true, url, tenant: { _id: tenantId, name: tenant.name || '' } });
   } catch (e) {
     return res.status(500).json({ error: 'create-link-failed' });
@@ -58,8 +59,10 @@ router.get('/api/tenant-auth/consume', async (req, res) => {
       path: '/',
     });
     console.log(`[tenant-auth] viewer cookie -> SameSite=${sameSite} Secure=${secure}`);
-    // Redirect to viewer UI
-    return res.redirect('/viewer');
+    // Redirect to frontend viewer UI
+    const feCsv = String(process.env.FRONTEND_URL || '').split(',').map(s => s.trim()).filter(Boolean);
+    const feOrigin = feCsv[0] || `${isSecure(req) ? 'https' : 'http'}://${req.get('host')}`;
+    return res.redirect(`${feOrigin.replace(/\/$/, '')}/viewer`);
   } catch (e) {
     return res.status(400).send('invalid or expired link');
   }
