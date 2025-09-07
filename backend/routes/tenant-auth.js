@@ -1,0 +1,68 @@
+// backend/routes/tenant-auth.js
+const express = require('express');
+const jwt = require('jsonwebtoken');
+const { requireAuth } = require('../middleware/requireAuth');
+const { requireTenantViewer } = require('../middleware/requireTenantViewer');
+const Tenant = require('../models/Tenant');
+
+const router = express.Router();
+
+function isSecure(req) {
+  return req.secure || (req.get('x-forwarded-proto') || '').includes('https');
+}
+
+// Owner creates a magic link for a tenant viewer
+router.post('/api/tenant-auth/create-link', requireAuth, async (req, res) => {
+  try {
+    const { tenantId, expiresInHours = 24 * 7 } = req.body || {};
+    if (!tenantId) return res.status(400).json({ error: 'missing-tenantId' });
+    const secret = process.env.AUTH_JWT_SECRET;
+    if (!secret) return res.status(500).json({ error: 'server-misconfigured' });
+
+    const tenant = await Tenant.findById(tenantId, { name: 1 }).lean();
+    if (!tenant) return res.status(404).json({ error: 'tenant-not-found' });
+
+    const token = jwt.sign({ sub: 'tenant_viewer_link', tenantId }, secret, {
+      expiresIn: `${expiresInHours}h`,
+    });
+    // Build link on FRONTEND origin so cookies are scoped to the SPA domain (dev proxy supported)
+    const feCsv = String(process.env.FRONTEND_URL || '').split(',').map(s => s.trim()).filter(Boolean);
+    const feOrigin = feCsv[0] || `${isSecure(req) ? 'https' : 'http'}://${req.get('host')}`;
+    const url = `${feOrigin.replace(/\/$/, '')}/api/tenant-auth/consume?token=${encodeURIComponent(token)}`;
+    return res.json({ ok: true, url, tenant: { _id: tenantId, name: tenant.name || '' } });
+  } catch (e) {
+    return res.status(500).json({ error: 'create-link-failed' });
+  }
+});
+
+// IT clicks the link → set viewer cookie and redirect to /viewer
+router.get('/api/tenant-auth/consume', async (req, res) => {
+  try {
+    const token = String(req.query.token || '');
+    if (!token) return res.status(400).send('missing token');
+    const secret = process.env.AUTH_JWT_SECRET;
+    if (!secret) return res.status(500).send('server misconfigured');
+    const payload = jwt.verify(token, secret);
+    if (!payload || payload.sub !== 'tenant_viewer_link' || !payload.tenantId) {
+      return res.status(400).send('invalid token');
+    }
+    const viewer = jwt.sign({ role: 'tenant_viewer', tenantId: String(payload.tenantId) }, secret, { expiresIn: '7d' });
+    const secure = isSecure(req);
+    res.setHeader('Set-Cookie', `zc_tenant=${encodeURIComponent(viewer)}; HttpOnly; Path=/; ${secure ? 'Secure; ' : ''}SameSite=Strict; Max-Age=${7*24*3600}`);
+    // Redirect to viewer UI
+    return res.redirect('/viewer');
+  } catch (e) {
+    return res.status(400).send('invalid or expired link');
+  }
+});
+
+router.get('/api/viewer/me', requireTenantViewer, async (req, res) => {
+  try {
+    const t = await Tenant.findById(req.viewerTenantId, { name: 1 }).lean();
+    return res.json({ tenantId: req.viewerTenantId, tenantName: t?.name || '' });
+  } catch {
+    return res.status(500).json({ error: 'failed' });
+  }
+});
+
+module.exports = router;

@@ -120,6 +120,7 @@ async function start() {
     // --- ROUTES ---
     // Auth routes first (public)
     app.use(require('./routes/auth'));
+    app.use(require('./routes/tenant-auth'));
 
     // Public endpoints used by recipients / training
     app.use("/api/clicks", require("./routes/clicks"));
@@ -136,6 +137,9 @@ async function start() {
     app.use("/api/tenants", requireAuth, require("./routes/tenants.scenarios"));
     app.use("/api", requireAuth, require("./routes/brands"));
     app.use("/api", requireAuth, require("./routes/scenarios"));
+
+    // Viewer (tenant read-only) endpoints
+    app.use(require('./routes/viewer'));
 
     // Health
     app.get("/api/health", (_req, res) => res.json({ ok: true }));

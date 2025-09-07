@@ -8,6 +8,7 @@ import ContactForm from "./pages/Form";
 import AppRouter from "./ZeroClickApp/AppRouter";
 import TrainingOups from "./ZeroClickApp/pages/Training/Oups";
 import Login from "./pages/Login";
+import ViewerResults from "./pages/Viewer/ViewerResults";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/Oups" element={<TrainingOups />} /> {/* page tampon */}
         <Route path="/training/:scenarioId" element={<TrainingOups />} />
         <Route path="/ZeroApp/*" element={<AppRouter />} />
+        <Route path="/viewer" element={<ViewerResults />} />
       </Routes>
     </Router>
   );

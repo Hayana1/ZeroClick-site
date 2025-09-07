@@ -170,6 +170,30 @@ export default function AppRouter() {
               <div className="hidden md:flex items-center gap-2">
                 <TenantPicker />
                 <button
+                  onClick={async () => {
+                    try {
+                      const { useTenantStore } = await import('./store/useTenantStore');
+                      const tid = useTenantStore.getState().tenantId;
+                      if (!tid) return alert('Aucun tenant sélectionné');
+                      const r = await fetch(`/api/tenant-auth/create-link`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include',
+                        body: JSON.stringify({ tenantId: tid })
+                      });
+                      const data = await r.json();
+                      if (!r.ok) throw new Error(data?.error || `HTTP ${r.status}`);
+                      window.prompt('Lien IT à partager (valide 7 jours):', data.url);
+                    } catch (e) {
+                      alert(`Erreur création du lien IT: ${e?.message || e}`);
+                    }
+                  }}
+                  className="px-3 py-2 text-sm rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white"
+                  title="Créer un lien de consultation pour l'IT de l'entreprise courante"
+                >
+                  Lien IT
+                </button>
+                <button
                   onClick={async () => { try { await api.logout(); } catch {} }}
                   className="ml-2 px-3 py-2 text-sm rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700"
                 >

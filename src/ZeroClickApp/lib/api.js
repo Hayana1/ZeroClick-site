@@ -164,4 +164,17 @@ export const api = {
 
   // Brands
   getBrands: () => req(`/brands`),
+
+  // Viewer (tenant read-only)
+  viewerMe: () => req(`/viewer/me`),
+  viewerOverview: () => req(`/viewer/results/overview`),
+  viewerBatchResults: (batchId) => req(`/viewer/batches/${encodeURIComponent(batchId)}/results`),
+  viewerWeeklyCsvUrl: (start, end) => {
+    const q = new URLSearchParams();
+    if (start) q.set('start', start);
+    if (end) q.set('end', end);
+    const qs = q.toString() ? `?${q.toString()}` : '';
+    return `${API_BASE_URL}/viewer/results/weekly.csv${qs}`;
+  },
+  viewerStop: (reason) => req(`/viewer/stop-simulation`, { method: 'POST', body: JSON.stringify({ reason: reason || '' }) }),
 };
