@@ -50,9 +50,14 @@ router.get('/api/tenant-auth/consume', async (req, res) => {
     const sameSiteCfg = (process.env.AUTH_COOKIE_SAMESITE || '').toLowerCase();
     const sameSite = sameSiteCfg === 'none' ? 'None' : sameSiteCfg === 'lax' ? 'Lax' : 'Strict';
     const secure = isSecure(req) || sameSite === 'None';
-    const attrs = [ `zc_tenant=${encodeURIComponent(viewer)}`, 'HttpOnly', 'Path=/', `SameSite=${sameSite}`, `Max-Age=${7*24*3600}` ];
-    if (secure) attrs.push('Secure');
-    res.setHeader('Set-Cookie', attrs.join('; '));
+    res.cookie('zc_tenant', viewer, {
+      httpOnly: true,
+      sameSite: sameSite.toLowerCase(),
+      secure,
+      maxAge: 7*24*3600*1000,
+      path: '/',
+    });
+    console.log(`[tenant-auth] viewer cookie -> SameSite=${sameSite} Secure=${secure}`);
     // Redirect to viewer UI
     return res.redirect('/viewer');
   } catch (e) {

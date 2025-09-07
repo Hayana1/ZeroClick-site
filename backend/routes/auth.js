@@ -37,15 +37,15 @@ router.post('/api/auth/login', async (req, res) => {
     const sameSite = sameSiteCfg === 'none' ? 'None' : sameSiteCfg === 'lax' ? 'Lax' : 'Strict';
     const secure = isSecure(req) || sameSite === 'None';
     const maxAge = 12 * 60 * 60; // seconds
-    const parts = [
-      `zc_auth=${encodeURIComponent(token)}`,
-      'HttpOnly',
-      'Path=/',
-      `SameSite=${sameSite}`,
-      `Max-Age=${maxAge}`,
-    ];
-    if (secure) parts.push('Secure');
-    res.setHeader('Set-Cookie', parts.join('; '));
+    // Use Express cookie helper for correct serialization
+    res.cookie('zc_auth', token, {
+      httpOnly: true,
+      sameSite: sameSite.toLowerCase(),
+      secure,
+      maxAge: maxAge * 1000,
+      path: '/',
+    });
+    console.log(`[auth] login cookie -> SameSite=${sameSite} Secure=${secure}`);
     return res.json({ ok: true });
   } catch (err) {
     return res.status(500).json({ error: 'login-failed' });
@@ -57,9 +57,13 @@ router.post('/api/auth/logout', (req, res) => {
   const sameSiteCfg = (process.env.AUTH_COOKIE_SAMESITE || '').toLowerCase();
   const sameSite = sameSiteCfg === 'none' ? 'None' : sameSiteCfg === 'lax' ? 'Lax' : 'Strict';
   const secure = isSecure(req) || sameSite === 'None';
-  const parts = [ 'zc_auth=','HttpOnly','Path=/', `SameSite=${sameSite}`, 'Max-Age=0' ];
-  if (secure) parts.push('Secure');
-  res.setHeader('Set-Cookie', parts.join('; '));
+  res.cookie('zc_auth', '', {
+    httpOnly: true,
+    sameSite: sameSite.toLowerCase(),
+    secure,
+    maxAge: 0,
+    path: '/',
+  });
   return res.json({ ok: true });
 });
 
