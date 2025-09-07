@@ -47,8 +47,12 @@ router.get('/api/tenant-auth/consume', async (req, res) => {
       return res.status(400).send('invalid token');
     }
     const viewer = jwt.sign({ role: 'tenant_viewer', tenantId: String(payload.tenantId) }, secret, { expiresIn: '7d' });
-    const secure = isSecure(req);
-    res.setHeader('Set-Cookie', `zc_tenant=${encodeURIComponent(viewer)}; HttpOnly; Path=/; ${secure ? 'Secure; ' : ''}SameSite=Strict; Max-Age=${7*24*3600}`);
+    const sameSiteCfg = (process.env.AUTH_COOKIE_SAMESITE || '').toLowerCase();
+    const sameSite = sameSiteCfg === 'none' ? 'None' : sameSiteCfg === 'lax' ? 'Lax' : 'Strict';
+    const secure = isSecure(req) || sameSite === 'None';
+    const attrs = [ `zc_tenant=${encodeURIComponent(viewer)}`, 'HttpOnly', 'Path=/', `SameSite=${sameSite}`, `Max-Age=${7*24*3600}` ];
+    if (secure) attrs.push('Secure');
+    res.setHeader('Set-Cookie', attrs.join('; '));
     // Redirect to viewer UI
     return res.redirect('/viewer');
   } catch (e) {

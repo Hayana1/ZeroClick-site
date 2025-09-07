@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
+function strip(u) { return String(u || '').replace(/\/+$/, ''); }
+
 function isSecure(req) {
   // trust proxy is enabled in app.js
   return req.secure || (req.get('x-forwarded-proto') || '').includes('https');
@@ -31,18 +33,19 @@ router.post('/api/auth/login', async (req, res) => {
     if (!secret) return res.status(500).json({ error: 'server-misconfigured' });
 
     const token = jwt.sign({ sub: 'owner' }, secret, { expiresIn: '12h' });
-    const cookieOpts = {
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: isSecure(req),
-      // 12h
-      maxAge: 12 * 60 * 60 * 1000,
-      path: '/',
-    };
-    res.setHeader(
-      'Set-Cookie',
-      `zc_auth=${encodeURIComponent(token)}; HttpOnly; Path=/${cookieOpts.secure ? '; Secure' : ''}; SameSite=Strict; Max-Age=${Math.floor(cookieOpts.maxAge/1000)}`
-    );
+    const sameSiteCfg = (process.env.AUTH_COOKIE_SAMESITE || '').toLowerCase();
+    const sameSite = sameSiteCfg === 'none' ? 'None' : sameSiteCfg === 'lax' ? 'Lax' : 'Strict';
+    const secure = isSecure(req) || sameSite === 'None';
+    const maxAge = 12 * 60 * 60; // seconds
+    const parts = [
+      `zc_auth=${encodeURIComponent(token)}`,
+      'HttpOnly',
+      'Path=/',
+      `SameSite=${sameSite}`,
+      `Max-Age=${maxAge}`,
+    ];
+    if (secure) parts.push('Secure');
+    res.setHeader('Set-Cookie', parts.join('; '));
     return res.json({ ok: true });
   } catch (err) {
     return res.status(500).json({ error: 'login-failed' });
@@ -50,12 +53,13 @@ router.post('/api/auth/login', async (req, res) => {
 });
 
 router.post('/api/auth/logout', (req, res) => {
-  // Clear cookie
-  const secure = isSecure(req);
-  res.setHeader(
-    'Set-Cookie',
-    `zc_auth=; HttpOnly; Path=/; ${secure ? 'Secure; ' : ''}SameSite=Strict; Max-Age=0`
-  );
+  // Clear cookie with broad attributes
+  const sameSiteCfg = (process.env.AUTH_COOKIE_SAMESITE || '').toLowerCase();
+  const sameSite = sameSiteCfg === 'none' ? 'None' : sameSiteCfg === 'lax' ? 'Lax' : 'Strict';
+  const secure = isSecure(req) || sameSite === 'None';
+  const parts = [ 'zc_auth=','HttpOnly','Path=/', `SameSite=${sameSite}`, 'Max-Age=0' ];
+  if (secure) parts.push('Secure');
+  res.setHeader('Set-Cookie', parts.join('; '));
   return res.json({ ok: true });
 });
 
@@ -68,4 +72,3 @@ router.get('/api/auth/me', (req, res) => {
 });
 
 module.exports = router;
-
