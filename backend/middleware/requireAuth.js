@@ -21,7 +21,7 @@ function requireAuth(req, res, next) {
     const token = cookies['zc_auth'];
     if (!token) return res.status(401).json({ error: 'unauthorized' });
 
-    const secret = process.env.AUTH_JWT_SECRET;
+    const secret = process.env.AUTH_JWT_SECRET || process.env.JWT_SECRET;
     if (!secret) return res.status(500).json({ error: 'server-misconfigured' });
 
     const payload = jwt.verify(token, secret);
@@ -36,4 +36,3 @@ function requireAuth(req, res, next) {
 }
 
 module.exports = { requireAuth };
-

@@ -30,7 +30,7 @@ router.post('/api/auth/login', createRateLimiter({ windowMs: 60_000, limit: 10, 
     const ok = await bcrypt.compare(password, hash);
     if (!ok) return res.status(401).json({ error: 'invalid-credentials' });
 
-    const secret = process.env.AUTH_JWT_SECRET;
+    const secret = process.env.AUTH_JWT_SECRET || process.env.JWT_SECRET;
     if (!secret) return res.status(500).json({ error: 'server-misconfigured' });
 
     const token = jwt.sign({ sub: 'owner' }, secret, { expiresIn: '12h' });

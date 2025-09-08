@@ -19,7 +19,7 @@ function requireTenantViewer(req, res, next) {
     const cookies = parseCookies(req.headers.cookie || '');
     const token = cookies['zc_tenant'];
     if (!token) return res.status(401).json({ error: 'unauthorized' });
-    const secret = process.env.AUTH_JWT_SECRET;
+    const secret = process.env.AUTH_JWT_SECRET || process.env.JWT_SECRET;
     if (!secret) return res.status(500).json({ error: 'server-misconfigured' });
     const payload = jwt.verify(token, secret);
     if (!payload || payload.role !== 'tenant_viewer' || !payload.tenantId) {
@@ -33,4 +33,3 @@ function requireTenantViewer(req, res, next) {
 }
 
 module.exports = { requireTenantViewer };
-

@@ -17,7 +17,7 @@ router.post('/api/tenant-auth/create-link', requireAuth, createRateLimiter({ win
   try {
     const { tenantId, expiresInHours = 24 * 7 } = req.body || {};
     if (!tenantId) return res.status(400).json({ error: 'missing-tenantId' });
-    const secret = process.env.AUTH_JWT_SECRET;
+    const secret = process.env.AUTH_JWT_SECRET || process.env.JWT_SECRET;
     if (!secret) return res.status(500).json({ error: 'server-misconfigured' });
 
     const tenant = await Tenant.findById(tenantId, { name: 1 }).lean();
@@ -43,7 +43,7 @@ router.get('/api/tenant-auth/create-link', requireAuth, createRateLimiter({ wind
     const tenantId = String(req.query.tenantId || '');
     const expiresInHours = Number(req.query.expiresInHours || 24 * 7);
     if (!tenantId) return res.status(400).json({ error: 'missing-tenantId' });
-    const secret = process.env.AUTH_JWT_SECRET;
+    const secret = process.env.AUTH_JWT_SECRET || process.env.JWT_SECRET;
     if (!secret) return res.status(500).json({ error: 'server-misconfigured' });
 
     const tenant = await Tenant.findById(tenantId, { name: 1 }).lean();
@@ -67,7 +67,7 @@ router.get('/api/tenant-auth/consume', async (req, res) => {
   try {
     const token = String(req.query.token || '');
     if (!token) return res.status(400).send('missing token');
-    const secret = process.env.AUTH_JWT_SECRET;
+    const secret = process.env.AUTH_JWT_SECRET || process.env.JWT_SECRET;
     if (!secret) return res.status(500).send('server misconfigured');
     const payload = jwt.verify(token, secret);
     if (!payload || payload.sub !== 'tenant_viewer_link' || !payload.tenantId) {
