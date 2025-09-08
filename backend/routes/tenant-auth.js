@@ -37,6 +37,31 @@ router.post('/api/tenant-auth/create-link', requireAuth, createRateLimiter({ win
   }
 });
 
+// Fallback GET variant (useful behind some proxies disallowing POST)
+router.get('/api/tenant-auth/create-link', requireAuth, createRateLimiter({ windowMs: 60_000, limit: 20, key: 'create-link' }), async (req, res) => {
+  try {
+    const tenantId = String(req.query.tenantId || '');
+    const expiresInHours = Number(req.query.expiresInHours || 24 * 7);
+    if (!tenantId) return res.status(400).json({ error: 'missing-tenantId' });
+    const secret = process.env.AUTH_JWT_SECRET;
+    if (!secret) return res.status(500).json({ error: 'server-misconfigured' });
+
+    const tenant = await Tenant.findById(tenantId, { name: 1 }).lean();
+    if (!tenant) return res.status(404).json({ error: 'tenant-not-found' });
+
+    const token = jwt.sign({ sub: 'tenant_viewer_link', tenantId }, secret, {
+      expiresIn: `${expiresInHours}h`,
+    });
+    const host = req.get('host');
+    const proto = isSecure(req) ? 'https' : 'http';
+    const beOrigin = (process.env.BASE_URL && process.env.BASE_URL.replace(/\/$/, '')) || `${proto}://${host}`;
+    const url = `${beOrigin}/api/tenant-auth/consume?token=${encodeURIComponent(token)}`;
+    return res.json({ ok: true, url, tenant: { _id: tenantId, name: tenant.name || '' } });
+  } catch (e) {
+    return res.status(500).json({ error: 'create-link-failed' });
+  }
+});
+
 // IT clicks the link → set viewer cookie and redirect to /viewer
 router.get('/api/tenant-auth/consume', async (req, res) => {
   try {

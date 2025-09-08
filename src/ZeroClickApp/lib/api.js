@@ -197,4 +197,41 @@ export const api = {
   discoverSearch: (tid, query, count=10) => req(`/tenants/${tid}/discover:search`, { method: 'POST', body: JSON.stringify({ query, count }) }),
   getPulse: (tid) => req(`/tenants/${tid}/pulse`),
   refreshPulse: (tid, q, days=7) => req(`/tenants/${tid}/pulse:refresh`, { method: 'POST', body: JSON.stringify({ q, days }) }),
+
+  // Tenant Viewer link (IT)
+  createTenantViewerLink: async (tenantId, expiresInHours) => {
+    const r = await fetch(`${API_BASE_URL}/tenant-auth/create-link`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ tenantId, expiresInHours }),
+    });
+    if (r.status === 405) {
+      // Fallback GET (avoid preflight or proxy method blocks)
+      const params = new URLSearchParams();
+      params.set('tenantId', tenantId);
+      if (expiresInHours) params.set('expiresInHours', String(expiresInHours));
+      const g = await fetch(`${API_BASE_URL}/tenant-auth/create-link?${params.toString()}`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      const raw2 = await g.text();
+      let data2 = null;
+      try { data2 = raw2 ? JSON.parse(raw2) : null; } catch {}
+      if (!g.ok) {
+        const msg2 = (data2 && data2.error) || raw2 || `HTTP ${g.status}`;
+        throw new Error(msg2);
+      }
+      return data2;
+    } else {
+      const raw = await r.text();
+      let data = null;
+      try { data = raw ? JSON.parse(raw) : null; } catch {}
+      if (!r.ok) {
+        const msg = (data && data.error) || raw || `HTTP ${r.status}`;
+        throw new Error(msg);
+      }
+      return data;
+    }
+  },
 };

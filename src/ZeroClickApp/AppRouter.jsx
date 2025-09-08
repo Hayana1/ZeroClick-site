@@ -202,20 +202,7 @@ export default function AppRouter() {
                       const { useTenantStore } = await import('./store/useTenantStore');
                       const tid = useTenantStore.getState().tenantId;
                       if (!tid) return alert('Aucun tenant sélectionné');
-                      const r = await fetch(`/api/tenant-auth/create-link`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include',
-                        body: JSON.stringify({ tenantId: tid })
-                      });
-                      // Tolère les réponses vides/non-JSON (certains proxies renvoient 204/texte)
-                      const raw = await r.text();
-                      let data = null;
-                      try { data = raw ? JSON.parse(raw) : null; } catch {}
-                      if (!r.ok) {
-                        const msg = (data && data.error) || raw || `HTTP ${r.status}`;
-                        throw new Error(msg);
-                      }
+                      const data = await api.createTenantViewerLink(tid);
                       const url = data && data.url;
                       if (!url) throw new Error('Réponse invalide du serveur (URL manquante)');
                       window.prompt('Lien IT à partager (valide 7 jours):', url);
