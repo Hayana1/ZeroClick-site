@@ -177,4 +177,24 @@ export const api = {
     return `${API_BASE_URL}/viewer/results/weekly.csv${qs}`;
   },
   viewerStop: (reason) => req(`/viewer/stop-simulation`, { method: 'POST', body: JSON.stringify({ reason: reason || '' }) }),
+
+  // Intel + Ideas
+  listIntel: (tid) => req(`/tenants/${tid}/intel`),
+  addIntel: (tid, body) => req(`/tenants/${tid}/intel`, { method: 'POST', body: JSON.stringify(body||{}) }),
+  generateIdeas: (tid, params) => req(`/tenants/${tid}/ideas:generate`, { method: 'POST', body: JSON.stringify(params||{}) }),
+  embedIntel: (tid, limit=50) => req(`/tenants/${tid}/intel:embed`, { method: 'POST', body: JSON.stringify({ limit }) }),
+  variantIdea: (tid, idea, opts={}) => req(`/tenants/${tid}/ideas:variant`, { method: 'POST', body: JSON.stringify({ idea, ...opts }) }),
+  developScenario: (tid, payload) => req(`/tenants/${tid}/scenarios/ai/develop`, { method: 'POST', body: JSON.stringify(payload||{}) }),
+  listDrafts: (tid) => req(`/tenants/${tid}/scenarios/drafts`),
+  approveDraft: (id) => req(`/scenarios/drafts/${encodeURIComponent(id)}/approve`, { method: 'PATCH' }),
+  rejectDraft: (id, reason) => req(`/scenarios/drafts/${encodeURIComponent(id)}/reject`, { method: 'PATCH', body: JSON.stringify({ reason: reason || '' }) }),
+  importIntelUrls: (tid, urls=[]) => req(`/tenants/${tid}/intel:import-urls`, { method: 'POST', body: JSON.stringify({ urls }) }),
+  importIntelText: (tid, payload) => req(`/tenants/${tid}/intel:import-text`, { method: 'POST', body: JSON.stringify(payload||{}) }),
+  buildKnowledge: (tid, limit) => req(`/tenants/${tid}/knowledge:build`, { method: 'POST', body: JSON.stringify({ limit }) }),
+  getKnowledge: (tid) => req(`/tenants/${tid}/knowledge`),
+  scrapeSite: (tid, { url, maxPages=8, includePaths=[], excludePatterns=[] }) =>
+    req(`/tenants/${tid}/scrape:site`, { method: 'POST', body: JSON.stringify({ url, maxPages, includePaths, excludePatterns }) }),
+  discoverSearch: (tid, query, count=10) => req(`/tenants/${tid}/discover:search`, { method: 'POST', body: JSON.stringify({ query, count }) }),
+  getPulse: (tid) => req(`/tenants/${tid}/pulse`),
+  refreshPulse: (tid, q, days=7) => req(`/tenants/${tid}/pulse:refresh`, { method: 'POST', body: JSON.stringify({ q, days }) }),
 };

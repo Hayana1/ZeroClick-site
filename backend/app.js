@@ -131,6 +131,13 @@ async function start() {
     app.use("/api/tenants", requireAuth, require("./routes/tenants"));
     app.use("/api/tenants", requireAuth, require("./routes/tenants.employees"));
     app.use("/api/tenants", requireAuth, require("./routes/tenants.batches"));
+    app.use("/api", requireAuth, require("./routes/tenants.intel"));
+    app.use("/api", requireAuth, require("./routes/intel.embed"));
+    app.use("/api", requireAuth, require("./routes/ideas"));
+    app.use("/api", requireAuth, require("./routes/ideas.variant"));
+    app.use("/api", requireAuth, require("./routes/scenarios.ai"));
+    app.use("/api", requireAuth, require("./routes/scenarios.drafts"));
+    app.use("/api", requireAuth, require("./routes/pulse"));
     app.use("/api/employees", requireAuth, require("./routes/employees"));
     app.use("/api/batches", requireAuth, require("./routes/batches"));
     app.use("/api", requireAuth, require("./routes/results"));
@@ -170,3 +177,10 @@ async function start() {
 }
 
 start();
+// Minimal security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('Referrer-Policy', 'no-referrer-when-downgrade');
+  next();
+});

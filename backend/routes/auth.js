@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const router = express.Router();
+const { createRateLimiter } = require('../middleware/rateLimit');
 
 function strip(u) { return String(u || '').replace(/\/+$/, ''); }
 
@@ -12,7 +13,7 @@ function isSecure(req) {
   return req.secure || (req.get('x-forwarded-proto') || '').includes('https');
 }
 
-router.post('/api/auth/login', async (req, res) => {
+router.post('/api/auth/login', createRateLimiter({ windowMs: 60_000, limit: 10, key: 'auth-login' }), async (req, res) => {
   try {
     const { email, password } = req.body || {};
     const ownerEmail = (process.env.OWNER_EMAIL || '').toLowerCase();

@@ -9,6 +9,8 @@ import TenantPicker from "./components/TenantPicker";
 import ResultsPage from "./pages/Results/ResultsPage";
 import TrainingOups from "./pages/Training/Oups";
 import { api } from "./lib/api";
+import IdeaStudio from "./pages/IdeaStudio";
+import Drafts from "./pages/Drafts";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -23,6 +25,7 @@ export default function AppRouter() {
     if (path.includes("directory")) setActiveTab("directory");
     else if (path.includes("campaigns")) setActiveTab("campaigns");
     else if (path.includes("results")) setActiveTab("results");
+    else if (path.includes("ideas")) setActiveTab("ideas");
     else if (path.includes("tenants")) setActiveTab("tenants");
     else if (path.includes("employees")) setActiveTab("employees");
   }, [location]);
@@ -164,6 +167,30 @@ export default function AppRouter() {
                   >
                     Résultats
                   </Link>
+
+                  <Link
+                    to="/ZeroApp/ideas"
+                    className={`relative z-10 px-4 py-3 md:py-2 rounded-lg text-sm font-medium transition-all duration-200 text-center ${
+                      activeTab === "ideas"
+                        ? "text-blue-600"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    IA Idées
+                  </Link>
+
+                  <Link
+                    to="/ZeroApp/drafts"
+                    className={`relative z-10 px-4 py-3 md:py-2 rounded-lg text-sm font-medium transition-all duration-200 text-center ${
+                      activeTab === "drafts"
+                        ? "text-blue-600"
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Brouillons
+                  </Link>
                 </div>
               </nav>
 
@@ -181,9 +208,17 @@ export default function AppRouter() {
                         credentials: 'include',
                         body: JSON.stringify({ tenantId: tid })
                       });
-                      const data = await r.json();
-                      if (!r.ok) throw new Error(data?.error || `HTTP ${r.status}`);
-                      window.prompt('Lien IT à partager (valide 7 jours):', data.url);
+                      // Tolère les réponses vides/non-JSON (certains proxies renvoient 204/texte)
+                      const raw = await r.text();
+                      let data = null;
+                      try { data = raw ? JSON.parse(raw) : null; } catch {}
+                      if (!r.ok) {
+                        const msg = (data && data.error) || raw || `HTTP ${r.status}`;
+                        throw new Error(msg);
+                      }
+                      const url = data && data.url;
+                      if (!url) throw new Error('Réponse invalide du serveur (URL manquante)');
+                      window.prompt('Lien IT à partager (valide 7 jours):', url);
                     } catch (e) {
                       alert(`Erreur création du lien IT: ${e?.message || e}`);
                     }
@@ -213,6 +248,8 @@ export default function AppRouter() {
           <Route path="employees" element={<EmployeesPage />} />
           <Route path="campaigns" element={<CampaignsPage />} />
           <Route path="results" element={<ResultsPage />} />
+          <Route path="ideas" element={<IdeaStudio />} />
+          <Route path="drafts" element={<Drafts />} />
           <Route path="/training/:scenarioId" element={<TrainingOups />} />
           <Route path="*" element={<Navigate to="/ZeroApp/directory" replace />} />
         </Routes>

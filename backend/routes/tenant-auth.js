@@ -6,13 +6,14 @@ const { requireTenantViewer } = require('../middleware/requireTenantViewer');
 const Tenant = require('../models/Tenant');
 
 const router = express.Router();
+const { createRateLimiter } = require('../middleware/rateLimit');
 
 function isSecure(req) {
   return req.secure || (req.get('x-forwarded-proto') || '').includes('https');
 }
 
 // Owner creates a magic link for a tenant viewer
-router.post('/api/tenant-auth/create-link', requireAuth, async (req, res) => {
+router.post('/api/tenant-auth/create-link', requireAuth, createRateLimiter({ windowMs: 60_000, limit: 20, key: 'create-link' }), async (req, res) => {
   try {
     const { tenantId, expiresInHours = 24 * 7 } = req.body || {};
     if (!tenantId) return res.status(400).json({ error: 'missing-tenantId' });
