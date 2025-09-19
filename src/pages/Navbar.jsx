@@ -1,7 +1,6 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 // Animation pour le hover des boutons
@@ -13,8 +12,8 @@ const pulse = keyframes`
 
 // Composants stylisés
 const NavButton = styled.button`
-  background: linear-gradient(135deg, #8a2be2 0%, #a050fa 100%);
-  color: white;
+  background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+  color: #ffffff;
   border: none;
   padding: 0.5rem 1.25rem;
   border-radius: 12px;
@@ -22,13 +21,13 @@ const NavButton = styled.button`
   font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(138, 43, 226, 0.2);
+  box-shadow: 0 10px 22px rgba(91, 33, 182, 0.18);
   position: relative;
   overflow: hidden;
 
   &:hover {
-    background: linear-gradient(135deg, #9a3bf2 0%, #b060ff 100%);
-    box-shadow: 0 6px 12px rgba(138, 43, 226, 0.3);
+    background: linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%);
+    box-shadow: 0 14px 28px rgba(91, 33, 182, 0.25);
     animation: ${pulse} 1s ease infinite;
   }
 
@@ -58,12 +57,14 @@ const NavButton = styled.button`
 
 const NavHeader = styled.header`
   width: 100%;
-  background: transparent;
+  background: rgba(255, 255, 255, 0.92);
   position: absolute;
   top: 0;
   left: 0;
   z-index: 50;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
 `;
 
 const NavContainer = styled.div`
@@ -94,9 +95,9 @@ const LogoContainer = styled.div`
 `;
 
 const Logo = styled.img`
-  width: 10rem;
-  height: 10rem;
-  margin-top: 20px;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin-top: 8px;
   object-fit: contain;
   transition: transform 0.3s ease;
 
@@ -124,13 +125,32 @@ export default function Navbar() {
       <NavContainer>
         <NavContent>
           {/* Logo */}
-          <LogoContainer>
-            <Logo src="ZeroClick.png" alt="Logo" />
+          <LogoContainer className="flex items-center space-x-2">
+            {/* Icône ou logo SVG */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-7 w-7 text-violet-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+
+            {/* Texte ZeroClick en gras */}
+            <p className="text-1xl font-extrabold text-slate-900">ZeroClick</p>
           </LogoContainer>
 
           {/* Navigation */}
           <NavLinks>
-            <NavButton onClick={() => navigate("/Form")}>Sign Up</NavButton>
+            <NavButton onClick={() => navigate("/Form")}>
+              Request a demo
+            </NavButton>
           </NavLinks>
         </NavContent>
       </NavContainer>

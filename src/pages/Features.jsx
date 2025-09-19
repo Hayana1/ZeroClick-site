@@ -1,13 +1,14 @@
 import React from "react";
+import { motion } from "framer-motion";
 import {
-  Send,
-  Mail,
+  Database,
+  Cpu,
+  Shield,
+  CheckSquare,
   RefreshCw,
-  CheckCircle,
+  Archive,
+  FileText,
   ArrowRight,
-  ChevronRight,
-  Copy,
-  Check,
 } from "react-feather";
 import { useNavigate } from "react-router-dom";
 
@@ -24,371 +25,230 @@ const PixelIcon = ({ name, size = 24, className = "" }) => (
 
 export default function Features() {
   const navigate = useNavigate();
+
+  const pillars = [
+    {
+      title: "Automated OSINT collector",
+      detail:
+        "Crawl public sources (site, LinkedIn, X, GitHub, job posts, WHOIS, cert transparency) to build live profiles of employees, vendors and exposed assets.",
+      icon: <Database className="w-6 h-6 text-indigo-500" strokeWidth={1.8} />,
+      label: "Signal graph",
+    },
+    {
+      title: "AI-driven simulation composer",
+      detail:
+        "Generate high-realism email, SMS and voice-lite scripts personalised with OSINT. Inject unique click tokens and post-click learning pages automatically.",
+      icon: <Cpu className="w-6 h-6 text-violet-500" strokeWidth={1.8} />,
+      label: "Creative engine",
+    },
+    {
+      title: "Simulation orchestrator & safety gate",
+      detail:
+        "Schedule campaigns, set rate limits, maintain allow/deny lists and keep a live kill-switch. Scope is locked to signed consent before anything ships.",
+      icon: <Shield className="w-6 h-6 text-purple-500" strokeWidth={1.8} />,
+      label: "Control tower",
+    },
+    {
+      title: "Tracking, evidence & after-click learning",
+      detail:
+        "Tokenise every interaction (open, click, submit, timing). Redirect “fails” to two-minute micro-training and log improvements automatically.",
+      icon: (
+        <CheckSquare className="w-6 h-6 text-fuchsia-500" strokeWidth={1.8} />
+      ),
+      label: "Learning loop",
+    },
+    {
+      title: "Remediation & privacy cleanup",
+      detail:
+        "Auto-generate takedown requests, hardening checklists and prioritised remediation tickets. Offer managed or self-serve workflows.",
+      icon: <Archive className="w-6 h-6 text-sky-500" strokeWidth={1.8} />,
+      label: "Action pack",
+    },
+    {
+      title: "Dynamic training loop",
+      detail:
+        "Personalise follow-up modules by role and behaviour. Re-test on schedule and show score deltas that leadership can trust.",
+      icon: (
+        <RefreshCw className="w-6 h-6 text-emerald-500" strokeWidth={1.8} />
+      ),
+      label: "Habit builder",
+    },
+    {
+      title: "Audit trail & compliance",
+      detail:
+        "Store signed SOWs, campaign logs and evidence packages immutably. Export for legal, insurers and the board in one click.",
+      icon: <FileText className="w-6 h-6 text-amber-500" strokeWidth={1.8} />,
+      label: "Proof kit",
+    },
+  ];
+
+  const distinctions = [
+    "Modular tiers + fast pilots keep the product affordable for startups and VC portfolios.",
+    "Automation-first workflows reduce delivery cost versus legacy awareness services.",
+    "Channel roadmap: nail email + SMS + voice-lite now, introduce deepfakes only with explicit legal buy-in.",
+    "Distribution leverages VC/accelerator cohorts, MSPs and startup ops leaders for rapid adoption.",
+  ];
+
+  const fadeIn = {
+    hidden: { opacity: 0, y: 32 },
+    visible: (delay = 0) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay, duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
+    }),
+  };
+
   return (
-    <div className="relative py-24 bg-gradient-to-b from-[#0F0F19] to-[#1A1428] overflow-hidden">
-      {/* Animated decorative dots */}
-      <div className="absolute inset-0 overflow-hidden opacity-20">
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF]"
-            style={{
-              width: `${Math.random() * 6 + 2}px`,
-              height: `${Math.random() * 6 + 2}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animation: `float ${Math.random() * 20 + 10}s linear infinite`,
-              animationDelay: `${Math.random() * 10}s`,
-              opacity: Math.random() * 0.4 + 0.1,
-            }}
-          />
-        ))}
+    <motion.section
+      className="relative py-24 bg-gradient-to-b from-[#F8FBFF] via-white to-[#F6F4FF] overflow-hidden"
+      id="product-blueprint"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      variants={fadeIn}
+      custom={0}
+    >
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-10 right-16 w-56 h-56 bg-indigo-200/40 rounded-full blur-3xl" />
+        <div className="absolute bottom-5 left-10 w-72 h-72 bg-purple-200/30 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-6xl mx-auto px-6">
-        {/* Title */}
-        <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-4xl font-bold mb-6 text-white">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] animate-gradient">
-              Inbox training
-            </span>{" "}
-            in 3 simple steps
+        <motion.div
+          className="text-center mb-16"
+          variants={fadeIn}
+          custom={0.1}
+        >
+          <div className="inline-flex items-center px-5 py-2 mb-5 rounded-full bg-indigo-100 text-indigo-600 border border-indigo-200 text-sm font-medium">
+            Product blueprint: ZeroClick power for startups
+          </div>
+          <h2 className="text-3xl md:text-4xl font-semibold text-slate-900">
+            Build ZeroClick realism, tuned for lean teams
           </h2>
-          <p className="text-1xl text-[#D9C7FF] max-w-3xl mx-auto">
-            Real emails. Real habits. No stress, no jargon — just calm,
-            confident clicks.
+          <p className="text-lg text-slate-600 max-w-3xl mx-auto mt-4">
+            Each pillar mirrors ZeroClick’s strengths, packaged so a startup can
+            deploy in days, stay inside legal guardrails and measure human-risk
+            reduction without extra headcount.
           </p>
-        </div>
+        </motion.div>
 
-        {/* Vertical timeline */}
-        <div className="relative">
-          {/* Center line (desktop) */}
-          <div className="absolute left-1/2 -translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-[#8A4FFF] via-[#B47AFF] to-[#8A4FFF] opacity-20 hidden md:block"></div>
-
-          {/* Step 1 */}
-          <div className="flex flex-col md:flex-row items-stretch gap-8 mb-24 group">
-            {/* Card */}
-            <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
-                  1
-                </div>
-                <h3 className="text-2xl font-semibold text-white">
-                  A message arrives
-                </h3>
-              </div>
-
-              <div className="space-y-5 pl-2">
-                <div className="flex items-start gap-4">
-                  <div className="bg-[#8A4FFF]/10 p-1.5 rounded-full mt-0.5">
-                    <Mail
-                      className="w-4 h-4 text-[#8A4FFF]"
-                      strokeWidth={2.5}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-[#D9C7FF]">
-                      A realistic email lands in the inbox — urgent tone, a
-                      link, and small changes that feel off.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-[#9D5AFF]/10 p-1.5 rounded-full mt-0.5">
-                    <Send
-                      className="w-4 h-4 text-[#9D5AFF]"
-                      strokeWidth={2.5}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-[#D9C7FF]">
-                      Your team sees it like any normal day — and learns to spot
-                      fraud early.
-                    </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
-                      No new tools to learn.
-                    </div>
-                  </div>
+        <motion.div
+          className="mb-10 rounded-3xl overflow-hidden shadow-xl"
+          variants={fadeIn}
+          custom={0.15}
+        >
+          <div className="grid gap-0 md:grid-cols-[1.1fr_0.9fr] items-stretch">
+            <div className="relative aspect-[16/9] md:aspect-auto">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#fb7185] via-[#f97316] to-[#22c55e] opacity-95" />
+              <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-tl from-[#a855f7]/40 via-transparent to-[#38bdf8]/40" />
+              <div className="absolute inset-4 md:inset-6 rounded-3xl border border-white/20" />
+              <div className="absolute inset-x-8 inset-y-10 md:inset-y-12 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 flex items-center justify-center text-center text-white px-6">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-white/80 mb-3">
+                    ZeroClick Blueprint
+                  </p>
+                  <h3 className="text-2xl md:text-3xl font-semibold leading-snug">
+                    Powering simulations
+                  </h3>
                 </div>
               </div>
             </div>
-
-            {/* Visual example */}
-            <div className="w-full md:w-1/2 relative">
-              <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
-                <div className="font-mono text-sm text-[#D9C7FF] space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
-                    <div className="w-3 h-3 rounded-full bg-[#27C93F]"></div>
-                  </div>
-                  <div className="text-[#8A4FFF]">// Sample email</div>
-                  <div className="mt-3">
-                    <span className="text-[#8A4FFF]">From:</span> “Billing – ABC
-                    Inc.” &lt;billing@abc-inc-payments.com&gt;
-                  </div>
-                  <div>
-                    <span className="text-[#8A4FFF]">Subject:</span> URGENT:
-                    Payment issue
-                  </div>
-                  <div className="break-words">
-                    <span className="text-[#8A4FFF]">Link:</span>{" "}
-                    http://abc-inc.payments-update-secure.co/verify
-                  </div>
-                  <div className="text-[#A794D4]">
-                    Red flags: new domain, rushed deadline, new bank details.
-                  </div>
-                </div>
-                <div className="absolute bottom-4 right-4 flex items-center gap-1 text-xs text-[#8A4FFF]">
-                  <ChevronRight className="w-4 h-4" />
-                  <span>Realistic example</span>
-                </div>
-              </div>
-
-              {/* Timeline dot */}
-              <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
-                <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-              </div>
+            <div className="bg-white/80 backdrop-blur-sm p-6 md:p-10 text-sm text-slate-600 leading-relaxed">
+              Show investors and customers how ZeroClick pulls OSINT signals,
+              composes campaigns and closes the loop on remediation. The
+              gradient anchors your product story now and stays flexible if you
+              evolve it into a video or live dashboard later.
             </div>
           </div>
+        </motion.div>
 
-          {/* Step 2 */}
-          <div className="flex flex-col md:flex-row-reverse items-stretch gap-8 mb-24 group">
-            {/* Card */}
-            <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
-                  2
-                </div>
-                <h3 className="text-2xl font-semibold text-white">
-                  Pause and check
-                </h3>
+        <div className="grid gap-6 md:grid-cols-2">
+          {pillars.map((pillar) => (
+            <motion.div
+              key={pillar.title}
+              className="group relative bg-white border border-slate-200 rounded-3xl p-7 shadow-lg shadow-indigo-100 transition-all hover:-translate-y-1 hover:shadow-xl"
+              variants={fadeIn}
+              custom={0.2}
+            >
+              <div className="absolute -top-3 -right-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-indigo-500 bg-indigo-100 px-2.5 py-1 rounded-full">
+                  {pillar.label}
+                </span>
               </div>
-
-              <div className="space-y-5 pl-2">
-                <div className="flex items-start gap-4">
-                  <div className="bg-[#8A4FFF]/10 p-1.5 rounded-full mt-0.5">
-                    <RefreshCw
-                      className="w-4 h-4 text-[#8A4FFF]"
-                      strokeWidth={2.5}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-[#D9C7FF]">
-                      Hover links, read the address, compare payment details.
-                      Slow beats sorry.
-                    </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
-                      Habits built in seconds.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-[#9D5AFF]/10 p-1.5 rounded-full mt-0.5">
-                    <svg
-                      className="w-4 h-4 text-[#9D5AFF]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      ></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-[#D9C7FF]">
-                      You stay in control — we only coach the reflex.
-                    </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
-                      No blame, just better clicks.
-                    </div>
-                  </div>
-                </div>
+              <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center mb-5">
+                {pillar.icon}
               </div>
-            </div>
-
-            {/* Visual example */}
-            <div className="w-full md:w-1/2 relative">
-              <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
-                <div className="text-[#D9C7FF] text-sm space-y-4">
-                  <div className="text-[#8A4FFF] font-medium">
-                    Quick check list:
-                  </div>
-                  <ul className="list-disc list-inside text-[#D9C7FF] space-y-1">
-                    <li>Sender address matches the company?</li>
-                    <li>Link preview shows the right domain?</li>
-                    <li>Any sudden “new bank details”?</li>
-                  </ul>
-                  <div className="pt-4 border-t border-[#3A2E5D]/50 text-xs text-[#8A4FFF]/70">
-                    10 seconds to avoid a costly mistake
-                  </div>
-                </div>
-                <div className="absolute bottom-4 right-4 flex items-center gap-1 text-xs text-[#8A4FFF]">
-                  <ChevronRight className="w-4 h-4" />
-                  <span>Practical tips</span>
-                </div>
-              </div>
-
-              {/* Timeline dot */}
-              <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
-                <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Step 3 */}
-          <div className="flex flex-col md:flex-row items-stretch gap-8 group">
-            {/* Card */}
-            <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
-                  3
-                </div>
-                <h3 className="text-2xl font-semibold text-white">
-                  Gentle feedback
-                </h3>
-              </div>
-
-              <div className="space-y-5 pl-2">
-                <div className="flex items-start gap-4">
-                  <div className="bg-[#8A4FFF]/10 p-1.5 rounded-full mt-0.5">
-                    <CheckCircle
-                      className="w-4 h-4 text-[#8A4FFF]"
-                      strokeWidth={2.5}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-[#D9C7FF]">
-                      If someone clicks, a short lesson explains each red flag —
-                      no shame, just clarity.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-[#9D5AFF]/10 p-1.5 rounded-full mt-0.5">
-                    <svg
-                      className="w-4 h-4 text-[#9D5AFF]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      ></path>
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-[#D9C7FF]">
-                      Habits improve every week — calm, confident, natural.
-                    </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
-                      Peace of mind for everyone.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Visual example */}
-            <div className="w-full md:w-1/2 relative">
-              <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
-                <div className="text-[#D9C7FF] text-sm space-y-4">
-                  <div className="text-[#8A4FFF] font-medium">
-                    Example feedback:
-                  </div>
-                  <div className="font-mono bg-[#1E1B2B] px-3 py-2 rounded-lg border border-[#3A2E5D] inline-block">
-                    “The sender domain doesn’t match. The link points elsewhere.
-                    Payment details changed.”
-                  </div>
-                  <div className="flex items-center gap-2 mt-4 text-[#27C93F]">
-                    <Check className="w-5 h-5" />
-                    <span className="font-medium">
-                      Next time: pause, hover, verify.
-                    </span>
-                  </div>
-                  <div className="text-xs text-[#8A4FFF]/70">
-                    Tiny lessons, big protection
-                  </div>
-                  <div className="pt-4 border-t border-[#3A2E5D]/50 text-xs text-[#A794D4]">
-                    Weekly summary shows progress (no blame).
-                  </div>
-                </div>
-                <div className="absolute bottom-4 right-4 flex items-center gap-1 text-xs text-[#8A4FFF]">
-                  <ChevronRight className="w-4 h-4" />
-                  <span>On-the-spot coaching</span>
-                </div>
-              </div>
-
-              {/* Timeline dot */}
-              <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
-                <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-              </div>
-            </div>
-          </div>
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">
+                {pillar.title}
+              </h3>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                {pillar.detail}
+              </p>
+            </motion.div>
+          ))}
         </div>
 
-        {/* Final CTA */}
-        <div className="mt-24 text-center">
-          <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
-            Ready to <span className="text-[#8A4FFF]">stop fraud early</span>?
-          </h3>
-          <button
-            onClick={() => navigate("/Form")}
-            className="group relative overflow-hidden px-8 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-xl hover:shadow-[#8A4FFF]/40"
-          >
-            <span className="relative z-10 flex items-center justify-center gap-2">
-              <PixelIcon name="chevalier" size={25} />
-              Try a free simulation
-            </span>
-            <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
-          </button>
-          <p className="mt-4 text-sm text-[#A794D4]">
-            No commitment • Friendly coaching • Results you can feel
-          </p>
-        </div>
+        <motion.div
+          className="mt-16 bg-white border border-slate-200 rounded-3xl p-8 shadow-lg"
+          variants={fadeIn}
+          custom={0.25}
+        >
+          <div className="grid md:grid-cols-[1fr,1.2fr] gap-8 items-start">
+            <div>
+              <h3 className="text-xl font-semibold text-slate-900 mb-3">
+                Focused differentiation for ZeroClick
+              </h3>
+              <p className="text-slate-600">
+                You deliver ZeroClick realism, while winning on speed,
+                automation and price. Position it as “ZeroClick-grade defenses
+                without the enterprise complexity.”
+              </p>
+            </div>
+            <ul className="space-y-3 text-sm text-slate-600">
+              {distinctions.map((item) => (
+                <li
+                  key={item}
+                  className="flex items-start gap-3 rounded-2xl bg-slate-50 border border-slate-200 px-4 py-3"
+                >
+                  <span className="text-indigo-500 mt-0.5">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mt-16 bg-indigo-600 rounded-3xl p-10 text-white shadow-xl"
+          variants={fadeIn}
+          custom={0.3}
+        >
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div>
+              <h3 className="text-2xl font-semibold mb-2">
+                Ready to ship this blueprint?
+              </h3>
+              <p className="text-indigo-100 max-w-xl">
+                Launch with OSINT + one campaign in 48 hours, then expand to
+                SMS, voice-lite and automated remediation in under 90 days.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <button
+                onClick={() => navigate("/Form")}
+                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-indigo-600 font-semibold shadow-md hover:shadow-lg"
+              >
+                <PixelIcon name="chevalier" size={26} />
+                Request a 48-hour Pilot Audit
+                <ArrowRight className="w-4 h-4" />
+              </button>
+              <span className="text-sm text-indigo-100/80">
+                No obligation • We keep the redirect to your demo request flow
+              </span>
+            </div>
+          </div>
+        </motion.div>
       </div>
-
-      {/* CSS animations */}
-      <style jsx>{`
-        @keyframes float {
-          0% {
-            transform: translateY(0) rotate(0deg) scale(1);
-            opacity: 0;
-          }
-          20% {
-            opacity: 0.4;
-          }
-          100% {
-            transform: translateY(-120vh) rotate(360deg) scale(1.2);
-            opacity: 0;
-          }
-        }
-        @keyframes animate-gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: animate-gradient 3s ease infinite;
-        }
-      `}</style>
-    </div>
+    </motion.section>
   );
 }

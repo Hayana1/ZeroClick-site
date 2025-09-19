@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
-  FileText,
+  Cpu,
   RefreshCw,
+  Shield,
+  ArrowRight,
   CheckCircle,
   ChevronsRight,
-  ArrowRight,
 } from "react-feather";
 
-// ADD just under the other imports
 const PixelIcon = ({ name, size = 24, className = "" }) => (
   <img
     src={`/Tiles/${name}.png`}
@@ -23,367 +24,192 @@ const PixelIcon = ({ name, size = 24, className = "" }) => (
 export default function Hero() {
   const navigate = useNavigate();
   const [hoveredCard, setHoveredCard] = useState(null);
-  const canvasRef = useRef(null);
-  const particlesRef = useRef([]);
-  const animationRef = useRef(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+  const featureCards = [
+    {
+      icon: <Cpu className="w-7 h-7 text-indigo-500" strokeWidth={1.8} />,
+      title: "Hyper-real rehearsals",
+      desc: "Multi-channel (email, SMS, voice-lite) attack simulations driven by live OSINT so teams experience how AI-powered adversaries really strike.",
+      badge: "Simulate",
+    },
+    {
+      icon: <RefreshCw className="w-7 h-7 text-violet-500" strokeWidth={1.8} />,
+      title: "Dynamic coaching loop",
+      desc: "Simulate → score → auto-deliver role-based micro-lessons → re-test. Every campaign sharpens human reflexes with measurable deltas.",
+      badge: "Measure",
+    },
+    {
+      icon: <Shield className="w-7 h-7 text-purple-500" strokeWidth={1.8} />,
+      title: "Evidence & safety gates",
+      desc: "Signed scopes, live kill-switch, immutable logs and remediation tickets so legal, insurance and the board stay aligned.",
+      badge: "Safeguard",
+    },
+  ];
 
-    const setSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    setSize();
-    window.addEventListener("resize", setSize);
+  const supportingPoints = [
+    "AI-generated phishing, SMS and voice scripts crafted with ZeroClick realism",
+    "OSINT personalization across employees, vendors and exposed assets",
+    "Instant risk scoring, after-click training and executive-ready evidence"
+  ];
 
-    if (particlesRef.current.length === 0) {
-      const width = canvas.width;
-      const height = canvas.height;
-      const particleCount = Math.min(80, Math.floor((width * height) / 20000));
-      for (let i = 0; i < particleCount; i++) {
-        const hue = Math.random() * 20 + 260;
-        particlesRef.current.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 1.5 + 0.5,
-          speed: Math.random() * 0.3 + 0.1,
-          opacity: Math.random() * 0.3 + 0.1,
-          angle: Math.random() * Math.PI * 2,
-          frequency: Math.random() * 0.05 + 0.01,
-          hue,
-        });
-      }
-    }
-
-    const animate = () => {
-      const width = canvas.width;
-      const height = canvas.height;
-      ctx.clearRect(0, 0, width, height);
-
-      ctx.lineWidth = 0.1;
-      ctx.strokeStyle = "rgba(180, 122, 255, 0.08)";
-      for (let i = 0; i < particlesRef.current.length; i++) {
-        for (let j = i + 1; j < particlesRef.current.length; j++) {
-          const a = particlesRef.current[i];
-          const b = particlesRef.current[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const distance = Math.hypot(dx, dy);
-          if (distance < 120) {
-            ctx.globalAlpha = 0.1 * (1 - distance / 120);
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-            ctx.globalAlpha = 1;
-          }
-        }
-      }
-
-      particlesRef.current.forEach((p) => {
-        p.y -= p.speed;
-        p.x += Math.sin(p.angle) * 0.3;
-        p.angle += p.frequency;
-
-        if (p.y < -10) {
-          p.y = height + 10;
-          p.x = Math.random() * width;
-        }
-        if (p.x < -10) p.x = width + 10;
-        if (p.x > width + 10) p.x = -10;
-
-        const grad = ctx.createRadialGradient(
-          p.x,
-          p.y,
-          0,
-          p.x,
-          p.y,
-          p.radius * 3
-        );
-        grad.addColorStop(0, `hsla(${p.hue}, 100%, 70%, ${p.opacity})`);
-        grad.addColorStop(1, `hsla(${p.hue}, 100%, 70%, 0)`);
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius * 3, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, ${p.opacity})`;
-        ctx.fill();
-      });
-
-      animationRef.current = requestAnimationFrame(animate);
-    };
-
-    animate();
-    return () => {
-      window.removeEventListener("resize", setSize);
-      if (animationRef.current) cancelAnimationFrame(animationRef.current);
-    };
-  }, []);
+  const fadeInUp = {
+    hidden: { opacity: 0, translateY: 24 },
+    visible: (delay = 0) => ({
+      opacity: 1,
+      translateY: 0,
+      transition: { delay, duration: 0.6, ease: [0.25, 0.1, 0.25, 1] },
+    }),
+  };
 
   return (
-    <section className="relative overflow-hidden px-6 py-24 sm text-center bg-gradient-to-b from-[#0F0F19] via-[#151221] to-[#1A1428] min-h-screen flex items-center justify-center">
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+    <motion.section
+      className="relative overflow-hidden px-6 py-24 md:py-32 bg-gradient-to-b from-white via-[#F5F2FF] to-[#F8FBFF]"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+      custom={0}
+      variants={fadeInUp}
+    >
+      <div className="absolute top-10 -left-10 w-64 h-64 bg-indigo-200/40 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-0 w-80 h-80 bg-purple-200/40 rounded-full blur-3xl" />
 
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#8A4FFF] rounded-full filter blur-[90px] opacity-10 animate-pulse-slow" />
-      <div
-        className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-[#B47AFF] rounded-full filter blur-[90px] opacity-10 animate-pulse-slow"
-        style={{ animationDelay: "2s" }}
-      />
-
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 h-3/5 bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] rounded-full filter blur-[100px] opacity-3" />
-
-      <div className="relative max-w-4xl mx-auto z-10">
-        <div className="inline-flex items-center px-6 py-3 mb-10 rounded-full bg-[#8A4FFF]/10 border border-[#8A4FFF]/20 text-[#D9C7FF] text-sm md:text-base font-medium backdrop-blur-md transition-all hover:bg-[#8A4FFF]/15 hover:border-[#8A4FFF]/40 animate-bounce-in">
-          <CheckCircle
-            className="w-5 h-5 mr-2 text-[#B47AFF]"
-            strokeWidth={2.5}
-          />
-          Made in Québec, not Silicon Valley
-        </div>
-
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 leading-tight tracking-tight">
-          <TypewriterText
-            text="One click can cost everything."
-            className="text-white font-medium block mb-4"
-            delay={200}
-            speed={60}
-          />
-          <TypewriterText
-            text="Train your team to spot fraud early."
-            className="bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] bg-clip-text text-transparent block font-semibold"
-            delay={800}
-            speed={50}
-          />
-        </h1>
-
-        <div
-          className="opacity-0 animate-fade-in"
-          style={{ animationDelay: "1.8s", animationFillMode: "forwards" }}
-        >
-          <p className="text-lg text-[#D9C7FF] mb-12 max-w-2xl mx-auto leading-relaxed">
-            Realistic inbox scenarios that feel natural.{" "}
-            <span className="font-medium bg-[#1E1B2B] px-2 py-1 rounded-md text-[#B47AFF] border border-[#3A2E5D]">
-              Your team learns without pressure
-            </span>{" "}
-            — building calm, confident reflexes day by day.
-          </p>
-        </div>
-
-        <div
-          className="mb-16 opacity-0 animate-fade-in"
-          style={{ animationDelay: "2.2s", animationFillMode: "forwards" }}
-        >
-          <button
-            onClick={() => navigate("/Form")}
-            className="group relative overflow-hidden px-7 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-[#8A4FFF]/30 text-base"
+      <div className="relative max-w-6xl mx-auto grid gap-16 md:grid-cols-[1.05fr_0.95fr] items-center">
+        <motion.div className="text-left" variants={fadeInUp} custom={0.1}>
+          <motion.div
+            className="inline-flex items-center px-4 py-2 mb-6 rounded-full bg-white shadow-md border border-slate-200 text-sm font-medium text-indigo-600"
+            variants={fadeInUp}
+            custom={0.2}
           >
-            <span className="relative z-10 flex items-center justify-center">
-              <PixelIcon name="sorcier-malefique" size={24} className="mr-2" />
-              Try a free simulation
-              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </span>
-            <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
-            <span className="absolute top-0 left-0 w-full h-full overflow-hidden">
-              <span className="absolute top-0 left-0 w-8 h-full bg-white opacity-0 group-hover:opacity-10 transform -skew-x-12 group-hover:left-[calc(100%+16px)] transition-all duration-1000"></span>
-            </span>
-          </button>
-          <p className="mt-3 text-sm text-[#A794D4]">
-            Better a fake trap today than a real loss tomorrow • No commitment
-          </p>
-        </div>
+            <CheckCircle className="w-4 h-4 mr-2" strokeWidth={2.5} />
+            Built for startup security leaders
+          </motion.div>
 
-        {/* Feature cards avec animations 3D au survol */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto opacity-0 animate-fade-in"
-          style={{ animationDelay: "2.6s", animationFillMode: "forwards" }}
-        >
-          {[
-            {
-              icon: (
-                <FileText
-                  className="w-7 h-7 text-[#8A4FFF]"
-                  strokeWidth={1.5}
-                />
-              ),
-              title: "Automatic reflexes",
-              desc: "Short, gentle exercises that build instinct. Fewer risky clicks, more confidence.",
-              badge: "Calm",
-            },
-            {
-              icon: (
-                <RefreshCw
-                  className="w-7 h-7 text-[#9D5AFF]"
-                  strokeWidth={1.5}
-                />
-              ),
-              title: "Invisible learning",
-              desc: "Lessons that don't feel like lessons. Every slip becomes a kind reminder.",
-              badge: "Gentle",
-            },
-            {
-              icon: (
-                <CheckCircle
-                  className="w-5 h-5 mr-2 text-[#B47AFF]"
-                  strokeWidth={2.5}
-                />
-              ),
-              title: "Peace of mind",
-              desc: "Your team feels safe and ready. You finally breathe easier.",
-              badge: "Trust",
-            },
-          ].map((feature, index) => (
-            <div
-              key={index}
-              className={`group relative bg-[#1E1B2B]/70 backdrop-blur-sm p-6 rounded-xl border border-[#2D2442] transition-all duration-500 transform perspective-1000 ${
-                hoveredCard === index ? "scale-105 -translate-y-2" : ""
+          <motion.h1
+            className="text-4xl md:text-5xl font-semibold leading-tight text-slate-900"
+            variants={fadeInUp}
+            custom={0.25}
+          >
+            Prepare for the phishing attacks of tomorrow — today.
+          </motion.h1>
+
+          <motion.p
+            className="text-lg md:text-xl text-slate-600 mt-6 max-w-xl leading-relaxed"
+            variants={fadeInUp}
+            custom={0.3}
+          >
+            AI-generated, OSINT-personalized phishing, SMS and voice simulations that reveal how attackers will target your startup — legally, safely and measurably.
+          </motion.p>
+
+          <motion.ul
+            className="mt-8 grid gap-3 sm:grid-cols-2 text-sm text-slate-600"
+            variants={fadeInUp}
+            custom={0.35}
+          >
+            {supportingPoints.map((item) => (
+              <li
+                key={item}
+                className="flex items-start gap-3 rounded-xl bg-white/80 border border-slate-200 px-4 py-3 shadow-sm"
+              >
+                <span className="mt-1 text-indigo-500">•</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </motion.ul>
+
+          <motion.div
+            className="mt-10 flex flex-col sm:flex-row sm:items-center gap-4"
+            variants={fadeInUp}
+            custom={0.45}
+          >
+            <button
+              onClick={() => navigate("/Form")}
+              className="group relative inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 px-7 py-4 text-white font-semibold shadow-lg shadow-indigo-200 transition-transform hover:scale-[1.01]"
+            >
+              <PixelIcon name="sorcier-malefique" size={24} className="mr-1" />
+              Request a 48-hour Pilot Audit
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const element = document.getElementById("product-blueprint");
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+              }}
+              className="inline-flex items-center gap-2 text-indigo-600 font-medium hover:text-indigo-500"
+            >
+              See the product blueprint
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </motion.div>
+
+          <motion.p
+            className="mt-4 text-sm text-slate-500"
+            variants={fadeInUp}
+            custom={0.55}
+          >
+            Redirect keeps your team on the same trusted flow — request a demo, run authorized simulations, receive the executive snapshot.
+          </motion.p>
+        </motion.div>
+
+        <motion.div className="grid gap-6" variants={fadeInUp} custom={0.2}>
+          <motion.div
+            className="relative rounded-3xl overflow-hidden shadow-lg"
+            variants={fadeInUp}
+            custom={0.25}
+          >
+            <div className="aspect-[4/3] relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-[#a855f7] via-[#6366f1] to-[#22d3ee] opacity-95" />
+              <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-tl from-[#facc15]/50 via-transparent to-[#f472b6]/40" />
+              <div className="absolute inset-4 rounded-3xl border border-white/20" />
+              <div className="absolute inset-x-6 inset-y-8 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 flex items-center justify-center">
+                <div className="text-center text-white">
+                  <p className="text-xs uppercase tracking-[0.3em] text-white/80 mb-3">
+                    ZeroClick Visual Layer
+                  </p>
+                  <h3 className="text-2xl md:text-3xl font-semibold">
+                    Simulate tomorrow’s attacks in today’s inbox
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+          {featureCards.map((feature, index) => (
+            <motion.div
+              key={feature.title}
+              className={`group relative bg-white/90 border border-slate-200 rounded-2xl px-6 py-6 shadow-xl transition-all duration-300 backdrop-blur-sm ${
+                hoveredCard === index ? "-translate-y-1.5 shadow-2xl" : ""
               }`}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
-              style={{
-                transformStyle: "preserve-3d",
-                boxShadow:
-                  hoveredCard === index
-                    ? "0 15px 30px -10px rgba(138, 79, 255, 0.2)"
-                    : "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
-              }}
+              variants={fadeInUp}
+              custom={0.3 + index * 0.1}
             >
-              <div className="absolute -top-2 -right-2 z-10">
-                <span className="text-sm bg-[#8A4FFF]/10 text-[#B47AFF] px-2 py-1 rounded-full border border-[#8A4FFF]/20">
+              <div className="absolute -top-3 -right-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-indigo-500 bg-indigo-100 px-2.5 py-1 rounded-full">
                   {feature.badge}
                 </span>
               </div>
 
-              <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2D2442] w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#8A4FFF]/10 transition-colors duration-500 group-hover:scale-110">
+              <div className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center mb-5">
                 {feature.icon}
               </div>
 
-              <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-[#D9C7FF] transition-colors">
+              <h3 className="text-lg font-semibold text-slate-900 mb-3">
                 {feature.title}
               </h3>
-
-              <p className="text-[#D1C4E9] text-sm leading-relaxed">
+              <p className="text-slate-600 text-sm leading-relaxed">
                 {feature.desc}
               </p>
 
-              <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <ChevronsRight className="w-5 h-5 text-[#8A4FFF] animate-bounce-horizontal" />
+              <div className="absolute bottom-5 right-5 text-indigo-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <ChevronsRight className="w-5 h-5" />
               </div>
-
-              {/* Effet de lumière derrière la carte */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] opacity-0 group-hover:opacity-5 transition-opacity duration-500 -z-10" />
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-
-      {/* Styles d'animation supplémentaires */}
-      <style jsx>{`
-        @keyframes float {
-          0% {
-            transform: translateY(0) rotate(0deg) scale(1);
-            opacity: 0;
-          }
-          20% {
-            opacity: 0.4;
-          }
-          100% {
-            transform: translateY(-120vh) rotate(360deg) scale(1.2);
-            opacity: 0;
-          }
-        }
-        @keyframes bounce-in {
-          0% {
-            transform: scale(0.95);
-            opacity: 0;
-          }
-          60% {
-            transform: scale(1.02);
-          }
-          100% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-        @keyframes fade-in {
-          from {
-            opacity: 0;
-            transform: translateY(8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes pulse-soft {
-          0% {
-            box-shadow: 0 0 0 0 rgba(138, 79, 255, 0.3);
-          }
-          70% {
-            box-shadow: 0 0 0 8px rgba(138, 79, 255, 0);
-          }
-          100% {
-            box-shadow: 0 0 0 0 rgba(138, 79, 255, 0);
-          }
-        }
-        @keyframes bounce-horizontal {
-          0%,
-          100% {
-            transform: translateX(0);
-          }
-          50% {
-            transform: translateX(3px);
-          }
-        }
-        .animate-bounce-in {
-          animation: bounce-in 0.8s ease-out;
-        }
-        .animate-fade-in {
-          animation: fade-in 0.8s ease-out;
-        }
-        .animate-pulse-soft {
-          animation: pulse-soft 3s infinite;
-        }
-        .animate-pulse-slow {
-          animation: pulse-soft 5s infinite;
-        }
-        .animate-bounce-horizontal {
-          animation: bounce-horizontal 1.5s infinite;
-        }
-        .perspective-1000 {
-          perspective: 1000px;
-        }
-      `}</style>
-    </section>
+    </motion.section>
   );
 }
-
-// Composant pour l'effet machine à écrire
-const TypewriterText = ({ text, className, delay = 0, speed = 50 }) => {
-  const [displayText, setDisplayText] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    if (currentIndex >= text.length) return;
-    const timeout = setTimeout(() => {
-      setDisplayText((prev) => prev + text[currentIndex]);
-      setCurrentIndex((prev) => prev + 1);
-    }, speed + Math.random() * 30);
-    return () => clearTimeout(timeout);
-  }, [currentIndex, text, speed]);
-
-  return (
-    <span className={className}>
-      {displayText}
-      {currentIndex < text.length && (
-        <span className="inline-block w-0.5 h-5 ml-0.5 bg-current animate-pulse align-middle"></span>
-      )}
-    </span>
-  );
-};
