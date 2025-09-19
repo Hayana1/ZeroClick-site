@@ -139,8 +139,8 @@ export default function Features() {
         >
           <div className="grid gap-0 md:grid-cols-[1.1fr_0.9fr] items-stretch">
             <div className="relative aspect-[16/9] md:aspect-auto">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#fb7185] via-[#f97316] to-[#22c55e] opacity-95" />
-              <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-tl from-[#a855f7]/40 via-transparent to-[#38bdf8]/40" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#a855f7] via-[#6366f1] to-[#22d3ee] opacity-95" />
+              <div className="absolute inset-0 mix-blend-overlay bg-gradient-to-tl from-[#f472b6]/40 via-transparent to-[#facc15]/35" />
               <div className="absolute inset-4 md:inset-6 rounded-3xl border border-white/20" />
               <div className="absolute inset-x-8 inset-y-10 md:inset-y-12 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 flex items-center justify-center text-center text-white px-6">
                 <div>
