@@ -6,7 +6,7 @@ import Footer from "./Footer";
 //import Temoignage from "./Temoignage";
 import Navbar from "./Navbar";
 import Features from "./Features";
-import Benefits from "./Benefits";
+
 import ReadyToTry from "./Cta";
 import Contrat from "./Contract";
 import RealTimeAnalyzer from "./RealtimeAnalyzer";
@@ -19,7 +19,7 @@ export default function LandingPage() {
       <Contrat />
       <Features />
       <RealTimeAnalyzer />
-      <Benefits />
+
       <ReadyToTry />
       <Footer />
     </div>

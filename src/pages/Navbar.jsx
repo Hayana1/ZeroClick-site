@@ -224,7 +224,11 @@ export default function Navbar() {
         <NavContent>
           {/* Logo */}
           <LogoContainer>
-            <Logo src="ZeroClick.png" alt="Logo" />
+            <Logo
+              style={{ marginBottom: "25px" }}
+              src="techouse.png"
+              alt="Logo"
+            />
           </LogoContainer>
 
           {/* Navigation */}
@@ -244,15 +248,25 @@ export default function Navbar() {
             aria-controls="mobile-navigation"
             onClick={() => setMobileOpen((prev) => !prev)}
           >
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileOpen ? (
+              <X className="w-5 h-5" />
+            ) : (
+              <Menu className="w-5 h-5" />
+            )}
           </MobileToggle>
         </NavContent>
 
         <MobileMenu id="mobile-navigation" $open={mobileOpen}>
-          <NavLinkButton to="/services/phishing-simulation" onClick={() => setMobileOpen(false)}>
+          <NavLinkButton
+            to="/services/phishing-simulation"
+            onClick={() => setMobileOpen(false)}
+          >
             Phishing Simulator
           </NavLinkButton>
-          <NavLinkButton to="/services/real-time-analyzer" onClick={() => setMobileOpen(false)}>
+          <NavLinkButton
+            to="/services/real-time-analyzer"
+            onClick={() => setMobileOpen(false)}
+          >
             Real-Time Analyzer
           </NavLinkButton>
           <NavButton onClick={() => handleNavigate("/Form")}>Sign Up</NavButton>
