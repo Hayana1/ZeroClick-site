@@ -9,14 +9,16 @@ import Features from "./Features";
 import Benefits from "./Benefits";
 import ReadyToTry from "./Cta";
 import Contrat from "./Contract";
+import RealTimeAnalyzer from "./RealtimeAnalyzer";
 
 export default function LandingPage() {
   return (
-    <div className="bg-[rgb(33,33,33)] text-white min-h-screen font-Anton">
+    <div className="bg-gradient-to-b from-[#F8F2FF] via-white to-[#F4ECFF] text-[#1F1235] min-h-screen font-Anton">
       <Navbar />
       <Hero />
       <Contrat />
       <Features />
+      <RealTimeAnalyzer />
       <Benefits />
       <ReadyToTry />
       <Footer />

@@ -33,36 +33,36 @@ export default function ReadyToTry() {
 
   if (state.succeeded) {
     return (
-      <section className="relative px-4 py-24 overflow-hidden bg-[#0F0F19]">
+      <section className="relative px-4 py-24 overflow-hidden bg-gradient-to-b from-[#F6EEFF] via-[#FDFBFF] to-[#F2E7FF] text-[#1F1235]">
         <div className="relative max-w-3xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] mb-8 animate-pulse">
             <Check className="w-12 h-12 text-white" strokeWidth={1.5} />
           </div>
 
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#2B1653]">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] animate-gradient">
               Demande envoyée avec succès !
             </span>
           </h2>
 
-          <p className="text-xl text-[#D9C7FF] mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-[#5F4C8C] mb-8 max-w-2xl mx-auto leading-relaxed">
             Notre équipe vous contactera dans les prochaines heures pour
             finaliser votre essai gratuit.
           </p>
 
-          <div className="bg-gradient-to-br from-[#1E1B2B]/80 to-[#2A2342]/80 p-6 rounded-2xl border border-[#8A4FFF]/30 mb-10 backdrop-blur-sm">
+          <div className="bg-white/95 p-6 rounded-2xl border border-[#E3D8FF] mb-10 shadow-[0_18px_45px_rgba(138,79,255,0.12)]">
             <div className="flex items-start gap-4">
               <Zap
                 className="w-6 h-6 text-[#B47AFF] flex-shrink-0 mt-1"
                 strokeWidth={1.5}
               />
               <div>
-                <p className="text-lg font-medium text-white mb-2">
+                <p className="text-lg font-medium text-[#2B1653] mb-2">
                   Accélérez le processus
                 </p>
-                <p className="text-[#D9C7FF]">
+                <p className="text-[#5F4C8C]">
                   Envoyez dès maintenant votre première facture à{" "}
-                  <span className="font-mono bg-[#1E1B2B] px-3 py-1.5 rounded-lg text-[#B47AFF] border border-[#3A2E5D] inline-flex items-center gap-2">
+                  <span className="font-mono bg-white px-3 py-1.5 rounded-lg text-[#7F56D0] border border-[#E3D8FF] inline-flex items-center gap-2 shadow-sm">
                     hello@ZeroClick.tech
                     <button className="text-[#8A4FFF] hover:text-[#B47AFF] transition-colors">
                       <Send className="w-4 h-4" />
@@ -74,7 +74,7 @@ export default function ReadyToTry() {
             </div>
           </div>
 
-          <div className="inline-flex items-center text-sm text-[#8A4FFF] bg-[#1E1B2B]/50 px-4 py-2 rounded-full border border-[#8A4FFF]/20">
+          <div className="inline-flex items-center text-sm text-[#7F56D0] bg-white/80 px-4 py-2 rounded-full border border-[#E3D8FF] shadow-sm">
             <Clock className="w-4 h-4 mr-2" strokeWidth={2} />
             Temps moyen de réponse:{" "}
             <span className="font-semibold ml-1">moins de 2 heures</span>
@@ -85,7 +85,7 @@ export default function ReadyToTry() {
   }
 
   return (
-    <section className="relative px-4 py-24 overflow-hidden bg-[#0F0F19]">
+    <section className="relative px-4 py-24 overflow-hidden bg-gradient-to-b from-[#F6EEFF] via-[#FDFBFF] to-[#F2E7FF] text-[#1F1235]">
       {/* Éléments décoratifs animés */}
       <div className="absolute inset-0 overflow-hidden opacity-15">
         {[...Array(30)].map((_, i) => (
@@ -106,10 +106,10 @@ export default function ReadyToTry() {
       </div>
 
       <div className="relative max-w-3xl mx-auto">
-        <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#8A4FFF]/20 shadow-2xl relative overflow-hidden backdrop-blur-sm">
+        <div className="bg-white/95 p-8 rounded-2xl border border-[#E3D8FF] shadow-[0_22px_55px_rgba(138,79,255,0.14)] relative overflow-hidden">
           {/* Effet de lumière animé */}
-          <div className="absolute -top-28 -right-28 w-64 h-64 rounded-full bg-[#8A4FFF]/10 blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-[#B47AFF]/10 blur-3xl animate-pulse animation-delay-2000"></div>
+          <div className="absolute -top-28 -right-28 w-64 h-64 rounded-full bg-[#E5D9FF] blur-3xl opacity-70 animate-pulse"></div>
+          <div className="absolute -bottom-24 -left-24 w-72 h-72 rounded-full bg-[#F0E6FF] blur-3xl opacity-70 animate-pulse animation-delay-2000"></div>
 
           <div className="relative z-10">
             {/* Badge animé */}
@@ -118,7 +118,7 @@ export default function ReadyToTry() {
               <span>1-month trial for FREE</span>
             </span>
 
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-[#2B1653]">
               Ready to{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] animate-gradient">
                 Protect your team from fraud
@@ -129,14 +129,14 @@ export default function ReadyToTry() {
             {/* Barre de progression */}
             <div className="mb-8">
               <div className="flex justify-between mb-2">
-                <span className="text-xs font-medium text-[#D1C4E9]">
+                <span className="text-xs font-medium text-[#5F4C8C]">
                   Step {currentStep} of 3
                 </span>
                 <span className="text-xs font-medium text-[#8A4FFF]">
                   {Math.round((currentStep / 3) * 100)}% complete
                 </span>
               </div>
-              <div className="w-full bg-[#1E1B2B] rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-[#EDE3FF] rounded-full h-2 overflow-hidden">
                 <div
                   className="bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] h-2 rounded-full transition-all duration-700 ease-out"
                   style={{ width: `${(currentStep / 3) * 100}%` }}
@@ -156,7 +156,7 @@ export default function ReadyToTry() {
                 <div className="flex items-center justify-between">
                   <label
                     htmlFor="email"
-                    className="block text-sm font-medium text-[#D1C4E9] flex items-center gap-2"
+                    className="block text-sm font-medium text-[#5F4C8C] flex items-center gap-2"
                   >
                     <Mail
                       className="w-4 h-4 text-[#8A4FFF]"
@@ -172,7 +172,7 @@ export default function ReadyToTry() {
                   id="email"
                   type="email"
                   name="email"
-                  className="w-full bg-[#1E1B2B] border border-[#3A2E5D] rounded-xl px-5 py-3.5 text-white placeholder-[#6B5B8C] focus:border-[#8A4FFF] focus:ring-2 focus:ring-[#8A4FFF]/50 transition-all shadow-inner"
+                  className="w-full bg-white border border-[#E3D8FF] rounded-xl px-5 py-3.5 text-[#2B1653] placeholder-[#8C7BB1] focus:border-[#8A4FFF] focus:ring-2 focus:ring-[#8A4FFF]/30 transition-all shadow-[inset_0_1px_0_rgba(138,79,255,0.12)]"
                   placeholder="your@company.com"
                   required
                   onFocus={() => setCurrentStep(1)}
@@ -201,7 +201,7 @@ export default function ReadyToTry() {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <label className="block text-sm font-medium text-[#D1C4E9] flex items-center gap-2">
+                  <label className="block text-sm font-medium text-[#5F4C8C] flex items-center gap-2">
                     <BarChart2
                       className="w-4 h-4 text-[#8A4FFF]"
                       strokeWidth={2.5}
@@ -216,7 +216,7 @@ export default function ReadyToTry() {
                   {["1-5", "5-10", "10-20", "20+"].map((option) => (
                     <div
                       key={option}
-                      className="flex items-center p-4 bg-[#1E1B2B] border border-[#3A2E5D] rounded-xl hover:border-[#8A4FFF] transition-all cursor-pointer group"
+                      className="flex items-center p-4 bg-white border border-[#E3D8FF] rounded-xl hover:border-[#C8B4FF] hover:shadow-[0_12px_30px_rgba(138,79,255,0.18)] transition-all cursor-pointer group"
                       onClick={() => document.getElementById(option).click()}
                     >
                       <input
@@ -224,13 +224,13 @@ export default function ReadyToTry() {
                         name="factures_mois"
                         type="radio"
                         value={option}
-                        className="h-4 w-4 border-[#3A2E5D] text-[#8A4FFF] focus:ring-2 focus:ring-[#8A4FFF]/50"
+                        className="h-4 w-4 border-[#C8B4FF] text-[#8A4FFF] focus:ring-2 focus:ring-[#8A4FFF]/40"
                         required
                         onFocus={() => setCurrentStep(2)}
                       />
                       <label
                         htmlFor={option}
-                        className="ml-3 text-sm font-medium text-[#D9C7FF] group-hover:text-white cursor-pointer"
+                        className="ml-3 text-sm font-medium text-[#5F4C8C] group-hover:text-[#2B1653] cursor-pointer"
                       >
                         {option}
                       </label>
@@ -241,7 +241,7 @@ export default function ReadyToTry() {
                   <button
                     type="button"
                     onClick={() => setCurrentStep(1)}
-                    className="w-1/2 group bg-[#1E1B2B] border border-[#3A2E5D] text-[#D9C7FF] font-medium py-3.5 px-6 rounded-xl transition-all hover:border-[#8A4FFF] flex items-center justify-center"
+                    className="w-1/2 group bg-white border border-[#E3D8FF] text-[#5F4C8C] font-medium py-3.5 px-6 rounded-xl transition-all hover:border-[#C8B4FF] flex items-center justify-center"
                   >
                     <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-0.5 transition-transform" />
                     Back
@@ -266,7 +266,7 @@ export default function ReadyToTry() {
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <label className="block text-sm font-medium text-[#D1C4E9] flex items-center gap-2">
+                  <label className="block text-sm font-medium text-[#5F4C8C] flex items-center gap-2">
                     <Activity
                       className="w-4 h-4 text-[#8A4FFF]"
                       strokeWidth={2.5}
@@ -277,7 +277,7 @@ export default function ReadyToTry() {
                     Step 3/3
                   </span>
                 </div>
-                <div className="flex justify-between text-xs text-[#D1C4E9] mb-1">
+                <div className="flex justify-between text-xs text-[#5F4C8C] mb-1">
                   <span className="flex items-center gap-1">
                     <div className="w-2 h-2 rounded-full bg-[#27C93F]"></div>
                     Not stressful
@@ -292,7 +292,7 @@ export default function ReadyToTry() {
                   name="stress_level"
                   min="1"
                   max="10"
-                  className="w-full h-2 bg-[#3A2E5D] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-[#8A4FFF] [&::-webkit-slider-thumb]:to-[#B47AFF]"
+                  className="w-full h-2 bg-[#E3D8FF] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-gradient-to-r [&::-webkit-slider-thumb]:from-[#8A4FFF] [&::-webkit-slider-thumb]:to-[#B47AFF]"
                   required
                   onFocus={() => setCurrentStep(3)}
                 />
@@ -311,7 +311,7 @@ export default function ReadyToTry() {
                 <div className="space-y-3 pt-4">
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium text-[#D1C4E9] flex items-center gap-2"
+                    className="block text-sm font-medium text-[#5F4C8C] flex items-center gap-2"
                   >
                     <MessageSquare
                       className="w-4 h-4 text-[#8A4FFF]"
@@ -323,7 +323,7 @@ export default function ReadyToTry() {
                     id="message"
                     name="message"
                     rows={3}
-                    className="w-full bg-[#1E1B2B] border border-[#3A2E5D] rounded-xl px-5 py-3.5 text-white placeholder-[#6B5B8C] focus:border-[#8A4FFF] focus:ring-2 focus:ring-[#8A4FFF]/50 transition-all shadow-inner"
+                    className="w-full bg-white border border-[#E3D8FF] rounded-xl px-5 py-3.5 text-[#2B1653] placeholder-[#8C7BB1] focus:border-[#8A4FFF] focus:ring-2 focus:ring-[#8A4FFF]/30 transition-all shadow-[inset_0_1px_0_rgba(138,79,255,0.12)]"
                     placeholder="Ex: Principalement des clients B2B, délais de paiement de 60+ jours..."
                   />
                   <ValidationError
@@ -337,7 +337,7 @@ export default function ReadyToTry() {
                   <button
                     type="button"
                     onClick={() => setCurrentStep(2)}
-                    className="w-1/2 group bg-[#1E1B2B] border border-[#3A2E5D] text-[#D9C7FF] font-medium py-3.5 px-6 rounded-xl transition-all hover:border-[#8A4FFF] flex items-center justify-center"
+                    className="w-1/2 group bg-white border border-[#E3D8FF] text-[#5F4C8C] font-medium py-3.5 px-6 rounded-xl transition-all hover:border-[#C8B4FF] flex items-center justify-center"
                   >
                     <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-0.5 transition-transform" />
                     Return
@@ -386,23 +386,23 @@ export default function ReadyToTry() {
               </div>
             </form>
 
-            <div className="mt-10 pt-6 border-t border-[#3A2E5D]/50">
-              <div className="flex flex-wrap justify-center gap-6 text-[#D9C7FF] text-sm">
-                <div className="flex items-center bg-[#1E1B2B]/50 px-3 py-1.5 rounded-full">
+            <div className="mt-10 pt-6 border-t border-[#E3D8FF]">
+              <div className="flex flex-wrap justify-center gap-6 text-[#5F4C8C] text-sm">
+                <div className="flex items-center bg-white px-3 py-1.5 rounded-full border border-[#E3D8FF] shadow-sm">
                   <Lock
                     className="w-4 h-4 text-[#8A4FFF] mr-2"
                     strokeWidth={2}
                   />
                   <span>100% data secured</span>
                 </div>
-                <div className="flex items-center bg-[#1E1B2B]/50 px-3 py-1.5 rounded-full">
+                <div className="flex items-center bg-white px-3 py-1.5 rounded-full border border-[#E3D8FF] shadow-sm">
                   <Gift
                     className="w-4 h-4 text-[#B47AFF] mr-2"
                     strokeWidth={2}
                   />
                   <span>3 free simulations included</span>
                 </div>
-                <div className="flex items-center bg-[#1E1B2B]/50 px-3 py-1.5 rounded-full">
+                <div className="flex items-center bg-white px-3 py-1.5 rounded-full border border-[#E3D8FF] shadow-sm">
                   <Clock
                     className="w-4 h-4 text-[#8A4FFF] mr-2"
                     strokeWidth={2}

@@ -24,7 +24,7 @@ const PixelIcon = ({ name, size = 24, className = "" }) => (
 export default function Benefits() {
   const navigate = useNavigate();
   return (
-    <div className="relative py-28 bg-gradient-to-b from-[#1A1428] to-[#0F0F19] overflow-hidden">
+    <div className="relative py-28 bg-gradient-to-b from-[#F5EEFF] via-[#FDFBFF] to-[#F2E6FF] overflow-hidden text-[#1F1235]">
       {/* Decorative dots */}
       <div className="absolute inset-0 overflow-hidden opacity-10">
         {[...Array(25)].map((_, i) => (
@@ -46,18 +46,18 @@ export default function Benefits() {
 
       <div className="relative max-w-5xl mx-auto px-6 text-center z-10">
         <div className="inline-block bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] p-0.5 rounded-full mb-8">
-          <div className="bg-[#1A1428] rounded-full px-5 py-1.5 text-[#D9C7FF] text-sm font-medium">
+          <div className="bg-white rounded-full px-5 py-1.5 text-[#4B2C83] text-sm font-medium shadow-sm">
             Key benefits
           </div>
         </div>
 
-        <h2 className="text-4cxl md:text-4xl font-bold mb-6 text-white">
+        <h2 className="text-4cxl md:text-4xl font-bold mb-6 text-[#2B1653]">
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF]">
             Why choose our training?
           </span>
         </h2>
 
-        <p className="text-xl md:text-2xl text-[#D9C7FF] mb-16 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-xl md:text-2xl text-[#5F4C8C] mb-16 max-w-3xl mx-auto leading-relaxed">
           Real inbox practice that builds calm, confident habits. No stress, no
           jargon — just fewer risky clicks.
         </p>
@@ -98,19 +98,19 @@ export default function Benefits() {
           ].map((benefit, index) => (
             <div
               key={index}
-              className="relative bg-gradient-to-br from-[#1E1B2B]/70 to-[#2A2342]/70 p-8 rounded-2xl border border-[#3A2E5D]/50 backdrop-blur-sm transition-all duration-500 hover:-translate-y-2 hover:border-[#8A4FFF]/50 hover:shadow-[0_20px_50px_rgba(138,79,255,0.2)]"
+              className="relative bg-white p-8 rounded-2xl border border-[#E3D8FF] transition-all duration-500 hover:-translate-y-2 hover:border-[#C8B4FF] hover:shadow-[0_22px_55px_rgba(138,79,255,0.2)] shadow-[0_12px_30px_rgba(138,79,255,0.1)]"
             >
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] w-16 h-16 rounded-full flex items-center justify-center shadow-lg">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] w-16 h-16 rounded-full flex items-center justify-center shadow-[0_12px_25px_rgba(138,79,255,0.25)]">
                 {benefit.icon}
               </div>
 
-              <h3 className="text-xl font-bold text-white mb-3 mt-6">
+              <h3 className="text-xl font-bold text-[#2B1653] mb-3 mt-6">
                 {benefit.title}
               </h3>
 
-              <p className="text-[#D9C7FF] mb-4 min-h-[60px]">{benefit.desc}</p>
+              <p className="text-[#5F4C8C] mb-4 min-h-[60px]">{benefit.desc}</p>
 
-              <div className="inline-block bg-[#8A4FFF]/10 text-[#D9C7FF] px-3 py-1 rounded-full text-sm border border-[#8A4FFF]/20">
+              <div className="inline-block bg-[#F0E8FF] text-[#7F56D0] px-3 py-1 rounded-full text-sm border border-[#E3D8FF]">
                 {benefit.highlight}
               </div>
             </div>
@@ -130,7 +130,7 @@ export default function Benefits() {
             <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
           </button>
 
-          <div className="mt-6 flex flex-wrap justify-center gap-6 text-[#D9C7FF] text-sm">
+          <div className="mt-6 flex flex-wrap justify-center gap-6 text-[#5F4C8C] text-sm">
             <div className="flex items-center">
               <div className="w-2 h-2 rounded-full bg-[#27C93F] mr-2 animate-pulse"></div>
               <span>No credit card required</span>

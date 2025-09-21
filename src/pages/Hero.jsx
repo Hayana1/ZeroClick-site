@@ -64,7 +64,7 @@ export default function Hero() {
       ctx.clearRect(0, 0, width, height);
 
       ctx.lineWidth = 0.1;
-      ctx.strokeStyle = "rgba(180, 122, 255, 0.08)";
+      ctx.strokeStyle = "rgba(138, 79, 255, 0.15)";
       for (let i = 0; i < particlesRef.current.length; i++) {
         for (let j = i + 1; j < particlesRef.current.length; j++) {
           const a = particlesRef.current[i];
@@ -128,30 +128,30 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden px-6 py-24 sm text-center bg-gradient-to-b from-[#0F0F19] via-[#151221] to-[#1A1428] min-h-screen flex items-center justify-center">
+    <section className="relative overflow-hidden px-6 py-24 text-center bg-gradient-to-b from-[#F9F6FF] via-[#FDFBFF] to-[#F6EDFF] min-h-screen flex items-center justify-center text-[#1F1235]">
       <canvas ref={canvasRef} className="absolute inset-0 z-0" />
 
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#8A4FFF] rounded-full filter blur-[90px] opacity-10 animate-pulse-slow" />
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#BFA7FF] rounded-full filter blur-[100px] opacity-40 animate-pulse-slow" />
       <div
-        className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-[#B47AFF] rounded-full filter blur-[90px] opacity-10 animate-pulse-slow"
+        className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-[#D6C3FF] rounded-full filter blur-[110px] opacity-40 animate-pulse-slow"
         style={{ animationDelay: "2s" }}
       />
 
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 h-3/5 bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] rounded-full filter blur-[100px] opacity-3" />
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4/5 h-3/5 bg-gradient-to-r from-[#8A4FFF] to-[#B47AFF] rounded-full filter blur-[120px] opacity-20" />
 
       <div className="relative max-w-4xl mx-auto z-10">
-        <div className="inline-flex items-center px-6 py-3 mb-10 rounded-full bg-[#8A4FFF]/10 border border-[#8A4FFF]/20 text-[#D9C7FF] text-sm md:text-base font-medium backdrop-blur-md transition-all hover:bg-[#8A4FFF]/15 hover:border-[#8A4FFF]/40 animate-bounce-in">
+        <div className="inline-flex items-center px-6 py-3 mb-10 rounded-full bg-white/80 border border-[#D8C7FF] text-[#4B2C83] text-sm md:text-base font-medium backdrop-blur-md transition-all hover:bg-white hover:border-[#C0A8FF] animate-bounce-in">
           <CheckCircle
-            className="w-5 h-5 mr-2 text-[#B47AFF]"
+            className="w-5 h-5 mr-2 text-[#7F56D0]"
             strokeWidth={2.5}
           />
           Made in Québec, not Silicon Valley
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-bold mb-8 leading-tight tracking-tight">
+        <h1 className="text-4xl md:text-5xl font-bold mb-8 leading-tight tracking-tight text-[#1E0F3A]">
           <TypewriterText
             text="One click can cost everything."
-            className="text-white font-medium block mb-4"
+            className="text-[#1E0F3A] font-medium block mb-4"
             delay={200}
             speed={60}
           />
@@ -167,9 +167,9 @@ export default function Hero() {
           className="opacity-0 animate-fade-in"
           style={{ animationDelay: "1.8s", animationFillMode: "forwards" }}
         >
-          <p className="text-lg text-[#D9C7FF] mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-[#5A4B80] mb-12 max-w-2xl mx-auto leading-relaxed">
             Realistic inbox scenarios that feel natural.{" "}
-            <span className="font-medium bg-[#1E1B2B] px-2 py-1 rounded-md text-[#B47AFF] border border-[#3A2E5D]">
+            <span className="font-medium bg-white px-2 py-1 rounded-md text-[#7F56D0] border border-[#E0D4FF] shadow-sm">
               Your team learns without pressure
             </span>{" "}
             — building calm, confident reflexes day by day.
@@ -182,7 +182,7 @@ export default function Hero() {
         >
           <button
             onClick={() => navigate("/Form")}
-            className="group relative overflow-hidden px-7 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-[#8A4FFF]/30 text-base"
+            className="group relative overflow-hidden px-7 py-4 bg-gradient-to-r from-[#8A4FFF] to-[#9D5AFF] hover:from-[#9D5AFF] hover:to-[#B47AFF] text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-[1.02] shadow-[0_15px_35px_rgba(138,79,255,0.25)] hover:shadow-[0_18px_45px_rgba(138,79,255,0.35)] text-base"
           >
             <span className="relative z-10 flex items-center justify-center">
               <PixelIcon name="sorcier-malefique" size={24} className="mr-2" />
@@ -194,7 +194,7 @@ export default function Hero() {
               <span className="absolute top-0 left-0 w-8 h-full bg-white opacity-0 group-hover:opacity-10 transform -skew-x-12 group-hover:left-[calc(100%+16px)] transition-all duration-1000"></span>
             </span>
           </button>
-          <p className="mt-3 text-sm text-[#A794D4]">
+          <p className="mt-3 text-sm text-[#6F5E9E]">
             Better a fake trap today than a real loss tomorrow • No commitment
           </p>
         </div>
@@ -215,6 +215,7 @@ export default function Hero() {
               title: "Automatic reflexes",
               desc: "Short, gentle exercises that build instinct. Fewer risky clicks, more confidence.",
               badge: "Calm",
+              path: "/services/phishing-simulation#automatic-reflexes",
             },
             {
               icon: (
@@ -226,6 +227,7 @@ export default function Hero() {
               title: "Invisible learning",
               desc: "Lessons that don't feel like lessons. Every slip becomes a kind reminder.",
               badge: "Gentle",
+              path: "/services/phishing-simulation#invisible-learning",
             },
             {
               icon: (
@@ -237,38 +239,49 @@ export default function Hero() {
               title: "Peace of mind",
               desc: "Your team feels safe and ready. You finally breathe easier.",
               badge: "Trust",
+              path: "/services/phishing-simulation#peace-of-mind",
             },
           ].map((feature, index) => (
             <div
               key={index}
-              className={`group relative bg-[#1E1B2B]/70 backdrop-blur-sm p-6 rounded-xl border border-[#2D2442] transition-all duration-500 transform perspective-1000 ${
+              className={`group relative bg-white/90 p-6 rounded-xl border border-[#E3D8FF] shadow-[0_12px_30px_rgba(138,79,255,0.12)] transition-all duration-500 transform perspective-1000 cursor-pointer ${
                 hoveredCard === index ? "scale-105 -translate-y-2" : ""
               }`}
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
+              onClick={() => navigate(feature.path)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  navigate(feature.path);
+                }
+              }}
+              role="button"
+              tabIndex={0}
+              aria-label={`Learn more about ${feature.title}`}
               style={{
                 transformStyle: "preserve-3d",
                 boxShadow:
                   hoveredCard === index
-                    ? "0 15px 30px -10px rgba(138, 79, 255, 0.2)"
-                    : "0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)",
+                    ? "0 22px 45px -18px rgba(138, 79, 255, 0.30)"
+                    : "0 12px 28px rgba(138, 79, 255, 0.12)",
               }}
             >
               <div className="absolute -top-2 -right-2 z-10">
-                <span className="text-sm bg-[#8A4FFF]/10 text-[#B47AFF] px-2 py-1 rounded-full border border-[#8A4FFF]/20">
+                <span className="text-sm bg-white text-[#7F56D0] px-2 py-1 rounded-full border border-[#E0D4FF] shadow-sm">
                   {feature.badge}
                 </span>
               </div>
 
-              <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2D2442] w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#8A4FFF]/10 transition-colors duration-500 group-hover:scale-110">
+              <div className="bg-gradient-to-br from-white to-[#F0E6FF] w-14 h-14 rounded-lg flex items-center justify-center mb-4 group-hover:from-[#F6EDFF] group-hover:to-white transition-all duration-500 group-hover:scale-110">
                 {feature.icon}
               </div>
 
-              <h3 className="text-lg font-semibold text-white mb-3 group-hover:text-[#D9C7FF] transition-colors">
+              <h3 className="text-lg font-semibold text-[#2B1653] mb-3 group-hover:text-[#7F56D0] transition-colors">
                 {feature.title}
               </h3>
 
-              <p className="text-[#D1C4E9] text-sm leading-relaxed">
+              <p className="text-[#5F4C8C] text-sm leading-relaxed">
                 {feature.desc}
               </p>
 
@@ -277,7 +290,7 @@ export default function Hero() {
               </div>
 
               {/* Effet de lumière derrière la carte */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] opacity-0 group-hover:opacity-5 transition-opacity duration-500 -z-10" />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] opacity-0 group-hover:opacity-40 transition-opacity duration-500 -z-10" />
             </div>
           ))}
         </div>

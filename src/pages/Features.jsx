@@ -25,7 +25,7 @@ const PixelIcon = ({ name, size = 24, className = "" }) => (
 export default function Features() {
   const navigate = useNavigate();
   return (
-    <div className="relative py-24 bg-gradient-to-b from-[#0F0F19] to-[#1A1428] overflow-hidden">
+    <div className="relative py-24 bg-gradient-to-b from-[#FDFBFF] via-[#F6EEFF] to-[#EFE3FF] overflow-hidden text-[#1F1235]">
       {/* Animated decorative dots */}
       <div className="absolute inset-0 overflow-hidden opacity-20">
         {[...Array(30)].map((_, i) => (
@@ -48,13 +48,13 @@ export default function Features() {
       <div className="relative max-w-6xl mx-auto px-6">
         {/* Title */}
         <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-4xl font-bold mb-6 text-white">
+          <h2 className="text-4xl md:text-4xl font-bold mb-6 text-[#2B1653]">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#B47AFF] via-[#9D5AFF] to-[#8A4FFF] animate-gradient">
               Inbox training
             </span>{" "}
             in 3 simple steps
           </h2>
-          <p className="text-1xl text-[#D9C7FF] max-w-3xl mx-auto">
+          <p className="text-1xl text-[#5F4C8C] max-w-3xl mx-auto">
             Real emails. Real habits. No stress, no jargon — just calm,
             confident clicks.
           </p>
@@ -68,12 +68,12 @@ export default function Features() {
           {/* Step 1 */}
           <div className="flex flex-col md:flex-row items-stretch gap-8 mb-24 group">
             {/* Card */}
-            <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
+            <div className="bg-white/90 p-8 rounded-2xl border border-[#E3D8FF] shadow-[0_18px_45px_rgba(138,79,255,0.12)] w-full md:w-1/2 transition-all duration-300 group-hover:border-[#C8B4FF] group-hover:shadow-[0_25px_55px_rgba(138,79,255,0.22)]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
                   1
                 </div>
-                <h3 className="text-2xl font-semibold text-white">
+                <h3 className="text-2xl font-semibold text-[#2B1653]">
                   A message arrives
                 </h3>
               </div>
@@ -87,7 +87,7 @@ export default function Features() {
                     />
                   </div>
                   <div>
-                    <p className="text-[#D9C7FF]">
+                    <p className="text-[#5F4C8C]">
                       A realistic email lands in the inbox — urgent tone, a
                       link, and small changes that feel off.
                     </p>
@@ -102,11 +102,11 @@ export default function Features() {
                     />
                   </div>
                   <div>
-                    <p className="text-[#D9C7FF]">
+                    <p className="text-[#5F4C8C]">
                       Your team sees it like any normal day — and learns to spot
                       fraud early.
                     </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
+                    <div className="mt-1 text-sm text-[#7A67A8]">
                       No new tools to learn.
                     </div>
                   </div>
@@ -116,8 +116,8 @@ export default function Features() {
 
             {/* Visual example */}
             <div className="w-full md:w-1/2 relative">
-              <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
-                <div className="font-mono text-sm text-[#D9C7FF] space-y-3">
+              <div className="bg-white/95 p-6 rounded-2xl border border-[#E3D8FF] h-full shadow-[0_15px_40px_rgba(138,79,255,0.12)] transition-all duration-300 group-hover:border-[#C8B4FF]">
+                <div className="font-mono text-sm text-[#5F4C8C] space-y-3">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-full bg-[#FF5F56]"></div>
                     <div className="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
@@ -136,7 +136,7 @@ export default function Features() {
                     <span className="text-[#8A4FFF]">Link:</span>{" "}
                     http://abc-inc.payments-update-secure.co/verify
                   </div>
-                  <div className="text-[#A794D4]">
+                  <div className="text-[#7A67A8]">
                     Red flags: new domain, rushed deadline, new bank details.
                   </div>
                 </div>
@@ -147,7 +147,7 @@ export default function Features() {
               </div>
 
               {/* Timeline dot */}
-              <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
+              <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-white shadow-lg hidden md:flex">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
               </div>
             </div>
@@ -156,12 +156,12 @@ export default function Features() {
           {/* Step 2 */}
           <div className="flex flex-col md:flex-row-reverse items-stretch gap-8 mb-24 group">
             {/* Card */}
-            <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
+            <div className="bg-white/90 p-8 rounded-2xl border border-[#E3D8FF] shadow-[0_18px_45px_rgba(138,79,255,0.12)] w-full md:w-1/2 transition-all duration-300 group-hover:border-[#C8B4FF] group-hover:shadow-[0_25px_55px_rgba(138,79,255,0.22)]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
                   2
                 </div>
-                <h3 className="text-2xl font-semibold text-white">
+                <h3 className="text-2xl font-semibold text-[#2B1653]">
                   Pause and check
                 </h3>
               </div>
@@ -175,11 +175,11 @@ export default function Features() {
                     />
                   </div>
                   <div>
-                    <p className="text-[#D9C7FF]">
+                    <p className="text-[#5F4C8C]">
                       Hover links, read the address, compare payment details.
                       Slow beats sorry.
                     </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
+                    <div className="mt-1 text-sm text-[#7A67A8]">
                       Habits built in seconds.
                     </div>
                   </div>
@@ -202,10 +202,10 @@ export default function Features() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[#D9C7FF]">
+                    <p className="text-[#5F4C8C]">
                       You stay in control — we only coach the reflex.
                     </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
+                    <div className="mt-1 text-sm text-[#7A67A8]">
                       No blame, just better clicks.
                     </div>
                   </div>
@@ -215,17 +215,17 @@ export default function Features() {
 
             {/* Visual example */}
             <div className="w-full md:w-1/2 relative">
-              <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
-                <div className="text-[#D9C7FF] text-sm space-y-4">
+              <div className="bg-white/95 p-6 rounded-2xl border border-[#E3D8FF] h-full shadow-[0_15px_40px_rgba(138,79,255,0.12)] transition-all duration-300 group-hover:border-[#C8B4FF]">
+                <div className="text-[#5F4C8C] text-sm space-y-4">
                   <div className="text-[#8A4FFF] font-medium">
                     Quick check list:
                   </div>
-                  <ul className="list-disc list-inside text-[#D9C7FF] space-y-1">
+                  <ul className="list-disc list-inside text-[#5F4C8C] space-y-1">
                     <li>Sender address matches the company?</li>
                     <li>Link preview shows the right domain?</li>
                     <li>Any sudden “new bank details”?</li>
                   </ul>
-                  <div className="pt-4 border-t border-[#3A2E5D]/50 text-xs text-[#8A4FFF]/70">
+                  <div className="pt-4 border-t border-[#E3D8FF] text-xs text-[#8A4FFF]/70">
                     10 seconds to avoid a costly mistake
                   </div>
                 </div>
@@ -236,7 +236,7 @@ export default function Features() {
               </div>
 
               {/* Timeline dot */}
-              <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
+              <div className="absolute -right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-white shadow-lg hidden md:flex">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
               </div>
             </div>
@@ -245,12 +245,12 @@ export default function Features() {
           {/* Step 3 */}
           <div className="flex flex-col md:flex-row items-stretch gap-8 group">
             {/* Card */}
-            <div className="bg-gradient-to-br from-[#1E1B2B] to-[#2A2342] p-8 rounded-2xl border border-[#3A2E5D]/50 shadow-2xl w-full md:w-1/2 transition-all duration-300 group-hover:border-[#8A4FFF]/50 group-hover:shadow-[#8A4FFF]/20 backdrop-blur-sm">
+            <div className="bg-white/90 p-8 rounded-2xl border border-[#E3D8FF] shadow-[0_18px_45px_rgba(138,79,255,0.12)] w-full md:w-1/2 transition-all duration-300 group-hover:border-[#C8B4FF] group-hover:shadow-[0_25px_55px_rgba(138,79,255,0.22)]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-lg shadow-lg">
                   3
                 </div>
-                <h3 className="text-2xl font-semibold text-white">
+                <h3 className="text-2xl font-semibold text-[#2B1653]">
                   Gentle feedback
                 </h3>
               </div>
@@ -264,7 +264,7 @@ export default function Features() {
                     />
                   </div>
                   <div>
-                    <p className="text-[#D9C7FF]">
+                    <p className="text-[#5F4C8C]">
                       If someone clicks, a short lesson explains each red flag —
                       no shame, just clarity.
                     </p>
@@ -288,10 +288,10 @@ export default function Features() {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-[#D9C7FF]">
+                    <p className="text-[#5F4C8C]">
                       Habits improve every week — calm, confident, natural.
                     </p>
-                    <div className="mt-1 text-sm text-[#A794D4]">
+                    <div className="mt-1 text-sm text-[#7A67A8]">
                       Peace of mind for everyone.
                     </div>
                   </div>
@@ -301,12 +301,12 @@ export default function Features() {
 
             {/* Visual example */}
             <div className="w-full md:w-1/2 relative">
-              <div className="bg-[#1E1B2B]/80 backdrop-blur-sm p-6 rounded-2xl border border-[#3A2E5D]/50 h-full shadow-lg transition-all duration-300 group-hover:border-[#8A4FFF]/30">
-                <div className="text-[#D9C7FF] text-sm space-y-4">
+              <div className="bg-white/95 p-6 rounded-2xl border border-[#E3D8FF] h-full shadow-[0_15px_40px_rgba(138,79,255,0.12)] transition-all duration-300 group-hover:border-[#C8B4FF]">
+                <div className="text-[#5F4C8C] text-sm space-y-4">
                   <div className="text-[#8A4FFF] font-medium">
                     Example feedback:
                   </div>
-                  <div className="font-mono bg-[#1E1B2B] px-3 py-2 rounded-lg border border-[#3A2E5D] inline-block">
+                  <div className="font-mono bg-white px-3 py-2 rounded-lg border border-[#E3D8FF] inline-block shadow-sm">
                     “The sender domain doesn’t match. The link points elsewhere.
                     Payment details changed.”
                   </div>
@@ -319,7 +319,7 @@ export default function Features() {
                   <div className="text-xs text-[#8A4FFF]/70">
                     Tiny lessons, big protection
                   </div>
-                  <div className="pt-4 border-t border-[#3A2E5D]/50 text-xs text-[#A794D4]">
+                  <div className="pt-4 border-t border-[#E3D8FF] text-xs text-[#7A67A8]">
                     Weekly summary shows progress (no blame).
                   </div>
                 </div>
@@ -330,7 +330,7 @@ export default function Features() {
               </div>
 
               {/* Timeline dot */}
-              <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-[#0F0F19] shadow-lg hidden md:flex">
+              <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gradient-to-br from-[#8A4FFF] to-[#B47AFF] flex items-center justify-center border-4 border-white shadow-lg hidden md:flex">
                 <div className="w-2 h-2 rounded-full bg-white animate-pulse"></div>
               </div>
             </div>
@@ -339,7 +339,7 @@ export default function Features() {
 
         {/* Final CTA */}
         <div className="mt-24 text-center">
-          <h3 className="text-2xl md:text-3xl font-bold text-white mb-6">
+          <h3 className="text-2xl md:text-3xl font-bold text-[#2B1653] mb-6">
             Ready to <span className="text-[#8A4FFF]">stop fraud early</span>?
           </h3>
           <button
@@ -352,7 +352,7 @@ export default function Features() {
             </span>
             <span className="absolute inset-0 bg-gradient-to-r from-[#9D5AFF] to-[#B47AFF] opacity-0 group-hover:opacity-100 transition-opacity duration-500"></span>
           </button>
-          <p className="mt-4 text-sm text-[#A794D4]">
+          <p className="mt-4 text-sm text-[#7A67A8]">
             No commitment • Friendly coaching • Results you can feel
           </p>
         </div>
